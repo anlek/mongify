@@ -6,13 +6,13 @@ Learn more about mongoDB at: {http://www.mongodb.org}
 
 == Install
 
-This gem is still in very very early alpha
+=== WARNING: This gem is still in very very early alpha
 
   gem install mongify
 
 == Usage
 
-WARNING: Mongify is still a work in progress, so much so, that the code below will currently NOT work!
+=== WARNING: Mongify is still a work in progress, so much so, that the code below will currently NOT work!
 
 Build a database file such as:
   class MyDatabase < Mongify::Translator
