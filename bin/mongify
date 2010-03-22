@@ -1,41 +1,7 @@
 #!/usr/bin/env ruby
-require 'rubygems'
-require 'optparse'
- 
-OptionParser.new do |opts|
-  opts.banner = "Usage: #{File.basename($0)} [database_structure.rb]"
- 
-  opts.on("-h", "--help", "Displays this help info") do
-    puts opts
-    exit 0
-  end
-  
-  opts.on("-v", "--version", "Display Version Number") do
-    require 'mongify'
-    puts "#{File.basename($0)} #{Mongify::VERSION}"
-    exit 0
-  end
- 
-  begin
-    opts.parse!(ARGV)
-  rescue OptionParser::ParseError => e
-    warn e.message
-    puts opts
-    exit 1
-  end
-end
- 
-if ARGV.empty?
-  abort "Please specify the database structure file to mongify, e.g. `#{File.basename($0)} my_database.rb'"
-elsif !File.exists?(ARGV.first)
-  abort "`#{ARGV.first}' does not exist."
-elsif !File.file?(ARGV.first)
-  abort "`#{ARGV.first}' is not a file."
-elsif ARGV.length > 1
-  abort "Too many arguments; please specify only the database structure file to mongify."
-end
+require File.dirname(__FILE__) + '/../lib/mongify'
 
-require 'mongify/runner'
-Mongify::Runner.execute
+runner = Mongify::Runner.new(ARGV,STDIN,STDOUT)
+runner.run
 
 puts "[DONE]"

@@ -15,27 +15,24 @@ Learn more about mongoDB at: {http://www.mongodb.org}
 === WARNING: Mongify is still a work in progress, so much so, that the code below will currently NOT work!
 
 Build a database file such as:
-  class MyDatabase < Mongify::Translator
 
-    sql_config do |s|
-      s.adaptor :mysql
-      s.connection "localhost"
-      s.database "my_database"
-    end
+  sql_config do |s|
+    s.adaptor :mysql
+    s.connection "localhost"
+    s.database "my_database"
+  end
 
-    mongodb_config do |m|
-      m.connection = 'localhost'
-      m.colleciton = 'my_collection'
-    end
+  mongodb_config do |m|
+    m.connection = 'localhost'
+    m.colleciton = 'my_collection'
+  end
 
-    table "accounts"
+  table "accounts"
 
-    table "users" 
+  table "users" 
 
-    table "user_accounts", :embed_in => :users, :on => :user_id do |t|
-      t.integer  "account_id", :references => :account
-    end
-
+  table "user_accounts", :embed_in => :users, :on => :user_id do |t|
+    t.integer  "account_id", :references => :account
   end
 
 Save the file as <tt>"my_database_translation.rb"</tt> and run the command:

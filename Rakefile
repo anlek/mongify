@@ -29,7 +29,7 @@ Echoe.new('mongify', version) do |p|
   p.rdoc_pattern = /^(lib|README.rdoc|CHANGELOG.rdoc|LICENSE)/
   
   p.development_dependencies = ['rspec >=1.3', 'mocha >=0.9.8', 'yard >=0.5.3']
-  p.runtime_dependencies = ['dm-core >=0.10']
+  p.runtime_dependencies = ['dm-core >=0.10', 'net-ssh >=2.0']
 end
  
 spec_files = Rake::FileList["spec/**/*_spec.rb"]
