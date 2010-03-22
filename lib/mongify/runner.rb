@@ -83,6 +83,10 @@ COMMANDS: #{script_name} process database_translation.rb
       UI.puts "[DONE]"
     end
     
+    def abort(message='')
+      UI.puts message
+      Kernel.abort
+    end
   end
 end
 

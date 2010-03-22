@@ -9,7 +9,29 @@ describe Mongify::Runner do
   
   it "should run and finish fully" do
     @output.expects(:puts).with('[DONE]')
-    runner = Mongify::Runner.new(@valid_args, nil, @output).run
+    lambda{ Mongify::Runner.new(@valid_args, nil, @output).run }.should_not raise_error
+  end
+  
+  context "Validation" do
+    it "should not take 1 argument" do
+      @valid_args.pop
+      lambda {Mongify::Runner.new(@valid_args, nil, @output).run}.should raise_error(SystemExit)
+    end
+    
+    it "should not take 3 arguemnts" do
+      @valid_args << 'unexceptable'
+      lambda {Mongify::Runner.new(@valid_args, nil, @output).run}.should raise_error(SystemExit)
+    end
+    
+    it "should check if file exists" do
+      @valid_args[1] = 'spec/files/missing_translation.rb'
+      lambda {Mongify::Runner.new(@valid_args, nil, @output).run}.should raise_error(SystemExit)
+    end
+    
+    it "should check command exists" do
+      @valid_args[0] = 'missing'
+      lambda{Mongify::Runner.new(@valid_args, nil, @output).run}.should raise_error(SystemExit)
+    end
   end
   
   context "Config" do
