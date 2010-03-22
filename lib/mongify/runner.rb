@@ -42,7 +42,7 @@ COMMANDS: #{script_name} process database_translation.rb
         }
 
         begin
-          opts.parse!(ARGV)
+          opts.parse!(@arguments)
         rescue OptionParser::ParseError => e
           warn e.message
           puts opts
