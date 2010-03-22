@@ -20,17 +20,17 @@ module Mongify
     
     def parse_options
       OptionParser.new do |opts|
-        script_name = File.basename($0)
+        script_name = 'mongify'
         opts.banner = "USAGE: #{script_name} command [database_structure.rb]"
 
         opts.on_tail("-h", "--help", "Show this message") do
-          puts @help_text
+          UI.puts @help_text
           exit
         end
 
         # Another typical switch to print the version.
         opts.on_tail("-v","--version", "Show version") do
-          puts "#{script_name} version: #{Mongify::Version::STRING}"
+          UI.puts "#{script_name} version: #{Mongify::Version::STRING}"
           exit
         end
 
@@ -45,25 +45,25 @@ COMMANDS: #{script_name} process database_translation.rb
           opts.parse!(@arguments)
         rescue OptionParser::ParseError => e
           warn e.message
-          puts opts
+          UI.puts opts
           exit 1
         end
       end
     end
     
     def parse_arguments
-      if ARGV.length <= 1
+      if @arguments.length <= 1
         abort @help_text
       end
 
-      @command = ARGV[0]
-      @file_path = ARGV[1]
+      @command = @arguments[0]
+      @file_path = File.expand_path(@arguments[1])
 
       if !File.exists?(@file_path)
         abort "`#{@file_path}' does not exist."
       elsif !File.file?(@file_path)
         abort "`#{@file_path}' is not a file."
-      elsif ARGV.length > 2
+      elsif @arguments.length > 2
         abort "Too many arguments;\n#{@help_text}"
       end
 
@@ -71,14 +71,16 @@ COMMANDS: #{script_name} process database_translation.rb
       
       case @command 
         when 'process'
-          puts "Processing..."
-          puts "FUNCTION NOT COMPLETE!"
+          UI.puts "Processing..."
+          UI.puts "FUNCTION NOT COMPLETE!"
         when 'check'
-          puts "Checking..."
-          puts "FUNCTION NOT COMPLETE!"
+          UI.puts "Checking..."
+          UI.puts "FUNCTION NOT COMPLETE!"
         else
           abort "Unknown Process\n #{@help_text}"
       end
+      
+      UI.puts "[DONE]"
     end
     
   end

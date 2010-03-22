@@ -3,5 +3,3 @@ require File.dirname(__FILE__) + '/../lib/mongify'
 
 runner = Mongify::Runner.new(ARGV,STDIN,STDOUT)
 runner.run
-
-puts "[DONE]"
