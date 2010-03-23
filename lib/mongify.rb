@@ -1,7 +1,7 @@
 $: << File.dirname(__FILE__)
 
-require 'mongify/version'
-require 'mongify/config'
 require 'mongify/ui'
+require 'mongify/version'
+require 'mongify/configuration'
 
-require 'mongify/runner'
+require 'mongify/cli'

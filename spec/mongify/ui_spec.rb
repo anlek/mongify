@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe Mongify::UI do
   before(:each) do
     @ui = Mongify::UI
-    @config = Mongify::Config
+    @config = Mongify::Configuration
     @out = StringIO.new
     @in = StringIO.new
     @config.out_stream = @out
