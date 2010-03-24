@@ -16,8 +16,10 @@ module Mongify
       @tables = []
     end
     
-    def table(*args)
-      @tables << Mongify::Database::Table.new(args)
+    def table(table_name, options={}, &block)
+      table = Mongify::Database::Table.new(table_name, options)
+      #yield table if block
+      @tables << table
     end
     def sql_config(options=nil, &block)
       @sql_config ||= Mongify::Database::SqlConfig.new(options) if options || block

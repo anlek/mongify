@@ -21,6 +21,12 @@ describe Mongify::Translation do
       it "should have 3 tables" do
         @translation.should have(3).tables
       end
+      
+      it "should setup 'user_accounts'" do
+        table = @translation.tables.find{|t| puts t.name; t.name == 'user_accounts'}
+        table.should_not be_nil
+        table.options.keys.should_not be_empty
+      end
     end
   end
 end

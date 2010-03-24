@@ -12,7 +12,6 @@ describe Mongify::Database::BaseConfig do
   context "validation" do
     it "should be true" do
       @base_config.host 'localhost'
-      puts @base_config.instance_methods.inspect
       @base_config.should be_valid
     end
     
