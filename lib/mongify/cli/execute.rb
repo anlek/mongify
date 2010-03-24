@@ -14,11 +14,13 @@ module Mongify
       
       
       def execute!
+        
         case self.command
           when 'process'
             UI.puts "Processing..."
             UI.puts "FUNCTION NOT COMPLETE!"
           when 'check'
+            #Mongify::Processor.new()
             UI.puts "Checking..."
             UI.puts "FUNCTION NOT COMPLETE!"
           else
