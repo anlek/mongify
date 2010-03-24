@@ -18,13 +18,13 @@ Build a database file such as:
 
   sql_config do |s|
     s.adaptor :mysql
-    s.connection "localhost"
+    s.host "localhost"
     s.database "my_database"
   end
 
   mongodb_config do |m|
-    m.connection = 'localhost'
-    m.colleciton = 'my_collection'
+    m.host = 'localhost'
+    m.database = 'my_collection'
   end
 
   table "accounts"
