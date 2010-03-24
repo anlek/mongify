@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe Mongify::Translation::Table do
+describe Mongify::Database::Table do
   before(:each) do
-    @table = Mongify::Translation::Table.new('users')
+    @table = Mongify::Database::Table.new('users')
   end
   
   it "should have name" do
@@ -11,7 +11,7 @@ describe Mongify::Translation::Table do
   end
   
   it "should get setup options" do
-    @table = Mongify::Translation::Table.new('users', :embed_in => 'accounts', :as => 'users')
+    @table = Mongify::Database::Table.new('users', :embed_in => 'accounts', :as => 'users')
     @table.options.should == {'embed_in' => 'accounts', 'as' => 'users'}
   end
 end

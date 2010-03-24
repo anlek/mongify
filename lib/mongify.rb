@@ -1,7 +1,7 @@
 $: << File.dirname(__FILE__)
 
-require 'ext/hash'
-require 'ext/array'
+require 'core_ext/hash'
+require 'core_ext/array'
 
 require 'mongify/ui'
 require 'mongify/version'

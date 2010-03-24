@@ -1,5 +1,5 @@
 module Mongify
-  class Translation
+  class Database
     class Table
       
       attr_accessor :name

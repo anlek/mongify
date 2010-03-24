@@ -1,8 +1,6 @@
-require 'mongify/translation/base_config'
-
 module Mongify
-  class Translation
-    class SqlConfig < Mongify::Translation::BaseConfig
+  class Database
+    class SqlConfig < Mongify::Database::BaseConfig
           
       REQUIRED_FIELDS = %w{host adaptor database}  
       

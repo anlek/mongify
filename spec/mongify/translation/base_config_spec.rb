@@ -1,11 +1,11 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe Mongify::Translation::BaseConfig do
+describe Mongify::Database::BaseConfig do
   before(:each) do
-    @base_config = Mongify::Translation::BaseConfig.new
+    @base_config = Mongify::Database::BaseConfig.new
   end
   it "should set any variable name that's passed" do
-    @base_config = Mongify::Translation::BaseConfig.new(:apple => 'blue', :car => 'good')
+    @base_config = Mongify::Database::BaseConfig.new(:apple => 'blue', :car => 'good')
     @base_config.instance_variables.should =~ ['@apple', '@car']
   end
   
@@ -29,11 +29,11 @@ describe Mongify::Translation::BaseConfig do
       @database = 'test_database'
     end
     it "should give settings in a hash" do
-      @sql_config = Mongify::Translation::BaseConfig.new(:adaptor => @adaptor, :host => @host, :database => @database)
+      @sql_config = Mongify::Database::BaseConfig.new(:adaptor => @adaptor, :host => @host, :database => @database)
       @sql_config.to_hash.should == {:adaptor => @adaptor, :host => @host, :database => @database}
     end
     it "should setup from constructor hash" do
-      @sql_config = Mongify::Translation::BaseConfig.new(:adaptor => @adaptor, :host => @host, :database => @database)
+      @sql_config = Mongify::Database::BaseConfig.new(:adaptor => @adaptor, :host => @host, :database => @database)
       @sql_config.to_hash.should == {:adaptor => @adaptor, :host => @host, :database => @database}
     end
   end

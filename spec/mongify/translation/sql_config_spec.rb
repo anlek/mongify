@@ -1,19 +1,19 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe Mongify::Translation::SqlConfig do
+describe Mongify::Database::SqlConfig do
   before(:each) do
     @adaptor = 'mysql'
     @host = '127.0.0.1'
     @database = 'test_database'
-    @sql_config = Mongify::Translation::SqlConfig.new
+    @sql_config = Mongify::Database::SqlConfig.new
   end
   
   context "valid?" do
     it "should be true" do
-      Mongify::Translation::SqlConfig.new(:adaptor => 'mysql', :host => 'localhost', :database => 'blue').should be_valid
+      Mongify::Database::SqlConfig.new(:adaptor => 'mysql', :host => 'localhost', :database => 'blue').should be_valid
     end
     it "should be false" do
-      Mongify::Translation::SqlConfig.new.should_not be_valid
+      Mongify::Database::SqlConfig.new.should_not be_valid
     end
   end
   

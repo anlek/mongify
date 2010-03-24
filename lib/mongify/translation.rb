@@ -1,6 +1,4 @@
-require 'mongify/translation/sql_config'
-require 'mongify/translation/mongodb_config'
-require 'mongify/translation/table'
+require 'mongify/database'
 
 module Mongify
   class Translation
@@ -19,15 +17,15 @@ module Mongify
     end
     
     def table(*args)
-      @tables << Mongify::Translation::Table.new(args)
+      @tables << Mongify::Database::Table.new(args)
     end
     def sql_config(options=nil, &block)
-      @sql_config ||= SqlConfig.new(options) if options || block
+      @sql_config ||= Mongify::Database::SqlConfig.new(options) if options || block
       yield @sql_config if block
       @sql_config
     end
     def mongodb_config(options=nil, &block)
-      @mongodb_config = MongodbConfig.new(options) if options || block
+      @mongodb_config = Mongify::Database::MongodbConfig.new(options) if options || block
       yield @mongodb_config if block
       @mongodb_config
     end
