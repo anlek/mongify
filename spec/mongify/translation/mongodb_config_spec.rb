@@ -16,21 +16,26 @@ describe Mongify::Translation::MongodbConfig do
     end
   end
   
-  context "" do
+  context "connection string" do
     before(:each) do
       @mongodb_config.host(@host)
       @mongodb_config.database(@database)
     end
     
-    it "should have a connection string without username and password" do
+    it "without username and password should render correctly" do
       @mongodb_config.connection_string.should == "mongo://#{@host}/#{@database}"
     end
     
-    it "should have a connection string without username and password" do
+    it "with username and password should render correctly" do
       @mongodb_config.username('bob')
       @mongodb_config.password('secret')
       @mongodb_config.connection_string.should == "mongo://bob:secret@#{@host}/#{@database}"
     end
+  end
+  
+  it "should set database name when setting collection" do
+    @mongodb_config.collection 'boss'
+    @mongodb_config.to_hash[:database].should == 'boss'
   end
   
   

@@ -1,6 +1,8 @@
 $: << File.dirname(__FILE__)
 
-load 'hash_ext.rb'
+require 'ext/hash'
+require 'ext/array'
+
 require 'mongify/ui'
 require 'mongify/version'
 require 'mongify/translation'
