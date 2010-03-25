@@ -32,7 +32,7 @@ Build a database file such as:
   table "users" 
 
   table "user_accounts", :embed_in => :users, :on => :user_id do |t|
-    t.integer  "account_id", :references => :account
+    t.column  "account_id", :references => :account
   end
 
 Save the file as <tt>"my_database_translation.rb"</tt> and run the command:
