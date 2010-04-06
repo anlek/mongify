@@ -22,14 +22,10 @@ module Mongify
       @tables << table
     end
     def sql_config(options=nil, &block)
-      @sql_config ||= Mongify::Database::SqlConfig.new(options) if options || block
-      yield @sql_config if block
-      @sql_config
+      UI.warn("sql_config should be placed in your configuration file")
     end
     def mongodb_config(options=nil, &block)
-      @mongodb_config = Mongify::Database::MongodbConfig.new(options) if options || block
-      yield @mongodb_config if block
-      @mongodb_config
+      UI.warn("mongodb_config should be placed in your configuration file")
     end
     
   end

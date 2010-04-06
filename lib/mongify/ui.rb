@@ -22,6 +22,10 @@ module Mongify
         request("#{msg} [yn] ") == 'y'
       end
       
+      def warn(msg)
+        puts "WARNING: #{msg}"
+      end
+      
       def abort(message='')
         UI.puts message
         Kernel.abort
