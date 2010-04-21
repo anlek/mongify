@@ -5,7 +5,7 @@
 #
 # Author: Andrew Kalek
 #
-#require File.dirname(File.dirname(__FILE__) + '/../lib/mongify'
+
 require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'lib', 'mongify', 'cli', 'application')
 
 Mongify::CLI::Application.new(ARGV).execute!
