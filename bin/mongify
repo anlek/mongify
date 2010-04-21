@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
-require File.dirname(__FILE__) + '/../lib/mongify'
+#
+# Mongify converts a sql database to a no_sql_database (by default to mongodb)
+# Visit http://github.com/anlek/mongify for more information.
+#
+# Author: Andrew Kalek
+#
 
-Mongify::CLI.execute
+require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'lib', 'mongify', 'cli', 'application')
+
+Mongify::CLI::Application.new(ARGV).execute!

@@ -1,14 +1,20 @@
+require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'core_ext', 'hash')
+
 module Mongify
-  class Database
+  module Database
+    #
+    # Basic configuration for any sql or non sql database
+    #
     class BaseConfig
       
       REQUIRED_FIELDS = %w{host}
       
       def initialize(options=nil)
-        return unless options
-        options.stringify_keys!
-        options.each do |key, value|
-          instance_variable_set "@#{key}", value
+        if options
+          options.stringify_keys!
+          options.each do |key, value|
+            instance_variable_set "@#{key}", value
+          end
         end
       end
       

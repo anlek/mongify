@@ -1,7 +1,10 @@
-require 'mongify/database/column'
+require File.join(File.dirname(File.expand_path(__FILE__)), 'column')
 
 module Mongify
-  class Database
+  module Database
+    #
+    #  A representation of a sql table and how it should map to a no_sql system 
+    #
     class Table
       
       attr_accessor :name
@@ -19,7 +22,7 @@ module Mongify
       end
       
       def find_column(name)
-        @columns.find{ |c| c.name == name }
+        @columns.find{ |col| col.name == name }
       end
 
     end

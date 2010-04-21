@@ -1,4 +1,6 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'spec_helper')
+require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'lib', 'mongify', 'translation')
+
 
 describe Mongify::Translation do
   before(:all) do
@@ -6,24 +8,17 @@ describe Mongify::Translation do
     @translation = Mongify::Translation.parse(@file_path)
   end
   it "should read in file" do
-    lambda{ Mongify::Translation.parse(@file_path) }.should_not raise_error
+    lambda{ Mongify::Translation.parse(@file_path) }.should_not raise_error(Mongify::FileNotFound)
   end
   
   context "loaded content" do
-    it "should have correct sql_config" do
-      @translation.sql_config.connection_string.should == "mysql://localhost/my_database"
-    end
-    it "should have correct mongodb_config" do
-      @translation.mongodb_config.connection_string.should == "mongo://127.0.0.1/my_collection"
-    end
-    
     context "tables" do
       it "should have 3 tables" do
         @translation.should have(3).tables
       end
       
       it "should setup 'user_accounts'" do
-        table = @translation.tables.find{|t| puts t.name; t.name == 'user_accounts'}
+        table = @translation.tables.find{|t| t.name == 'user_accounts'}
         table.should_not be_nil
         table.options.keys.should_not be_empty
       end

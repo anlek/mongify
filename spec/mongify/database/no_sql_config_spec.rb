@@ -1,18 +1,19 @@
-require File.dirname(__FILE__) + '/../../spec_helper'
+require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'spec_helper')
+require File.join(File.dirname(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__))))), 'lib', 'mongify', 'database', 'no_sql_config')
 
-describe Mongify::Database::MongodbConfig do
+describe Mongify::Database::NoSqlConfig do
   before(:each) do
     @host = '127.0.0.1'
     @database = 'test_database'
-    @mongodb_config = Mongify::Database::MongodbConfig.new
+    @mongodb_config = Mongify::Database::NoSqlConfig.new
   end
   
   context "valid?" do
     it "should be true" do
-      Mongify::Database::MongodbConfig.new(:host => 'localhost', :database => 'blue').should be_valid
+      Mongify::Database::NoSqlConfig.new(:host => 'localhost', :database => 'blue').should be_valid
     end
     it "should be false" do
-      Mongify::Database::MongodbConfig.new.should_not be_valid
+      Mongify::Database::NoSqlConfig.new.should_not be_valid
     end
   end
   

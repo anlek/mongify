@@ -1,5 +1,11 @@
+require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'core_ext', 'hash')
+require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'core_ext', 'array')
+
 module Mongify
-  class Database
+  module Database
+    #
+    # A column in the sql table
+    #
     class Column
       
       attr_accessor :name

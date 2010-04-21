@@ -1,6 +1,13 @@
-require 'mongify/database'
+require File.join(File.dirname(File.expand_path(__FILE__)), 'database', 'table')
+require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'core_ext', 'array')
+require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'core_ext', 'hash')
+require File.join(File.dirname(File.expand_path(__FILE__)), 'exceptions')
+
 
 module Mongify
+  #
+  # Actually runs the translation from sql to no sql
+  #
   class Translation
     class << self
       def parse(file_name)
@@ -10,7 +17,7 @@ module Mongify
       end
     end
     
-    attr_reader :sql_config, :mongodb_config, :tables
+    attr_reader :tables
     
     def initialize
       @tables = []
@@ -22,14 +29,10 @@ module Mongify
       @tables << table
     end
     def sql_config(options=nil, &block)
-      @sql_config ||= Mongify::Database::SqlConfig.new(options) if options || block
-      yield @sql_config if block
-      @sql_config
+      UI.warn("sql_config should be placed in your configuration file")
     end
     def mongodb_config(options=nil, &block)
-      @mongodb_config = Mongify::Database::MongodbConfig.new(options) if options || block
-      yield @mongodb_config if block
-      @mongodb_config
+      UI.warn("mongodb_config should be placed in your configuration file")
     end
     
   end

@@ -1,6 +1,9 @@
-require 'spec'
-require File.dirname(__FILE__) + '/../lib/mongify'
- 
-Spec::Runner.configure do |config|
-  config.mock_with :mocha
+require 'rubygems'
+begin
+  require 'spec/expectations'
+rescue LoadError
+  gem 'rspec'
+  require 'spec/expectations'
 end
+
+require 'spec/autorun'
