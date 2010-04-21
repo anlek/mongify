@@ -1,6 +1,11 @@
 require File.join(File.dirname(File.expand_path(__FILE__)), 'translation')
 require File.join(File.dirname(File.expand_path(__FILE__)), 'exceptions')
+require File.join(File.dirname(File.expand_path(__FILE__)), 'database', 'no_sql_config')
+require File.join(File.dirname(File.expand_path(__FILE__)), 'database', 'sql_config')
 module Mongify
+  #
+  #  This extracts the configuration for sql and no sql
+  #
   class Configuration
     class << self
       attr_accessor :in_stream, :out_stream

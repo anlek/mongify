@@ -1,4 +1,8 @@
+require File.join(File.dirname(File.expand_path(__FILE__)), 'configuration')
 module Mongify
+  #
+  #  Used to output messages to the UI
+  #
   class UI
     class << self
       def puts(msg)

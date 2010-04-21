@@ -1,7 +1,6 @@
 #
 # Mongify's core functionality
 #
-$: << File.dirname(__FILE__)
 module Mongify
   VERSION = '0.0.1'
 end

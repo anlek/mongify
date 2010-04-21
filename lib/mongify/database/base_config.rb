@@ -2,6 +2,9 @@ require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE
 
 module Mongify
   module Database
+    #
+    # Basic configuration for any sql or non sql database
+    #
     class BaseConfig
       
       REQUIRED_FIELDS = %w{host}

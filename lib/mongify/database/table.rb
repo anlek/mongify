@@ -1,7 +1,10 @@
-require 'mongify/database/column'
+require File.join(File.dirname(File.expand_path(__FILE__)), 'column')
 
 module Mongify
   module Database
+    #
+    #  A representation of a sql table and how it should map to a no_sql system 
+    #
     class Table
       
       attr_accessor :name

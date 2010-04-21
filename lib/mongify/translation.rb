@@ -5,6 +5,9 @@ require File.join(File.dirname(File.expand_path(__FILE__)), 'exceptions')
 
 
 module Mongify
+  #
+  # Actually runs the translation from sql to no sql
+  #
   class Translation
     class << self
       def parse(file_name)
