@@ -1,3 +1,6 @@
+#
+# Mongify's core functionality
+#
 $: << File.dirname(__FILE__)
 
 require 'exceptions'
@@ -11,3 +14,6 @@ require 'mongify/translation'
 require 'mongify/configuration'
 
 require 'mongify/cli'
+
+module Mongify
+end

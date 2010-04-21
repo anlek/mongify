@@ -1,4 +1,7 @@
 module Mongify
+  #
+  # Parses the command line
+  #
   class CLI
     module Options
       module ClassMethods

@@ -5,6 +5,11 @@ require 'mongify/cli/options'
 require 'mongify/cli/execute'
 
 module Mongify
+  #
+  # Represents an instance of a Mongify application.
+  # This is the entry point for all invocations of Mongify from the
+  # command line.
+  #
   class CLI
     attr_reader :args
     attr_accessor :command, :file_path
