@@ -10,7 +10,7 @@ module Mongify
       end
     end
     
-    attr_reader :sql_config, :mongodb_config, :tables
+    attr_reader :tables
     
     def initialize
       @tables = []

@@ -2,7 +2,7 @@ require 'mongify/database/base_config'
 
 module Mongify
   class Database
-    class MongodbConfig < Mongify::Database::BaseConfig
+    class NoSqlConfig < Mongify::Database::BaseConfig
           
       REQUIRED_FIELDS = %w{host database}  
       

@@ -18,10 +18,9 @@ module Mongify
         config.instance_eval(File.read(file_name))
         config
       end
-      
-    end
+
+    end #self
     
-    attr_reader :sql_config, :nosql_config
     
     def sql_config(options=nil, &block)
       @sql_config ||= Mongify::Database::SqlConfig.new(options) if options || block
@@ -30,9 +29,13 @@ module Mongify
     end
     
     def mongodb_config(options=nil, &block)
-      @mongodb_config = Mongify::Database::MongodbConfig.new(options) if options || block
-      yield @mongodb_config if block
-      @mongodb_config
+      no_sql_config(options, &block)
+    end
+    
+    def no_sql_config(options=nil, &block)
+      @no_sql_config ||= Mongify::Database::NoSqlConfig.new(options) if options || block
+      yield @no_sql_config if block
+      @no_sql_config
     end
     
   end
