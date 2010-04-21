@@ -1,3 +1,5 @@
+require File.join(File.dirname(File.expand_path(__FILE__)), 'translation')
+require File.join(File.dirname(File.expand_path(__FILE__)), 'exceptions')
 module Mongify
   class Configuration
     class << self

@@ -1,4 +1,4 @@
-require File.join(File.dirname(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__))))), 'lib', 'mongify', 'database', 'base_config')
+require File.join(File.dirname(File.expand_path(__FILE__)), 'base_config')
 
 module Mongify
   module Database

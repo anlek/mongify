@@ -1,3 +1,5 @@
+require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'core_ext', 'hash')
+
 module Mongify
   module Database
     class BaseConfig

@@ -13,7 +13,7 @@ describe VersionCommand do
 
   it 'displays the text on the view' do
     @view.expects(:output).with(/#{@text}/)
-    puts @cmd.execute(@view)
+    @cmd.execute(@view)
   end
 
   it 'displays the Reek version on the view' do

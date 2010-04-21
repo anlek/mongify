@@ -1,4 +1,8 @@
-require 'mongify/database'
+require File.join(File.dirname(File.expand_path(__FILE__)), 'database', 'table')
+require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'core_ext', 'array')
+require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'core_ext', 'hash')
+require File.join(File.dirname(File.expand_path(__FILE__)), 'exceptions')
+
 
 module Mongify
   class Translation

@@ -58,8 +58,19 @@ EOB
         elsif @command_class == VersionCommand
           VersionCommand.new(@parser.program_name)
         else
+          raise NotImplemementError
           #TranslateCommand.create(sources, @report_class, @config_files)
         end
+      end
+      
+      private
+      
+      def extract_configuration_file(argv=@argv)
+        get_files_from(argv).first
+      end
+      
+      def get_files_from(argv=@argv)
+        argv.delete_if{|f| f.match(/^-/)} || []
       end
       
       

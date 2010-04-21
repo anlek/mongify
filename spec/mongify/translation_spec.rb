@@ -18,7 +18,7 @@ describe Mongify::Translation do
       end
       
       it "should setup 'user_accounts'" do
-        table = @translation.tables.find{|t| puts t.name; t.name == 'user_accounts'}
+        table = @translation.tables.find{|t| t.name == 'user_accounts'}
         table.should_not be_nil
         table.options.keys.should_not be_empty
       end

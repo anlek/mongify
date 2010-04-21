@@ -6,8 +6,6 @@ module Mongify
   VERSION = '0.0.1'
 end
 
-require 'exceptions'
-
 require 'core_ext/hash'
 require 'core_ext/array'
 

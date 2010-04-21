@@ -3,17 +3,17 @@ require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE
 
 describe Mongify::Configuration do
   before(:each) do
-    Mongify::Translation.stubs(:parse)
+    Mongify::Translation.stub(:parse)
     @translation_file = File.expand_path(File.dirname(__FILE__) + '/../files/empty_translation.rb')
     @configuration_file = File.expand_path(File.dirname(__FILE__) + '/../files/base_configuration.rb')
   end
   it "should parse file for transaltion" do
-    Mongify::Translation.expects(:parse).returns(true)
+    Mongify::Translation.should_receive(:parse).and_return(true)
     Mongify::Configuration.parse_translation(@translation_file)
   end
   
   it "should parse confg file" do
-    Mongify::Configuration.expects(:parse).returns(true)
+    Mongify::Configuration.should_receive(:parse).and_return(true)
     Mongify::Configuration.parse_configuration(@configuration_file)
   end
   
