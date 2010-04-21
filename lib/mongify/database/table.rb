@@ -22,7 +22,7 @@ module Mongify
       end
       
       def find_column(name)
-        @columns.find{ |c| c.name == name }
+        @columns.find{ |col| col.name == name }
       end
 
     end

@@ -70,7 +70,7 @@ EOB
       end
       
       def get_files_from(argv=@argv)
-        argv.delete_if{|f| f.match(/^-/)} || []
+        argv.delete_if{|file| file.match(/^-/)} || []
       end
       
       
