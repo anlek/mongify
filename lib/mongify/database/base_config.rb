@@ -10,10 +10,11 @@ module Mongify
       REQUIRED_FIELDS = %w{host}
       
       def initialize(options=nil)
-        return unless options
-        options.stringify_keys!
-        options.each do |key, value|
-          instance_variable_set "@#{key}", value
+        if options
+          options.stringify_keys!
+          options.each do |key, value|
+            instance_variable_set "@#{key}", value
+          end
         end
       end
       
