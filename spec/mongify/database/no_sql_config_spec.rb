@@ -1,4 +1,5 @@
-require File.dirname(__FILE__) + '/../../spec_helper'
+require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'spec_helper')
+require File.join(File.dirname(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__))))), 'lib', 'mongify', 'database', 'no_sql_config')
 
 describe Mongify::Database::NoSqlConfig do
   before(:each) do

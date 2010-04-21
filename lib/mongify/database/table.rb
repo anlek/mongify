@@ -1,7 +1,7 @@
 require 'mongify/database/column'
 
 module Mongify
-  class Database
+  module Database
     class Table
       
       attr_accessor :name

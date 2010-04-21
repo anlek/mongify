@@ -1,5 +1,5 @@
 module Mongify
-  class Database
+  module Database
     class Column
       
       attr_accessor :name

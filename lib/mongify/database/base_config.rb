@@ -1,5 +1,5 @@
 module Mongify
-  class Database
+  module Database
     class BaseConfig
       
       REQUIRED_FIELDS = %w{host}

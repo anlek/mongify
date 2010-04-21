@@ -1,5 +1,7 @@
+require File.join(File.dirname(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__))))), 'lib', 'mongify', 'database', 'base_config')
+
 module Mongify
-  class Database
+  module Database
     class SqlConfig < Mongify::Database::BaseConfig
           
       REQUIRED_FIELDS = %w{host adaptor database}  
