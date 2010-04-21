@@ -1,6 +1,6 @@
 require 'rake'
 require 'spec/rake/spectask'
-require "./lib/mongify/version"
+require "lib/mongify/version"
 
 begin
   require 'echoe'
@@ -8,7 +8,7 @@ rescue LoadError
   abort "You'll need to have `echoe' installed to use Capistrano's Rakefile"
 end
  
-version = Mongify::Version::STRING.dup
+version = Mongify::VERSION
 if ENV['SNAPSHOT'].to_i == 1
   version << "." << Time.now.utc.strftime("%Y%m%d%H%M%S")
 end
