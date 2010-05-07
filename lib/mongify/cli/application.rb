@@ -31,7 +31,7 @@ module Mongify
       end
       
       def output(message)
-        UI.put(message)
+        UI.puts(message)
       end
       
       def report_success
