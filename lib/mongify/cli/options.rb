@@ -45,7 +45,7 @@ EOB
         end
 
         @parser.separator "\nReport formatting:"
-        @parser.on("-q", "--[no-]quiet", "Suppress headings for smell-free source files") do |opt|
+        @parser.on("-q", "--[no-]quiet", "Suppress extra output") do |opt|
           @report_class = opt ? QuietReport : VerboseReport
         end
       end
