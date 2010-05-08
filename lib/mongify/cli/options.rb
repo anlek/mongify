@@ -58,7 +58,7 @@ EOB
         elsif @command_class == VersionCommand
           VersionCommand.new(@parser.program_name)
         else
-          raise NotImplemementError
+          raise NotImplementedError
           #TranslateCommand.create(sources, @report_class, @config_files)
         end
       end
@@ -66,13 +66,13 @@ EOB
       private
       
       def extract_configuration_file(argv=@argv)
-        get_files_from(argv).first
+        argv.first
       end
-      
-      def get_files_from(argv=@argv)
-        argv.delete_if{|file| file.match(/^-/)} || []
+      def extract_translation_file(argv=@argv)
+        return nil if argv.length < 2
+        argv[1]
       end
-      
+            
       
     end
   end
