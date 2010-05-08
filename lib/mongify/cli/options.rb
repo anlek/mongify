@@ -3,6 +3,7 @@ require File.join(File.dirname(File.expand_path(__FILE__)), 'report')
 #require File.join(File.dirname(File.expand_path(__FILE__)), 'translate_command')
 require File.join(File.dirname(File.expand_path(__FILE__)), 'help_command')
 require File.join(File.dirname(File.expand_path(__FILE__)), 'version_command')
+require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'configuration')
 module Mongify
   module CLI
     #
@@ -43,6 +44,9 @@ EOB
         @parser.on("-v", "--version", "Show version") do
           @command_class = VersionCommand
         end
+        @parser.on('-c', '--config FILE', "Configuration File to use") do |file|
+          @config_file = file
+        end
 
         @parser.separator "\nReport formatting:"
         @parser.on("-q", "--[no-]quiet", "Suppress extra output") do |opt|
@@ -58,7 +62,11 @@ EOB
         elsif @command_class == VersionCommand
           VersionCommand.new(@parser.program_name)
         else
-          raise NotImplementedError
+          raise ConfigurationFileNotFound unless @config_file
+          #TODO: In the future, request sql_config and nosql_config from user input
+          config = Configuration.parse(@config_file)
+          
+          puts NotImplementedError
           #TranslateCommand.create(sources, @report_class, @config_files)
         end
       end
