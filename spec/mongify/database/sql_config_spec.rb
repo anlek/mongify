@@ -18,7 +18,7 @@ describe Mongify::Database::SqlConfig do
     end
   end
   
-  context "" do
+  context "connection string" do
     before(:each) do
       @sql_config.adaptor(@adaptor)
       @sql_config.host(@host)
@@ -34,8 +34,14 @@ describe Mongify::Database::SqlConfig do
       @sql_config.password('secret')
       @sql_config.connection_string.should == "#{@adaptor}://bob:secret@#{@host}/#{@database}"
     end
+    
+    it "should check connection" do
+      @sql_config.connects?
+    end
   end
   
+  
+
   
   
   

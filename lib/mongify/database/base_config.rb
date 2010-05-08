@@ -1,4 +1,5 @@
 require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'core_ext', 'hash')
+require 'dm-core'
 
 module Mongify
   module Database
@@ -32,6 +33,15 @@ module Mongify
           return false unless instance_variables.include?("@#{require_field}")
         end
         true
+      end
+      
+      def connection_string
+        ""
+      end
+      
+      def connects?
+        raise NotImplementedError
+        #DataMapper.setup(:default, connection_string)
       end
       
       def method_missing(method, value=nil)
