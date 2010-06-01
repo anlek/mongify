@@ -39,9 +39,12 @@ module Mongify
         ""
       end
       
+      def dm_connection
+        @dm_connection = DataMapper.setup(self.class.to_sym, connection_string)
+      end
+      
       def connects?
         raise NotImplementedError
-        #DataMapper.setup(:default, connection_string)
       end
       
       def method_missing(method, value=nil)

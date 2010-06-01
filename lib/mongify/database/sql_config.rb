@@ -17,6 +17,16 @@ module Mongify
         end
       end
       
+      def connects?
+        #TODO: there must be a better way
+        begin
+          dm_connection.execute("select 1")
+        rescue
+          return false
+        end
+        true
+      end
+      
     end
   end
 end
