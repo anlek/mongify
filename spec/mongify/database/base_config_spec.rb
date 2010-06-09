@@ -31,17 +31,17 @@ describe Mongify::Database::BaseConfig do
   
   context "hash" do
     before(:each) do
-      @adaptor = 'baseDB'
+      @adapter = 'baseDB'
       @host = '127.0.0.1'
       @database = 'test_database'
     end
     it "should give settings in a hash" do
-      @sql_config = Mongify::Database::BaseConfig.new(:adaptor => @adaptor, :host => @host, :database => @database)
-      @sql_config.to_hash.should == {:adaptor => @adaptor, :host => @host, :database => @database}
+      @sql_config = Mongify::Database::BaseConfig.new(:adapter => @adapter, :host => @host, :database => @database)
+      @sql_config.to_hash.should == {:adapter => @adapter, :host => @host, :database => @database}
     end
     it "should setup from constructor hash" do
-      @sql_config = Mongify::Database::BaseConfig.new(:adaptor => @adaptor, :host => @host, :database => @database)
-      @sql_config.to_hash.should == {:adaptor => @adaptor, :host => @host, :database => @database}
+      @sql_config = Mongify::Database::BaseConfig.new(:adapter => @adapter, :host => @host, :database => @database)
+      @sql_config.to_hash.should == {:adapter => @adapter, :host => @host, :database => @database}
     end
   end
 end

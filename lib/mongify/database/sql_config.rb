@@ -7,7 +7,7 @@ module Mongify
     #
     class SqlConfig < Mongify::Database::BaseConfig
           
-      REQUIRED_FIELDS = %w{host adaptor database}  
+      REQUIRED_FIELDS = %w{host adapter database}  
       
       def connection_string
         if(@username && @password)

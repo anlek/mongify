@@ -11,7 +11,7 @@ module Mongify
       
       def initialize(options=nil)
         super options
-        @adaptor = 'mongo'
+        @adapter = 'mongo'
       end
       
       def collection(value)
@@ -20,9 +20,9 @@ module Mongify
       
       def connection_string
         if(@username && @password)
-          "#{@adaptor}://#{@username}:#{@password}@#{@host}/#{@database}"
+          "#{@adapter}://#{@username}:#{@password}@#{@host}/#{@database}"
         else
-          "#{@adaptor}://#{@host}/#{@database}"
+          "#{@adapter}://#{@host}/#{@database}"
         end
       end
       
