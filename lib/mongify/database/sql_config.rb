@@ -21,7 +21,8 @@ module Mongify
         #TODO: there must be a better way
         begin
           dm_connection.execute("select 1")
-        rescue
+        rescue DataObjects::SyntaxError => e
+          puts "Error: #{e}"
           return false
         end
         true

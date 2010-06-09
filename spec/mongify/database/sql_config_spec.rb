@@ -36,7 +36,7 @@ describe Mongify::Database::SqlConfig do
     end
     
     it "should check connection" do
-      @sql_config.connects?
+      @sql_config.connects?.should be_true
     end
   end
   

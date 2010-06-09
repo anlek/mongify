@@ -40,7 +40,7 @@ module Mongify
       end
       
       def dm_connection
-        @dm_connection = DataMapper.setup(self.class.to_sym, connection_string)
+        @dm_connection = DataMapper.setup(self.class.to_s.to_sym, connection_string)
       end
       
       def connects?
