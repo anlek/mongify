@@ -31,7 +31,7 @@ describe Mongify::Database::BaseConfig do
   
   context "hash" do
     before(:each) do
-      @adaptor = 'mysql'
+      @adaptor = 'baseDB'
       @host = '127.0.0.1'
       @database = 'test_database'
     end
