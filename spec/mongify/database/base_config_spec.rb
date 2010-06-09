@@ -17,9 +17,16 @@ describe Mongify::Database::BaseConfig do
     end
     
     it "should be false" do
-      @base_config.connection 'localhost'
       @base_config.should_not be_valid
     end
+  end
+  
+  it "should raise error on setting unknown variable setting" do
+    lambda{@base_config.connection = "localhost"}.should raise_error
+  end
+  
+  it "should respond to available settings" do
+    @base_config.respond_to?(:host).should be_true
   end
   
   context "hash" do

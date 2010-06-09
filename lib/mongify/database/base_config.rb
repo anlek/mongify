@@ -9,6 +9,7 @@ module Mongify
     class BaseConfig
       
       REQUIRED_FIELDS = %w{host}
+      AVAILABLE_FIELDS = %w{adaptor host username password database}
       
       def initialize(options=nil)
         if options
@@ -30,7 +31,8 @@ module Mongify
       
       def valid?
         REQUIRED_FIELDS.each do |require_field|
-          return false unless instance_variables.include?("@#{require_field}")
+          return false unless instance_variables.include?("@#{require_field}") and
+                              !instance_variable_get("@#{require_field}").to_s.empty?
         end
         true
       end
@@ -47,9 +49,20 @@ module Mongify
         raise NotImplementedError
       end
       
-      def method_missing(method, value=nil)
-        instance_eval "def #{method}(value);@#{method}=value;end"
-        send(method, value)
+      def respond_to?(method)
+        return true if AVAILABLE_FIELDS.include?(method.to_s)
+        super(method)
+      end
+      
+      def method_missing(method, *args)
+        if AVAILABLE_FIELDS.include?(method.to_s)
+          value = args.first rescue nil
+          instance_eval "def #{method}(value);@#{method}=value;end"
+          send(method, value)
+        else
+          super(method, args)
+        end
+        
       end
         
     end
