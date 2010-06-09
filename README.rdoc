@@ -43,9 +43,7 @@ Save the file as <tt>"my_database_translation.rb"</tt> and run the command:
 === Requirements
 Gems: 
   rspec-core
-  dm-core
-  do_mysql
-  do_sqlite3
+  active_record
   echoe
 
 == License

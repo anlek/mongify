@@ -2,7 +2,7 @@
 # Mongify's core functionality
 #
 module Mongify
-  VERSION = '0.0.1'
+  VERSION = '0.0.2'
 end
 
 require 'lib/core_ext/hash'
