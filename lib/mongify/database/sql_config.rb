@@ -9,16 +9,16 @@ module Mongify
           
       REQUIRED_FIELDS = %w{host adapter database}  
       
-      def connection_adapter
+      def setup_connection_adapter
         @connection_adapter ||= ActiveRecord::Base.establish_connection(self.to_hash)
       end
       
       
-      def connects?
-        #TODO: there must be a better way
+      def has_connection?
         begin
-          connection_adapter.connect
-        rescue Exception => e
+          setup_connection_adapter
+          ActiveRecord::Base.connection.send(:connect)
+        rescue ActiveRecord::ConnectionNotEstablished => e
           puts "Error: #{e}"
           return false
         end

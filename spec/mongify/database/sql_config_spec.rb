@@ -24,7 +24,7 @@ describe Mongify::Database::SqlConfig do
       @sql_config = Mongify::Database::SqlConfig.new(:adapter => @adapter, :host => @host, :database => @database)
     end
     it "should work" do
-      @sql_config.connects?.should be_true
+      @sql_config.should have_connection
     end
   end
   
