@@ -21,6 +21,13 @@ describe Mongify::Database::BaseConfig do
     end
   end
   
+  it "should raise error when trying to call has_connection?" do
+    lambda { @base_config.has_connection? }.should raise_error(NotImplementedError)
+  end
+  it "should raise error when trying to call setup_connection_adapter" do
+    lambda { @base_config.setup_connection_adapter.should rause_error(NotImplementedError) }
+  end
+  
   it "should raise error on setting unknown variable setting" do
     lambda{@base_config.connection = "localhost"}.should raise_error
   end

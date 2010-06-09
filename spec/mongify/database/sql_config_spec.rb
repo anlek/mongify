@@ -23,6 +23,12 @@ describe Mongify::Database::SqlConfig do
     before(:each) do
       @sql_config = Mongify::Database::SqlConfig.new(:adapter => @adapter, :host => @host, :database => @database)
     end
+    
+    it "should call setup_connection_adapter before testing connection" do
+      @sql_config.should_receive(:setup_connection_adapter)
+      @sql_config.has_connection?
+    end
+
     it "should work" do
       @sql_config.should have_connection
     end

@@ -37,15 +37,17 @@ module Mongify
         true
       end
       
-      def connection_adapter
+      
+      def setup_connection_adapter
         raise NotImplementedError
       end
       
-      def connects?
+      def has_connection?
         raise NotImplementedError
       end
       
-      def respond_to?(method)
+      
+      def respond_to?(method, *args)
         return true if AVAILABLE_FIELDS.include?(method.to_s)
         super(method)
       end
