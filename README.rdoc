@@ -38,6 +38,15 @@ Build a database file such as:
 Save the file as <tt>"my_database_translation.rb"</tt> and run the command:
 
   mongify my_database_translation.rb
+  
+== Development
+=== Requirements
+Gems: 
+  rspec-core
+  dm-core
+  do_mysql
+  do_sqlite3
+  echoe
 
 == License
 

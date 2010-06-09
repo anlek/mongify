@@ -5,10 +5,10 @@ module Mongify
   VERSION = '0.0.1'
 end
 
-require 'core_ext/hash'
-require 'core_ext/array'
+require 'lib/core_ext/hash'
+require 'lib/core_ext/array'
 
-require 'mongify/ui'
-require 'mongify/translation'
-require 'mongify/configuration'
+require 'lib/mongify/ui'
+require 'lib/mongify/translation'
+require 'lib/mongify/configuration'
 
