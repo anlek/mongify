@@ -28,20 +28,21 @@ module Mongify
 
     end #self
     
+    def mongodb_config(options={}, &block)
+      options.stringify_keys!
+      options['adapter'] ||= 'mongodb'
+      no_sql_config(options, &block)
+    end
     
     def sql_config(options=nil, &block)
       @sql_config ||= Mongify::Database::SqlConfig.new(options) if options || block
-      yield @sql_config if block
+      yield @sql_config if @sql_config && block
       @sql_config
-    end
-    
-    def mongodb_config(options=nil, &block)
-      no_sql_config(options, &block)
     end
     
     def no_sql_config(options=nil, &block)
       @no_sql_config ||= Mongify::Database::NoSqlConfig.new(options) if options || block
-      yield @no_sql_config if block
+      yield @no_sql_config if @no_sql_config && block
       @no_sql_config
     end
     

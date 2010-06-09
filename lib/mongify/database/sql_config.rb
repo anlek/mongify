@@ -9,19 +9,16 @@ module Mongify
           
       REQUIRED_FIELDS = %w{host adapter database}  
       
-      def connection_string
-        if(@username && @password)
-          "#{@adaptor}://#{@username}:#{@password}@#{@host}/#{@database}"
-        else
-          "#{@adaptor}://#{@host}/#{@database}"
-        end
+      def connection_adapter
+        @connection_adapter ||= ActiveRecord::Base.establish_connection(self.to_hash)
       end
+      
       
       def connects?
         #TODO: there must be a better way
         begin
-          dm_connection.execute("select 1")
-        rescue DataObjects::SyntaxError => e
+          connection_adapter.connect
+        rescue Exception => e
           puts "Error: #{e}"
           return false
         end

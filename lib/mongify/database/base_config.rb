@@ -1,5 +1,5 @@
 require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'core_ext', 'hash')
-require 'dm-core'
+require 'active_record'
 
 module Mongify
   module Database
@@ -37,12 +37,8 @@ module Mongify
         true
       end
       
-      def connection_string
-        ""
-      end
-      
-      def dm_connection
-        @dm_connection = DataMapper.setup(self.class.to_s.to_sym, connection_string)
+      def connection_adapter
+        raise NotImplementedError
       end
       
       def connects?
