@@ -21,15 +21,17 @@ describe Mongify::Configuration do
     lambda { Mongify::Configuration.parse_configuration("../missing_file.rb") }.should raise_error(Mongify::FileNotFound)
   end
   
-  context "loaded content" do
+  context "load database config" do
     before(:each) do
+      
+    end
+    it "should load sql_config" do
+      Mongify::Database::SqlConfig.should_receive(:new)
       @configuration = Mongify::Configuration.parse_configuration(@configuration_file)
     end
-    it "should have correct sql_config" do
-      @configuration.sql_config.connection_string.should == "mysql://localhost/my_database"
-    end
-    it "should have correct mongodb_config" do
-      @configuration.mongodb_config.connection_string.should == "mongo://127.0.0.1/my_collection"
+    it "should load nosql_config" do
+      Mongify::Database::NoSqlConfig.should_receive(:new)
+      @configuration = Mongify::Configuration.parse_configuration(@configuration_file)
     end
   end
 end

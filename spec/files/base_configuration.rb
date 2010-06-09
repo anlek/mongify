@@ -1,5 +1,5 @@
 sql_config do |s|
-  s.adaptor   :mysql
+  s.adapter   :mysql
   s.host      "localhost"
   s.database  "my_database"
 end

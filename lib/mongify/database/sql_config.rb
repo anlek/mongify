@@ -7,14 +7,22 @@ module Mongify
     #
     class SqlConfig < Mongify::Database::BaseConfig
           
-      REQUIRED_FIELDS = %w{host adaptor database}  
+      REQUIRED_FIELDS = %w{host adapter database}  
       
-      def connection_string
-        if(@username && @password)
-          "#{@adaptor}://#{@username}:#{@password}@#{@host}/#{@database}"
-        else
-          "#{@adaptor}://#{@host}/#{@database}"
+      def setup_connection_adapter
+        @connection_adapter ||= ActiveRecord::Base.establish_connection(self.to_hash)
+      end
+      
+      
+      def has_connection?
+        begin
+          setup_connection_adapter
+          ActiveRecord::Base.connection.send(:connect)
+        rescue ActiveRecord::ConnectionNotEstablished => e
+          puts "Error: #{e}"
+          return false
         end
+        true
       end
       
     end
