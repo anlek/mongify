@@ -3,3 +3,5 @@ doc
 coverage
 .yardoc
 spec/tmp/*
+
+.idea/*
