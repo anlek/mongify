@@ -2,6 +2,37 @@ require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE
 require File.join(File.dirname(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__))))), 'lib', 'mongify', 'database', 'sql_config')
 
 describe Mongify::Database::SqlConfig do
+  before(:all) do
+    @db_path = File.join(File.dirname(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__))))), 'spec', 'tmp', 'test.db')
+    File.delete(@db_path) if File.exists?(@db_path)
+    #SETUP DATABASE
+    ActiveRecord::Base.establish_connection(
+      :adapter => "sqlite3",
+      :database => @db_path
+    )
+    
+    #SETUP TABLES
+    ActiveRecord::Base.connection.create_table(:users) do |t|
+      t.string :first_name, :last_name
+      t.timestamps
+    end
+    
+    ActiveRecord::Base.connection.create_table(:posts) do |t|
+      t.string :title
+      t.integer :owner_id
+      t.text :body
+      t.datetime :published_at
+      t.timestamps
+    end
+    
+    ActiveRecord::Base.connection.create_table(:comments) do |t|
+      t.text :body
+      t.integer :post_id
+      t.integer :user_id
+      t.timestamps
+    end
+  end
+  
   before(:each) do
     @adapter = 'mysql'
     @host = '127.0.0.1'
@@ -33,11 +64,15 @@ describe Mongify::Database::SqlConfig do
       @sql_config.should have_connection
     end
   end
-  
-  
-  
 
-  
+  context "tables" do
+    before(:each) do
+      @sql_config = Mongify::Database::SqlConfig.new(:adapter => 'sqlite3', :database => @db_path) 
+    end
+    it "should be able to get a list" do
+      @sql_config.get_tables.sort.should == ['comments', 'posts', 'users'].sort
+    end
+  end
   
   
 end

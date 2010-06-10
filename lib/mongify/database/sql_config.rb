@@ -13,11 +13,15 @@ module Mongify
         @connection_adapter ||= ActiveRecord::Base.establish_connection(self.to_hash)
       end
       
+      def get_tables
+        return nil unless has_connection?
+        ActiveRecord::Base.connection.tables
+      end
       
       def has_connection?
         begin
           setup_connection_adapter
-          ActiveRecord::Base.connection.send(:connect)
+          ActiveRecord::Base.connection.send(:connect) if ActiveRecord::Base.connection.respond_to?(:connect)
         rescue ActiveRecord::ConnectionNotEstablished => e
           puts "Error: #{e}"
           return false
