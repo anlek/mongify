@@ -12,9 +12,9 @@ Learn more about mongoDB at: {http://www.mongodb.org}
 
 == Usage
 
-=== WARNING: Mongify is still a work in progress, so much so, that the code below will currently NOT work!
+=== WARNING: Mongify is still a work in progress, so much so, that the code below will currently _NOT_ work and is likely to significantly change!
 
-Build a database file such as:
+Build a config file such as:
 
   sql_config do |s|
     s.adaptor :mysql
@@ -27,6 +27,8 @@ Build a database file such as:
     m.database = 'my_collection'
   end
 
+Build a translation file such as:
+
   table "accounts"
 
   table "users" 
@@ -37,7 +39,10 @@ Build a database file such as:
 
 Save the file as <tt>"my_database_translation.rb"</tt> and run the command:
 
-  mongify my_database_translation.rb
+  mongify check datbase.config
+  mongify process database.config database_translation.rb
+  
+  _subject to change_
   
 == Development
 === Requirements
