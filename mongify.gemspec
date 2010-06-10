@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kalek"]
-  s.date = %q{2010-06-09}
+  s.date = %q{2010-06-10}
   s.default_executable = %q{mongify}
   s.description = %q{Mongify allows you to map your data from a sql database and into a mongodb document database.}
   s.email = %q{andrew.kalek@anlek.com}
@@ -30,12 +30,14 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, [">= 1.3"])
       s.add_development_dependency(%q<mocha>, [">= 0.9.8"])
       s.add_development_dependency(%q<yard>, [">= 0.5.3"])
+      s.add_development_dependency(%q<watchr>, [">= 0.6"])
     else
       s.add_dependency(%q<activerecord>, [">= 2.3"])
       s.add_dependency(%q<net-ssh>, [">= 2.0"])
       s.add_dependency(%q<rspec>, [">= 1.3"])
       s.add_dependency(%q<mocha>, [">= 0.9.8"])
       s.add_dependency(%q<yard>, [">= 0.5.3"])
+      s.add_dependency(%q<watchr>, [">= 0.6"])
     end
   else
     s.add_dependency(%q<activerecord>, [">= 2.3"])
@@ -43,5 +45,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rspec>, [">= 1.3"])
     s.add_dependency(%q<mocha>, [">= 0.9.8"])
     s.add_dependency(%q<yard>, [">= 0.5.3"])
+    s.add_dependency(%q<watchr>, [">= 0.6"])
   end
 end

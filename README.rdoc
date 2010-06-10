@@ -50,6 +50,7 @@ Gems:
   rspec-core
   active_record
   echoe
+  watchr
 
 == License
 

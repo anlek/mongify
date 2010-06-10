@@ -30,7 +30,8 @@ Echoe.new('mongify', version) do |p|
   
   p.development_dependencies = ['rspec >=1.3', 
                                 'mocha >=0.9.8', 
-                                'yard >=0.5.3']
+                                'yard >=0.5.3',
+                                'watchr >=0.6']
   p.runtime_dependencies = ['activerecord >=2.3', 'net-ssh >=2.0']
 end
  
