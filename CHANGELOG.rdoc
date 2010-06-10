@@ -1,2 +1,7 @@
+== 0.0.2 / 09 Jun 2010
+* Rewrote the whole CLI interface
+* Removed datamapper and added active_record
+* Improved tests to cover most of the code 
+* Changed overall commands for Mongify
 == 0.0.1 / 22 Mar 2010 
 * Initial Setup
