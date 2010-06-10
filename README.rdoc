@@ -2,7 +2,7 @@
 
 A data translator from sql database to mongoDB.
 
-Learn more about mongoDB at: {http://www.mongodb.org}[link:http://www.mongodb.org]
+Learn more about mongoDB at: http://www.mongodb.org
 
 == Install
 
