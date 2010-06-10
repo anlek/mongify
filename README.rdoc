@@ -2,7 +2,7 @@
 
 A data translator from sql database to mongoDB.
 
-Learn more about mongoDB at: {http://www.mongodb.org}
+Learn more about mongoDB at: {http://www.mongodb.org}[link:http://www.mongodb.org]
 
 == Install
 
@@ -42,7 +42,7 @@ Save the file as <tt>"my_database_translation.rb"</tt> and run the command:
   mongify check datbase.config
   mongify process database.config database_translation.rb
   
-  _subject to change_
+**this is subject to change at any time**
   
 == Development
 === Requirements
