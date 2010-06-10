@@ -10,7 +10,7 @@ describe Mongify::Database::SqlConfig do
       :adapter => "sqlite3",
       :database => @db_path
     )
-    
+
     #SETUP TABLES
     ActiveRecord::Base.connection.create_table(:users) do |t|
       t.string :first_name, :last_name
@@ -71,6 +71,15 @@ describe Mongify::Database::SqlConfig do
     end
     it "should be able to get a list" do
       @sql_config.get_tables.sort.should == ['comments', 'posts', 'users'].sort
+    end
+  end
+  
+  context "columns" do
+    before(:each) do
+      @sql_config = Mongify::Database::SqlConfig.new(:adapter => 'sqlite3', :database => @db_path) 
+    end
+    it "should see columns for a table" do
+      @sql_config.columns_for(:users).map{ |column| column.name }.sort.should == ['id', 'first_name', 'last_name', 'created_at', 'updated_at'].sort
     end
   end
   

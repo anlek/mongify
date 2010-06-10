@@ -18,6 +18,10 @@ module Mongify
         ActiveRecord::Base.connection.tables
       end
       
+      def columns_for(table_name)
+        ActiveRecord::Base.connection.columns(table_name)
+      end
+      
       def has_connection?
         begin
           setup_connection_adapter
