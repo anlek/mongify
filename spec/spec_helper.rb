@@ -5,5 +5,3 @@ rescue LoadError
   gem 'rspec'
   require 'spec/expectations'
 end
-
-require 'spec/autorun'
