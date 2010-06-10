@@ -1,4 +1,5 @@
 require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'core_ext', 'hash')
+require 'rubygems'
 require 'active_record'
 
 module Mongify
