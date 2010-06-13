@@ -5,6 +5,9 @@
 # --------------------------------------------------
 # Convenience Methods
 # --------------------------------------------------
+def clear_console
+  puts "\e[H\e[2J"
+end
 def all_spec_files
   Dir['spec/**/*_spec.rb']
 end
@@ -12,16 +15,18 @@ end
 def run_spec_matching(thing_to_match)
   matches = all_spec_files.grep(/#{thing_to_match}/i)
   if matches.empty?
-    puts "Sorry, thanks for playing, but there were no matches for #{thing_to_match}."  
+    puts "Sorry, but there were no matches for #{thing_to_match}."  
   else
     run matches.join(' ')
   end
 end
 
 def run(files_to_run)
-  puts "\e[H\e[2J"
+  clear_console
   puts("Running: #{files_to_run}")
-  system("spec -cbfs #{files_to_run}")
+  result = %x(spec -cbfs #{files_to_run}).split("\n")
+  growl result.last rescue nil
+  puts "... Finished"
   no_int_for_you
 end
 
@@ -38,7 +43,29 @@ watch('^app/(models|controllers)/(.*).rb')        { |m| run_spec_matching("#{m[1
 watch('^spec/spec_helper\.rb')                    { run_all_specs }
 watch('^spec/support/.*\.rb')                     { run_all_specs }
 watch('^config/.*\.rb')                           { run_all_specs }
-#watch('app/.*/.*\.rb')                            { |m| related_test_files(m[0]).map {|tf| run_test_file(tf) } }
+
+
+def growl(message)
+  return if message.empty?
+  puts "#{message}"
+  growlnotify = `which growlnotify`.chomp
+  @status = if !message.include?('0 failures')
+              image = "~/.watchr/failed.png"
+              priority = 2
+              "failed"
+            elsif message.include?("pending")
+              image = "~/.watchr/pending.png"
+              priority = 1
+              "pending"
+            else
+              priority = -2
+              image = "~/.watchr/passed.png"
+              "passed"
+            end
+  options = "--name Watchr --image '#{File.expand_path(image)}' -m '#{message}' -p #{priority || 0}"
+  system %(#{growlnotify} #{options} &)
+end
+
 
 # --------------------------------------------------
 # Signal Handling
@@ -61,6 +88,6 @@ Signal.trap 'INT' do
   end
 end
 
-system('clear')
+clear_console
 puts "Watching..."
 # vim:ft=ruby
