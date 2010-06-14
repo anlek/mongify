@@ -26,8 +26,9 @@ module Mongify
           cmd.execute(self)
         rescue Exception => error
           $stderr.puts "Error: #{error}"
-          raise error
+          @status = STATUS_ERROR
         end
+        return @status
       end
       
       def output(message)
