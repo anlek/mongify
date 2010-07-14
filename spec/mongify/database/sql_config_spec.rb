@@ -3,7 +3,7 @@ require File.join(File.dirname(File.dirname(File.dirname(File.dirname(File.expan
 
 describe Mongify::Database::SqlConfig do
   before(:each) do
-    @adapter = 'mysql'
+    @adapter = 'sqlite3'
     @host = '127.0.0.1'
     @database = 'test_database'
     @sql_config = Mongify::Database::SqlConfig.new
@@ -32,6 +32,10 @@ describe Mongify::Database::SqlConfig do
     it "should work" do
       @sql_config.should have_connection
     end
+  end
+  
+  after(:each) do
+    File.delete(@database) if File.exists?(@database)
   end
   
   

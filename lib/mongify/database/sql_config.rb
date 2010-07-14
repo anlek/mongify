@@ -17,7 +17,7 @@ module Mongify
       def has_connection?
         begin
           setup_connection_adapter
-          ActiveRecord::Base.connection.send(:connect)
+          ActiveRecord::Base.connection.send(:connect) if ActiveRecord::Base.connection.respond_to?(:connect)
         rescue ActiveRecord::ConnectionNotEstablished => e
           puts "Error: #{e}"
           return false
