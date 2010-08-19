@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'yaml'
 
 begin
   require 'bundler'
@@ -13,3 +14,8 @@ rescue LoadError
   gem 'rspec'
   require 'spec/expectations'
 end
+
+#Used to setup testing databases
+require 'support/config_reader'
+::CONNECTION_CONFIG = ConfigReader.new(File.dirname(File.expand_path(__FILE__)) + '/support/database.yml')
+

@@ -57,6 +57,7 @@ Gem::Specification.new do |s|
      "spec/mongify",
      "spec/spec.opts",
      "spec/spec_helper.rb",
+     "spec/support",
      "spec/tmp",
      "features/generator.feature",
      "features/options.feature",

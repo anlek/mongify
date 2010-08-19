@@ -6,3 +6,5 @@ spec/tmp/*
 
 .idea/*
 .bundle/*
+
+spec/support/database.yml

@@ -60,9 +60,12 @@ describe Mongify::Database::SqlConfig do
   context "MySql config" do
     before(:each) do
       @adapter = 'mysql'
-      @host = '127.0.0.1'
-      @database = 'test_database'
-      @sql_config = Mongify::Database::SqlConfig.new(:adapter => @adapter, :host => @host, :database => @database)
+      @host = CONNECTION_CONFIG.mysql['host']
+      @database = CONNECTION_CONFIG.mysql['database']
+      @username = CONNECTION_CONFIG.mysql['username']
+      @password = CONNECTION_CONFIG.mysql['password']
+      @port = CONNECTION_CONFIG.mysql['port']
+      @sql_config = Mongify::Database::SqlConfig.new(:adapter => @adapter, :host => @host, :database => @database, :username => @username, :password => @password, :port => @port)
     end
 
     context "valid?" do
@@ -76,7 +79,6 @@ describe Mongify::Database::SqlConfig do
 
     context "testing connection" do
       before(:each) do
-        @sql_config = Mongify::Database::SqlConfig.new(:adapter => @adapter, :host => @host, :database => @database)
       end
 
       it "should call setup_connection_adapter before testing connection" do
