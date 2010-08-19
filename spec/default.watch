@@ -47,7 +47,7 @@ end
 def run_spec(files_to_run)
   clear_console
   puts("Running spec(s): #{files_to_run}")
-  result = %x(bundle exec spec -c --format=progress -b --drb #{files_to_run})
+  result = %x(bundle exec spec -c --format=progress -b #{files_to_run})
   rspec_to_growl(result)
   no_int_for_you
 end
@@ -75,7 +75,7 @@ def run_cucumber files_to_run, options={}
   tags = (options[:tags].nil?) ? nil : "--tags #{options[:tags]}"
   puts "Running Feature: #{files_to_run} #{ "with a #{options[:tags]} tag(s)" if tags }"
   
-  result = %x(bundle exec cucumber -c --drb #{tags} #{files_to_run})
+  result = %x(bundle exec cucumber -c #{tags} #{files_to_run})
   features_to_growl(result)
   result
 end
