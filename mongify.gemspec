@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kalek"]
-  s.date = %q{2010-06-10}
+  s.date = %q{2010-08-19}
   s.default_executable = %q{mongify}
   s.description = %q{Mongify allows you to map your data from a sql database and into a mongodb document database.}
   s.email = %q{andrew.kalek@anlek.com}
@@ -27,24 +27,30 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<activerecord>, [">= 2.3"])
       s.add_runtime_dependency(%q<net-ssh>, [">= 2.0"])
-      s.add_development_dependency(%q<rspec>, [">= 1.3"])
+      s.add_development_dependency(%q<rspec>, ["= 1.3"])
       s.add_development_dependency(%q<mocha>, [">= 0.9.8"])
       s.add_development_dependency(%q<yard>, [">= 0.5.3"])
       s.add_development_dependency(%q<watchr>, [">= 0.6"])
+      s.add_development_dependency(%q<sqlite3-ruby>, [">= 1.3"])
+      s.add_development_dependency(%q<mysql>, [">= 2.8.1"])
     else
       s.add_dependency(%q<activerecord>, [">= 2.3"])
       s.add_dependency(%q<net-ssh>, [">= 2.0"])
-      s.add_dependency(%q<rspec>, [">= 1.3"])
+      s.add_dependency(%q<rspec>, ["= 1.3"])
       s.add_dependency(%q<mocha>, [">= 0.9.8"])
       s.add_dependency(%q<yard>, [">= 0.5.3"])
       s.add_dependency(%q<watchr>, [">= 0.6"])
+      s.add_dependency(%q<sqlite3-ruby>, [">= 1.3"])
+      s.add_dependency(%q<mysql>, [">= 2.8.1"])
     end
   else
     s.add_dependency(%q<activerecord>, [">= 2.3"])
     s.add_dependency(%q<net-ssh>, [">= 2.0"])
-    s.add_dependency(%q<rspec>, [">= 1.3"])
+    s.add_dependency(%q<rspec>, ["= 1.3"])
     s.add_dependency(%q<mocha>, [">= 0.9.8"])
     s.add_dependency(%q<yard>, [">= 0.5.3"])
     s.add_dependency(%q<watchr>, [">= 0.6"])
+    s.add_dependency(%q<sqlite3-ruby>, [">= 1.3"])
+    s.add_dependency(%q<mysql>, [">= 2.8.1"])
   end
 end

@@ -28,10 +28,12 @@ Echoe.new('mongify', version) do |p|
   p.url = "http://github.com/anlek/mongify"
   p.rdoc_pattern = /^(lib|README.rdoc|CHANGELOG.rdoc|LICENSE)/
   
-  p.development_dependencies = ['rspec >=1.3', 
+  p.development_dependencies = ['rspec =1.3', 
                                 'mocha >=0.9.8', 
                                 'yard >=0.5.3',
-                                'watchr >=0.6']
+                                'watchr >=0.6',
+                                'sqlite3-ruby >=1.3',
+                                'mysql >=2.8.1']
   p.runtime_dependencies = ['activerecord >=2.3', 'net-ssh >=2.0']
 end
  
