@@ -1,3 +1,5 @@
+== 0.0.3 / Unknown
+* Switched gemspec generation to Jeweler and added Bundler for easier development
 == 0.0.2 / 09 Jun 2010
 * Rewrote the whole CLI interface
 * Removed datamapper and added active_record
