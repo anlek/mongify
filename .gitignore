@@ -7,4 +7,6 @@ spec/tmp/*
 .idea/*
 .bundle/*
 
+.rvmrc
+
 spec/support/database.yml
