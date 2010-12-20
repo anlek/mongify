@@ -11,27 +11,32 @@ describe Mongify::Configuration do
     Mongify::Translation.should_receive(:parse).and_return(true)
     Mongify::Configuration.parse_translation(@translation_file)
   end
-  
-  it "should parse confg file" do
-    Mongify::Configuration.should_receive(:parse).and_return(true)
-    Mongify::Configuration.parse_configuration(@configuration_file)
-  end
-  
-  it "should validate file exists" do
-    lambda { Mongify::Configuration.parse_configuration("../missing_file.rb") }.should raise_error(Mongify::FileNotFound)
-  end
-  
-  context "load database config" do
-    before(:each) do
-      
+
+  context "configuration file" do
+    it "should parse confg file" do
+      Mongify::Configuration.should_receive(:parse).and_return(true)
+      Mongify::Configuration.parse_configuration(@configuration_file)
     end
-    it "should load sql_config" do
-      Mongify::Database::SqlConfig.should_receive(:new)
-      @configuration = Mongify::Configuration.parse_configuration(@configuration_file)
+
+    it "should validate file exists" do
+      lambda { Mongify::Configuration.parse_configuration("../missing_file.rb") }.should raise_error(Mongify::FileNotFound)
     end
-    it "should load nosql_config" do
-      Mongify::Database::NoSqlConfig.should_receive(:new)
-      @configuration = Mongify::Configuration.parse_configuration(@configuration_file)
+
+    context "load database config" do
+      context "sql" do
+        it "should load" do
+          Mongify::Database::SqlConfig.should_receive(:new)
+          Mongify::Configuration.parse_configuration(@configuration_file)
+        end
+      end
+
+      context "nosql" do
+        it "should load" do
+          Mongify::Database::NoSqlConfig.should_receive(:new)
+          Mongify::Configuration.parse_configuration(@configuration_file)
+        end
+      end
     end
+
   end
 end
