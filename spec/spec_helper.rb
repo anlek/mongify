@@ -3,9 +3,9 @@ require 'yaml'
 
 begin
   require 'bundler'
-  Bundler.setup  
+  Bundler.setup
 rescue LoadError
-  puts "Need to install bundler 1.0. 'gem install bundler --pre'"
+  puts "Need to install bundler 1.0. 'gem install bundler'"
 end
 
 begin
