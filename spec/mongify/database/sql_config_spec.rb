@@ -112,11 +112,6 @@ describe Mongify::Database::SqlConfig do
         @sql_config.columns_for(:users).map{ |column| column.name }.sort.should == ['id', 'first_name', 'last_name', 'created_at', 'updated_at'].sort
       end
     end
-
   end
-
-
-
-
 end
 
