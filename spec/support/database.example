@@ -1,3 +1,6 @@
+sqlite:
+  database: spec/files/sample_db.sqlite
+
 mysql:
   database: mongify_test
   username: root

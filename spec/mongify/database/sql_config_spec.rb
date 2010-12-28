@@ -16,7 +16,7 @@ describe Mongify::Database::SqlConfig do
       t.string :first_name, :last_name
       t.timestamps
     end
-    
+
     ActiveRecord::Base.connection.create_table(:posts) do |t|
       t.string :title
       t.integer :owner_id
@@ -24,7 +24,7 @@ describe Mongify::Database::SqlConfig do
       t.datetime :published_at
       t.timestamps
     end
-    
+
     ActiveRecord::Base.connection.create_table(:comments) do |t|
       t.text :body
       t.integer :post_id
@@ -32,31 +32,31 @@ describe Mongify::Database::SqlConfig do
       t.timestamps
     end
   end
-  
+
   before(:each) do
-    @sql_config = Mongify::Database::SqlConfig.new(:adapter => 'sqlite3', :database => @db_path) 
+    @sql_config = Mongify::Database::SqlConfig.new(:adapter => 'sqlite3', :database => @db_path)
   end
-  
+
   context "Sqlite 3 config" do
     before(:each) do
       @adapter = 'sqlite'
-      @database = File.join(File.dirname(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__))))), 'spec', 'tmp', 'sqlite_test.db')
+      @database = @db_path
       @sql_config = Mongify::Database::SqlConfig.new(:adapter => @adapter, :database => @database)
     end
-    
+
     context "valid?" do
       it "should be true" do
         @sql_config.should be_valid
       end
     end
-    
+
     context "testing connection" do
       it "should work" do
         @sql_config.should have_connection
       end
     end
   end
-  
+
   context "MySql config" do
     before(:each) do
       @adapter = 'mysql'
@@ -73,14 +73,11 @@ describe Mongify::Database::SqlConfig do
         Mongify::Database::SqlConfig.new(:adapter => 'mysql', :host => 'localhost', :database => 'blue').should be_valid
       end
       it "should be false" do
-        Mongify::Database::SqlConfig.new.should_not be_valid
+        Mongify::Database::SqlConfig.new(:adapter => 'mysql').should_not be_valid
       end
     end
 
     context "testing connection" do
-      before(:each) do
-      end
-
       it "should call setup_connection_adapter before testing connection" do
         @sql_config.should_receive(:setup_connection_adapter)
         @sql_config.has_connection?
@@ -91,20 +88,35 @@ describe Mongify::Database::SqlConfig do
       end
     end
   end
-  
 
-  context "tables" do
-    it "should be able to get a list" do
-      @sql_config.get_tables.sort.should == ['comments', 'posts', 'users'].sort
+  context "Sqlite connection" do
+    context "testing connection" do
+      it "should call setup_connection_adapter before testing connection" do
+        @sql_config.should_receive(:setup_connection_adapter)
+        @sql_config.has_connection?
+      end
+
+      it "should work" do
+        @sql_config.should have_connection
+      end
     end
-  end
-  
-  context "columns" do
-    it "should see columns for a table" do
-      @sql_config.columns_for(:users).map{ |column| column.name }.sort.should == ['id', 'first_name', 'last_name', 'created_at', 'updated_at'].sort
+
+    context "tables" do
+      it "should be able to get a list" do
+        @sql_config.get_tables.sort.should == ['comments', 'posts', 'users'].sort
+      end
     end
+
+    context "columns" do
+      it "should see columns for a table" do
+        @sql_config.columns_for(:users).map{ |column| column.name }.sort.should == ['id', 'first_name', 'last_name', 'created_at', 'updated_at'].sort
+      end
+    end
+
   end
-  
-  
+
+
+
+
 end
 

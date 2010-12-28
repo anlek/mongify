@@ -23,7 +23,7 @@ def banner(*messages)
 end
 
 def strip_colors(message='')
-  message.gsub(/\e\[(\d+)m/, '') 
+  message.gsub(/\e\[(\d+)m/, '')
 end
 
 # --------------------------------------------------
@@ -38,7 +38,7 @@ end
 def run_spec_matching(thing_to_match)
   matches = all_spec_files.grep(/#{thing_to_match}/i)
   if matches.empty?
-    puts "Sorry, but there were no matches for #{thing_to_match}."  
+    puts "Sorry, but there were no matches for #{thing_to_match}."
   else
     run_spec matches.join(' ')
   end
@@ -74,7 +74,7 @@ def run_cucumber files_to_run, options={}
   clear_console
   tags = (options[:tags].nil?) ? nil : "--tags #{options[:tags]}"
   puts "Running Feature: #{files_to_run} #{ "with a #{options[:tags]} tag(s)" if tags }"
-  
+
   result = %x(bundle exec cucumber -c #{tags} #{files_to_run})
   features_to_growl(result)
   result
@@ -117,7 +117,7 @@ def rspec_to_growl(message)
                "passed"
              end
   begin
-    growl(result, "RSpec - #{@status}", image, priority) 
+    growl(result, "RSpec - #{@status}", image, priority)
   rescue
     banner("Failed to growl notifiy for specs")
     puts message

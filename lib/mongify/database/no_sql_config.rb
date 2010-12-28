@@ -14,7 +14,7 @@ module Mongify
         @adapter = 'mongo'
       end
       
-      def collection(value)
+      def collection=(value)
         @database = value
       end
       
