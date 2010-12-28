@@ -8,10 +8,10 @@ module Mongify
     # Basic configuration for any sql or non sql database
     #
     class BaseConfig
-      
+
       REQUIRED_FIELDS = %w{host}
       AVAILABLE_FIELDS = %w{adapter host username password database socket port}
-      
+
       def initialize(options=nil)
         if options
           options.stringify_keys!
@@ -20,7 +20,7 @@ module Mongify
           end
         end
       end
-      
+
       def to_hash
         hash = {}
         instance_variables.each do |variable|
@@ -29,7 +29,7 @@ module Mongify
         end
         hash
       end
-      
+
       def valid?
         REQUIRED_FIELDS.each do |require_field|
           return false unless instance_variables.include?("@#{require_field}") and
@@ -37,33 +37,47 @@ module Mongify
         end
         true
       end
-      
-      
+
+
       def setup_connection_adapter
         raise NotImplementedError
       end
-      
+
       def has_connection?
         raise NotImplementedError
       end
-      
-      
+
+      attr_reader :adapter
+      def adapter=(value)
+        @adapter = value.to_s
+      end
+
+
       def respond_to?(method, *args)
         return true if AVAILABLE_FIELDS.include?(method.to_s)
         super(method)
       end
-      
+
       def method_missing(method, *args)
-        if AVAILABLE_FIELDS.include?(method.to_s)
+        method_name = method.to_s.gsub("=", '')
+        puts "method #{method} VS method_name #{method_name}"
+        if AVAILABLE_FIELDS.include?(method_name.to_s)
           value = args.first rescue nil
-          instance_eval "def #{method}(value);@#{method}=value;end"
+          instance_eval <<-EOF
+                          def #{method_name}=(new_value)
+                            @#{method_name}=new_value
+                          end
+                          def #{method_name}
+                            @#{method_name}
+                          end
+                        EOF
           send(method, value)
         else
           super(method, args)
         end
-        
+
       end
-        
+
     end
   end
 end

@@ -8,4 +8,11 @@ vendor/gems/specifications
 vendor/gems/doc
 vendor/gems/environment.rb
 
-spec/tmp/*.db
+spec/tmp/*
+
+.idea/*
+.bundle/*
+
+.rvmrc
+
+spec/support/database.yml

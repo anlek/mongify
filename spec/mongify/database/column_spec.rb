@@ -7,12 +7,11 @@ describe Mongify::Database::Column do
   end
   
   it "should have name" do
-    @column.name = 'last_name'
-    @column.name.should == 'last_name'
+    @column.name.should == 'first_name'
   end
   
   it "should get setup options" do
-    @column = Mongify::Database::Column.new('account_id', :references => 'accounts')
+    @column = Mongify::Database::Column.new('account_id', :integer, :references => 'accounts')
     @column.options.should == {'references' => 'accounts'}
   end
 end

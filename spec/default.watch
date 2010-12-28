@@ -5,6 +5,32 @@
 # --------------------------------------------------
 # Convenience Methods
 # --------------------------------------------------
+
+
+def clear_console
+  puts "\e[H\e[2J"
+end
+
+def banner(*messages)
+  messages = messages.to_a unless messages.is_a?(Array)
+  spacing = 100
+  char = "*"
+  puts "\n",char * spacing
+  messages.each do |message|
+    puts "#{char}#{message.to_s.center(spacing-2)}#{char}"
+  end
+  puts char * spacing, "\n\n"
+end
+
+def strip_colors(message='')
+  message.gsub(/\e\[(\d+)m/, '')
+end
+
+# --------------------------------------------------
+# Rspec Methods
+# --------------------------------------------------
+
+
 def all_spec_files
   Dir['spec/**/*_spec.rb']
 end
@@ -12,33 +38,143 @@ end
 def run_spec_matching(thing_to_match)
   matches = all_spec_files.grep(/#{thing_to_match}/i)
   if matches.empty?
-    puts "Sorry, thanks for playing, but there were no matches for #{thing_to_match}."  
+    puts "Sorry, but there were no matches for #{thing_to_match}."
   else
-    run matches.join(' ')
+    run_spec matches.join(' ')
   end
 end
 
-def run(files_to_run)
-  puts "\e[H\e[2J"
-  puts("Running: #{files_to_run}")
-  system("spec -cfs #{files_to_run}")
+def run_spec(files_to_run)
+  clear_console
+  puts("Running spec(s): #{files_to_run}")
+  result = %x(bundle exec spec -c --format=progress -b #{files_to_run})
+  rspec_to_growl(result)
   no_int_for_you
 end
 
 def run_all_specs
-  run(all_spec_files.join(' '))
+  run_spec(all_spec_files.join(' '))
 end
+
+# --------------------------------------------------
+# Cuucmber Methods
+# --------------------------------------------------
+
+def run_cucumber_scenario (scenario_path='features', options={})
+  #options[:tag] ||= nil
+  run_cucumber(scenario_path, options)
+end
+
+def run_wip_scenarios
+  run_cucumber('features', :tags => "@wip")
+end
+
+def run_cucumber files_to_run, options={}
+  return puts "** Not running cucumber (#{files_to_run}) due to rspec failure **" unless rspec_passed?
+  clear_console
+  tags = (options[:tags].nil?) ? nil : "--tags #{options[:tags]}"
+  puts "Running Feature: #{files_to_run} #{ "with a #{options[:tags]} tag(s)" if tags }"
+
+  result = %x(bundle exec cucumber -c #{tags} #{files_to_run})
+  features_to_growl(result)
+  result
+end
+
+# --------------------------------------------------
+# Growl Messages
+# --------------------------------------------------
+def growl(message, title="Unknown", image="~/.watchr/failed.png", priority=0)
+  return if message.empty?
+  begin
+    message = strip_colors(message)
+    banner(title.upcase, message)
+    growlnotify = `which growlnotify`.chomp
+    options = "--name Watchr --image '#{File.expand_path(image)}' -m '#{message}' -p #{priority || 0} -t #{title}"
+    system %(#{growlnotify} #{options} &)
+  rescue Exception => e
+    puts "ERROR: #{e}"
+  end
+end
+
+def rspec_to_growl(message)
+  result = message.split("\n").find{|l| l =~ /(\d+) examples?/}
+  @status = if !result || !result.include?('0 failures')
+               image = "~/.watchr/failed.png"
+               priority = 2
+               puts message.to_s
+               rspec_failed
+               "failed"
+             elsif result.include?("pending")
+               image = "~/.watchr/pending.png"
+               priority = 1
+               puts message.to_s
+               rspec_passed
+               "pending"
+             else
+               image = "~/.watchr/passed.png"
+               priority = -2
+               rspec_passed
+               "passed"
+             end
+  begin
+    growl(result, "RSpec - #{@status}", image, priority)
+  rescue
+    banner("Failed to growl notifiy for specs")
+    puts message
+  end
+end
+
+def features_to_growl(messages)
+  begin
+    messages = messages.split("\n") unless messages.is_a? Array
+    scenario_idx = messages.rindex(messages.find{|line| line =~ /^(\d) scenario/})
+    scenario, step, timing = messages[scenario_idx..(scenario_idx + 2)]
+    if scenario.include?('failed')
+      image = "~/.watchr/failed.png"
+      priority = 2
+      puts messages.join("\n")
+    elsif scenario.include?("undefined") || scenario.include?('pending')
+      image = "~/.watchr/pending.png"
+      priority = 1
+      puts messages.join("\n") #messages[(scenario_idx+3)..-1].join("\n")
+    else
+      image = "~/.watchr/passed.png"
+      priority = -2
+    end
+    growl("#{scenario}, #{step}", "Features", image, priority) rescue banner("Failed to growl notifiy for features".upcase)
+  rescue Exception => e
+    puts "ERROR in features growl: #{e}"
+  end
+end
+
 
 # --------------------------------------------------
 # Watchr Rules
 # --------------------------------------------------
 watch('^spec/(.*)_spec\.rb')                      { |m| run_spec_matching(m[1]) }
-watch('^lib/(.*)\.rb')                            { |m| run_spec_matching(m[1]) }
-watch('^app/(models|controllers)/(.*).rb')        { |m| run_spec_matching("#{m[1]}/#{m[2]}") }
+watch('^lib/(.*)\.rb')                            { |m| run_spec_matching(m[1]); run_wip_scenarios }
+watch('^app/(models|controllers)/(.*).rb')        { |m| run_spec_matching("#{m[1]}/#{m[2]}"); run_wip_scenarios }
+watch('^app/views/([^/]*)/(.*).(haml|erb)')       { run_wip_scenarios }
 watch('^spec/spec_helper\.rb')                    { run_all_specs }
 watch('^spec/support/.*\.rb')                     { run_all_specs }
-watch('^config/.*\.rb')                           { run_all_specs }
-#watch('app/.*/.*\.rb')                            { |m| related_test_files(m[0]).map {|tf| run_test_file(tf) } }
+watch('^spec/factories/.*\.rb')                   { run_all_specs }
+watch('^config/(.*)\.rb')                         { run_all_specs; run_cucumber_scenario }
+watch('^features/(.*)\.feature')                  { |m| run_cucumber_scenario(m[0], :tags => "@wip") }
+watch('^features/(.*)\.rb')                       { run_wip_scenarios }
+
+
+# --------------------------------------------------
+#  Fail logging
+# --------------------------------------------------
+def rspec_failed
+  @rspec_failed = true
+end
+def rspec_passed
+  @rspec_failed = false
+end
+def rspec_passed?
+  !@rspec_failed
+end
 
 # --------------------------------------------------
 # Signal Handling
@@ -50,7 +186,7 @@ end
 
 Signal.trap 'INT' do
   if @sent_an_int then
-    system('clear')      
+    clear_console
     puts "   Stopped watching."
     exit
   else
@@ -58,9 +194,6 @@ Signal.trap 'INT' do
     @sent_an_int = true
     Kernel.sleep 1.5
     run_all_specs
+    run_cucumber_scenario
   end
 end
-
-system('clear')
-puts "Watching..."
-# vim:ft=ruby

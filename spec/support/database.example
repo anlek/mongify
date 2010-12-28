@@ -1,0 +1,9 @@
+sqlite:
+  database: spec/files/sample_db.sqlite
+
+mysql:
+  database: mongify_test
+  username: root
+  password: passw0rd
+  host: localhost
+  port: 3306

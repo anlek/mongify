@@ -2,7 +2,7 @@
 
 A data translator from sql database to mongoDB.
 
-Learn more about mongoDB at: {http://www.mongodb.org}
+Learn more about mongoDB at: http://www.mongodb.org
 
 == Install
 
@@ -42,14 +42,19 @@ Save the file as <tt>"my_database_translation.rb"</tt> and run the command:
   mongify check datbase.config
   mongify process database.config database_translation.rb
   
-  _subject to change_
+**this is subject to change at any time**
   
 == Development
 === Requirements
-Gems: 
-  rspec-core
-  active_record
-  echoe
+You just need bundler 1.0
+  
+  gem install bundler
+  bundle install
+
+=== Setup
+Before you can run the specs, you need to make sure to setup the database.yml file with your database info
+
+You need to have spec/support/database.yml present (you can copy database.example within the same folder).
 
 == License
 
