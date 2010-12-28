@@ -14,7 +14,6 @@ Feature: Mongify can be controlled using command-line options
     Then it succeeds
     And it reports the current version
 
-  @wip
   Scenario: display the help information
     When I run mongify --help
     Then it succeeds
