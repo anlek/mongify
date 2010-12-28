@@ -8,7 +8,11 @@ module Mongify
     #
     class Generator
       def initialize(config)
-        raise unless config.is_a?(SqlConfig)
+        raise "Can only generate from SqlConfig" unless config.is_a?(SqlConfig)
+      end
+       
+      def for_table(name)
+        
       end
     end
   end
