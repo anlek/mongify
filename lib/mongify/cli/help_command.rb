@@ -1,6 +1,5 @@
 module Mongify
   module CLI
-
     #
     # A command to display usage information for this application.
     #

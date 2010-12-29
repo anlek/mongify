@@ -1,5 +1,4 @@
-require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'spec_helper')
-require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'lib', 'mongify', 'configuration')
+require "spec_helper"
 
 describe Mongify::Configuration do
   before(:each) do
@@ -25,14 +24,14 @@ describe Mongify::Configuration do
     context "load database config" do
       context "sql" do
         it "should load" do
-          Mongify::Database::SqlConfig.should_receive(:new)
+          Mongify::Database::SqlConnection.should_receive(:new)
           Mongify::Configuration.parse_configuration(@configuration_file)
         end
       end
 
       context "nosql" do
         it "should load" do
-          Mongify::Database::NoSqlConfig.should_receive(:new)
+          Mongify::Database::NoSqlConnection.should_receive(:new)
           Mongify::Configuration.parse_configuration(@configuration_file)
         end
       end

@@ -1,5 +1,3 @@
-require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'core_ext', 'hash')
-require 'rubygems'
 require 'active_record'
 
 module Mongify
@@ -7,7 +5,7 @@ module Mongify
     #
     # Basic configuration for any sql or non sql database
     #
-    class BaseConfig
+    class BaseConnection
 
       REQUIRED_FIELDS = %w{host}
       AVAILABLE_FIELDS = %w{adapter host username password database socket port}

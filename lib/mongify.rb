@@ -1,13 +1,11 @@
 #
 # Mongify's core functionality
 #
-require File.join(File.dirname(__FILE__), 'core_ext', 'hash')
-require File.join(File.dirname(__FILE__), 'core_ext', 'array')
+require 'core_ext/hash'
+require 'core_ext/array'
 
-require File.join(File.dirname(__FILE__), 'mongify', 'ui')
-require File.join(File.dirname(__FILE__), 'mongify', 'translation')
-require File.join(File.dirname(__FILE__), 'mongify', 'configuration')
-
-module Mongify
-
-end
+require 'mongify/ui'
+require 'mongify/exceptions'
+require 'mongify/translation'
+require 'mongify/configuration'
+require 'mongify/database'

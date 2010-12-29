@@ -6,6 +6,6 @@
 # Author: Andrew Kalek
 #
 
-require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'lib', 'mongify', 'cli', 'application')
+require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'lib', 'mongify', 'cli')
 
 exit Mongify::CLI::Application.new(ARGV).execute!

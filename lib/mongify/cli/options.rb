@@ -1,9 +1,4 @@
 require 'optparse'
-require File.join(File.dirname(File.expand_path(__FILE__)), 'report')
-#require File.join(File.dirname(File.expand_path(__FILE__)), 'translate_command')
-require File.join(File.dirname(File.expand_path(__FILE__)), 'help_command')
-require File.join(File.dirname(File.expand_path(__FILE__)), 'version_command')
-require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'configuration')
 module Mongify
   module CLI
     #

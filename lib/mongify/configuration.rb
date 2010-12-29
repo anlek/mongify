@@ -1,7 +1,3 @@
-require File.join(File.dirname(File.expand_path(__FILE__)), 'translation')
-require File.join(File.dirname(File.expand_path(__FILE__)), 'exceptions')
-require File.join(File.dirname(File.expand_path(__FILE__)), 'database', 'no_sql_config')
-require File.join(File.dirname(File.expand_path(__FILE__)), 'database', 'sql_config')
 module Mongify
   #
   #  This extracts the configuration for sql and no sql
@@ -35,13 +31,13 @@ module Mongify
     end
     
     def sql_config(options=nil, &block)
-      @sql_config ||= Mongify::Database::SqlConfig.new(options) if options || block
+      @sql_config ||= Mongify::Database::SqlConnection.new(options) if options || block
       yield @sql_config if @sql_config && block
       @sql_config
     end
     
     def no_sql_config(options=nil, &block)
-      @no_sql_config ||= Mongify::Database::NoSqlConfig.new(options) if options || block
+      @no_sql_config ||= Mongify::Database::NoSqlConnection.new(options) if options || block
       yield @no_sql_config if @no_sql_config && block
       @no_sql_config
     end

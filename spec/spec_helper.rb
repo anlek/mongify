@@ -1,5 +1,8 @@
 require 'rubygems'
 require 'yaml'
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+require 'mongify'
+require 'mongify/cli'
 
 begin
   require 'bundler'

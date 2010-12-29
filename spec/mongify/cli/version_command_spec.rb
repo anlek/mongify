@@ -1,13 +1,9 @@
-require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'spec_helper')
-require File.join(File.dirname(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__))))), 'lib', 'mongify', 'cli', 'version_command')
+require 'spec_helper'
 
-include Mongify
-include Mongify::CLI
-
-describe VersionCommand do
+describe Mongify::CLI::VersionCommand do
   before :each do
     @text = 'Piece of interesting text'
-    @cmd = VersionCommand.new(@text)
+    @cmd = Mongify::CLI::VersionCommand.new(@text)
     @view = mock('view', :null_object => true)
   end
 

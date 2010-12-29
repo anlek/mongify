@@ -1,11 +1,9 @@
-require File.join(File.dirname(File.expand_path(__FILE__)), 'base_config')
-
 module Mongify
   module Database
     #
     # No sql connection configuration
     #
-    class NoSqlConfig < Mongify::Database::BaseConfig
+    class NoSqlConnection < Mongify::Database::BaseConnection
           
       REQUIRED_FIELDS = %w{host database}  
       

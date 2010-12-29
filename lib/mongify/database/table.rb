@@ -1,5 +1,3 @@
-require File.join(File.dirname(File.expand_path(__FILE__)), 'column')
-
 module Mongify
   module Database
     #

@@ -1,6 +1,4 @@
-require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'spec_helper')
-require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'lib', 'mongify', 'translation')
-
+require 'spec_helper'
 
 describe Mongify::Translation do
   before(:all) do

@@ -1,12 +1,8 @@
-require File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'spec_helper')
-require File.join(File.dirname(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__))))), 'lib', 'mongify', 'cli', 'help_command')
-
-include Mongify::CLI
-
-describe HelpCommand do
+require 'spec_helper'
+describe Mongify::CLI::HelpCommand do
   before :each do
     @text = 'Piece of interesting text'
-    @cmd = HelpCommand.new(@text)
+    @cmd = Mongify::CLI::HelpCommand.new(@text)
     @view = mock('view', :null_object => true)
     @view.should_not_receive(:report_smells)
   end
