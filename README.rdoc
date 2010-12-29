@@ -56,9 +56,12 @@ Before you can run the specs, you need to make sure to setup the database.yml fi
 
 You need to have spec/support/database.yml present (you can copy database.example within the same folder).
 
+== Special Thanks
+Just want to thank my wife (Alessia) who not only puts up with me working on my free time but sometimes helps out listening to my craziness or helping me name classes or functions.
+
 == License
 
-Copyright (c) 2010 Andrew Kalek
+Copyright (c) 2011 Andrew Kalek, Anlek Consulting
  
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
