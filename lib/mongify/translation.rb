@@ -1,9 +1,10 @@
-require 'mongify/translation/generator'
+require 'mongify/translation/printer'
 module Mongify
   #
   # Actually runs the translation from sql to no sql
   #
   class Translation
+    include Mongify::Translation::Printer
     class << self
       def parse(file_name)
         translation = self.new
@@ -23,6 +24,11 @@ module Mongify
       #yield table if block
       @tables << table
     end
+    
+    def add_table(table)
+      @tables << table
+    end
+    
     def sql_config(options=nil, &block)
       UI.warn("sql_config should be placed in your configuration file")
     end
