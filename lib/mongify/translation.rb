@@ -1,3 +1,4 @@
+require 'mongify/translation/generator'
 module Mongify
   #
   # Actually runs the translation from sql to no sql

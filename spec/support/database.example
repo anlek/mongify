@@ -1,5 +1,5 @@
 sqlite:
-  database: spec/files/sample_db.sqlite
+  database: spec/tmp/test.sqlite
 
 mysql:
   database: mongify_test

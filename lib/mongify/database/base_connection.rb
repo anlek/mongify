@@ -58,7 +58,6 @@ module Mongify
 
       def method_missing(method, *args)
         method_name = method.to_s.gsub("=", '')
-        puts "method #{method} VS method_name #{method_name}"
         if AVAILABLE_FIELDS.include?(method_name.to_s)
           value = args.first rescue nil
           instance_eval <<-EOF

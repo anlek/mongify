@@ -20,5 +20,6 @@ end
 
 #Used to setup testing databases
 require 'support/config_reader'
+require 'support/generate_database'
 ::CONNECTION_CONFIG = ConfigReader.new(File.dirname(File.expand_path(__FILE__)) + '/support/database.yml')
 

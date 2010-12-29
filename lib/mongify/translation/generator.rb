@@ -3,7 +3,7 @@ module Mongify
     #
     # Used to generate translation from a sql_config
     #
-    class Generator
+    module Generator
       def initialize(config)
         raise "Can only generate from SqlConfig" unless config.is_a?(SqlConfig)
       end
