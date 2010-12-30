@@ -61,7 +61,6 @@ EOB
           #TODO: In the future, request sql_config and nosql_config from user input
           config = Configuration.parse(@config_file)
           
-          puts NotImplementedError
           #TranslateCommand.create(sources, @report_class, @config_files)
         end
       end

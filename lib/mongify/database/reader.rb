@@ -21,7 +21,6 @@ module Mongify
               columns << Mongify::Database::Column.new(ar_col.name, ar_col.type, :default => ar_col.default)
             end
             @translation.table(t, :columns => columns)
-            puts "table #{t}"
           end
           return @translation
         end
