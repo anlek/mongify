@@ -11,15 +11,9 @@ rescue LoadError
   puts "Need to install bundler 1.0. 'gem install bundler'"
 end
 
-begin
-  require 'spec/expectations'
-rescue LoadError
-  gem 'rspec'
-  require 'spec/expectations'
-end
+require 'rspec/core'
 
-#Used to setup testing databases
-require 'support/config_reader'
-require 'support/generate_database'
+Dir['./spec/support/**/*.rb'].map {|f| require f}
+
 ::CONNECTION_CONFIG = ConfigReader.new(File.dirname(File.expand_path(__FILE__)) + '/support/database.yml')
 

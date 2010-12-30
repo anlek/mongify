@@ -3,7 +3,8 @@ describe Mongify::CLI::HelpCommand do
   before :each do
     @text = 'Piece of interesting text'
     @cmd = Mongify::CLI::HelpCommand.new(@text)
-    @view = mock('view', :null_object => true)
+    @view = mock('view').as_null_object
+    #@view = mock('view', :null_object => true)
     @view.should_not_receive(:report_smells)
   end
 

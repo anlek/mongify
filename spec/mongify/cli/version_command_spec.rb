@@ -4,7 +4,7 @@ describe Mongify::CLI::VersionCommand do
   before :each do
     @text = 'Piece of interesting text'
     @cmd = Mongify::CLI::VersionCommand.new(@text)
-    @view = mock('view', :null_object => true)
+    @view = mock('view').as_null_object
   end
 
   it 'displays the text on the view' do

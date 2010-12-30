@@ -16,7 +16,8 @@ Gem::Specification.new do |s|
   s.add_dependency('activerecord', ">= 2.3.10")
   s.add_dependency('net-ssh', ">= 2.0")
 
-  s.add_development_dependency('rspec', '= 1.3')
+  s.add_development_dependency('rspec', '>= 2.0')
+  s.add_development_dependency('rcov', '>= 0.9.9')
   s.add_development_dependency('cucumber', '>= 0.10')
   s.add_development_dependency('mocha', '>= 0.9.8')
   s.add_development_dependency('yard', '>= 0.5.3')

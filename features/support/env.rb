@@ -2,7 +2,6 @@ $:.unshift 'lib'
 
 require 'rubygems'
 require 'tempfile'
-require 'spec/expectations'
 require 'fileutils'
 require 'mongify/cli/application'
 
