@@ -10,7 +10,7 @@ module Mongify
       STATUS_SUCCESS = 0
       STATUS_ERROR   = 1
       
-      def initialize(arguments, stdin=$stdin, stdout=$stdout)
+      def initialize(arguments=["--help"], stdin=$stdin, stdout=$stdout)
         @options = Options.new(arguments)
         @status = STATUS_SUCCESS
         Mongify::Configuration.in_stream = stdin
