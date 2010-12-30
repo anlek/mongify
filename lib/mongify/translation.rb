@@ -29,12 +29,5 @@ module Mongify
       @tables << table
     end
     
-    def sql_config(options=nil, &block)
-      UI.warn("sql_config should be placed in your configuration file")
-    end
-    def mongodb_config(options=nil, &block)
-      UI.warn("mongodb_config should be placed in your configuration file")
-    end
-    
   end
 end

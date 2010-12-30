@@ -14,7 +14,7 @@ module Mongify
         if options
           options.stringify_keys!
           options.each do |key, value|
-            instance_variable_set "@#{key}", value
+             instance_variable_set "@#{key}", value
           end
         end
       end
