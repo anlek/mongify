@@ -8,6 +8,8 @@ vendor/gems/specifications
 vendor/gems/doc
 vendor/gems/environment.rb
 
+coverage.data
+
 spec/tmp/*
 
 .idea/*
