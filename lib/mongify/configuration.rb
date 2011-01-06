@@ -24,22 +24,22 @@ module Mongify
 
     end #self
     
-    def mongodb_config(options={}, &block)
+    def mongodb_connection(options={}, &block)
       options.stringify_keys!
       options['adapter'] ||= 'mongodb'
-      no_sql_config(options, &block)
+      no_sql_connection(options, &block)
     end
     
-    def sql_config(options=nil, &block)
-      @sql_config ||= Mongify::Database::SqlConnection.new(options) if options || block
-      yield @sql_config if @sql_config && block
-      @sql_config
+    def sql_connection(options={}, &block)
+      @sql_connection ||= Mongify::Database::SqlConnection.new(options)
+      @sql_connection.instance_eval(&block) if block_given?
+      @sql_connection
     end
     
-    def no_sql_config(options=nil, &block)
-      @no_sql_config ||= Mongify::Database::NoSqlConnection.new(options) if options || block
-      yield @no_sql_config if @no_sql_config && block
-      @no_sql_config
+    def no_sql_connection(options={}, &block)
+      @no_sql_connection ||= Mongify::Database::NoSqlConnection.new(options)
+      @no_sql_connection.instance_eval(&block) if block_given?
+      @no_sql_connection
     end
     
   end

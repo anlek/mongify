@@ -1,9 +1,9 @@
-sql_config do |s|
-  s.adapter =  :sqlite3
-  s.database = 'spec/files/sample_db.sqlite'
+sql_connection do
+  adapter =  :sqlite3
+  database = 'spec/tmp/test.sqlite'
 end
 
-mongodb_config do |m|
-  m.host =        '127.0.0.1'
-  m.collection =  'my_collection'
+mongodb_connection do
+  host =        '127.0.0.1'
+  collection =  'my_collection'
 end

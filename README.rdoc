@@ -16,15 +16,15 @@ Learn more about mongoDB at: http://www.mongodb.org
 
 Build a config file such as:
 
-  sql_config do |s|
-    s.adaptor :mysql
-    s.host "localhost"
-    s.database "my_database"
+  sql_connection do
+    adaptor = "mysql"
+    host = "localhost"
+    database = "my_database"
   end
 
-  mongodb_config do |m|
-    m.host = 'localhost'
-    m.database = 'my_collection'
+  mongodb_config do
+    host = 'localhost'
+    database = 'my_collection'
   end
 
 Build a translation file such as:

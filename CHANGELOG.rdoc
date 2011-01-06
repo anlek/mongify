@@ -1,3 +1,5 @@
+== 0.0.4 / In Development
+* Switched the way connection files are written out.
 == 0.0.3 / 28 Dec 2010
 * Switched gemspec generation to raw gemspec and added Bundler for easier development
 * Added LICENSE
