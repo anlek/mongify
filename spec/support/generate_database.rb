@@ -6,7 +6,7 @@ class GenerateDatabase
     File.delete(@db_path) if File.exists?(@db_path)
     #SETUP DATABASE
     ActiveRecord::Base.establish_connection(
-      :adapter => "sqlite3",
+      :adapter => CONNECTION_CONFIG.sqlite['adapter'],
       :database => @db_path
     )
 

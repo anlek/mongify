@@ -50,6 +50,8 @@ You just need bundler 1.0
   
   gem install bundler
   bundle install
+  copy over spec/support/database.example to spec/support/database.yml and fill in required info
+  rake test:mysql:setup
 
 === Setup
 Before you can run the specs, you need to make sure to setup the database.yml file with your database info

@@ -1,7 +1,9 @@
 sqlite:
+  adapter: sqlite3
   database: spec/tmp/test.sqlite
 
 mysql:
+  adapter: mysql
   database: mongify_test
   username: root
   password: passw0rd
