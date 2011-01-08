@@ -17,14 +17,14 @@ Learn more about mongoDB at: http://www.mongodb.org
 Build a config file such as:
 
   sql_connection do
-    adaptor = "mysql"
-    host = "localhost"
-    database = "my_database"
+    adaptor "mysql"
+    host "localhost"
+    database "my_database"
   end
 
   mongodb_config do
-    host = 'localhost'
-    database = 'my_collection'
+    host 'localhost'
+    database 'my_collection'
   end
 
 Build a translation file such as:
@@ -58,6 +58,8 @@ You need to have spec/support/database.yml present (you can copy database.exampl
 
 == Special Thanks
 Just want to thank my wife (Alessia) who not only puts up with me working on my free time but sometimes helps out listening to my craziness or helping me name classes or functions.
+=== More Special Thanks
+I'd like to thank Mon_Ouie on the Ruby IRC channel for helping me figure out how to setup the internal configuration file reading.
 
 == License
 

@@ -21,21 +21,5 @@ describe Mongify::Configuration do
       lambda { Mongify::Configuration.parse_configuration("../missing_file.rb") }.should raise_error(Mongify::FileNotFound)
     end
 
-    context "load database config" do
-      context "sql" do
-        it "should load" do
-          Mongify::Database::SqlConnection.should_receive(:new)
-          Mongify::Configuration.parse_configuration(@configuration_file)
-        end
-      end
-
-      context "nosql" do
-        it "should load" do
-          Mongify::Database::NoSqlConnection.should_receive(:new)
-          Mongify::Configuration.parse_configuration(@configuration_file)
-        end
-      end
-    end
-
   end
 end

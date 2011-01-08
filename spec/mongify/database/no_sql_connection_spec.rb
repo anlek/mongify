@@ -18,8 +18,8 @@ describe Mongify::Database::NoSqlConnection do
   
   context "connection string" do
     before(:each) do
-      @mongodb_config.host = @host
-      @mongodb_config.database = @database
+      @mongodb_config.host @host
+      @mongodb_config.database @database
     end
     
     it "without username and password should render correctly" do
@@ -27,14 +27,14 @@ describe Mongify::Database::NoSqlConnection do
     end
     
     it "with username and password should render correctly" do
-      @mongodb_config.username = 'bob'
-      @mongodb_config.password = 'secret'
+      @mongodb_config.username 'bob'
+      @mongodb_config.password 'secret'
       @mongodb_config.connection_string.should == "mongo://bob:secret@#{@host}/#{@database}"
     end
   end
   
   it "should set database name when setting collection" do
-    @mongodb_config.collection = 'boss'
+    @mongodb_config.collection 'boss'
     @mongodb_config.to_hash[:database].should == 'boss'
   end
   

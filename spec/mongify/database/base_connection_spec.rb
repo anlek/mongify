@@ -11,7 +11,8 @@ describe Mongify::Database::BaseConnection do
 
   context "validation" do
     it "should be true" do
-      @base_connection.host = 'localhost'
+      @base_connection.host 'localhost'
+      @base_connection.host.should == "localhost"
       @base_connection.should be_valid
     end
 
@@ -36,7 +37,7 @@ describe Mongify::Database::BaseConnection do
   end
 
   it "should force adaptor to a string" do
-    @base_connection.adapter = :sqlite
+    @base_connection.adapter :sqlite
     @base_connection.adapter.should == 'sqlite'
   end
 
@@ -47,12 +48,12 @@ describe Mongify::Database::BaseConnection do
       @database = 'test_database'
     end
     it "should give settings in a hash" do
-      @sql_config = Mongify::Database::BaseConnection.new(:adapter => @adapter, :host => @host, :database => @database)
-      @sql_config.to_hash.should == {:adapter => @adapter, :host => @host, :database => @database}
+      @sql_connection = Mongify::Database::BaseConnection.new(:adapter => @adapter, :host => @host, :database => @database)
+      @sql_connection.to_hash.should == {:adapter => @adapter, :host => @host, :database => @database}
     end
     it "should setup from constructor hash" do
-      @sql_config = Mongify::Database::BaseConnection.new(:adapter => @adapter, :host => @host, :database => @database)
-      @sql_config.to_hash.should == {:adapter => @adapter, :host => @host, :database => @database}
+      @sql_connection = Mongify::Database::BaseConnection.new(:adapter => @adapter, :host => @host, :database => @database)
+      @sql_connection.to_hash.should == {:adapter => @adapter, :host => @host, :database => @database}
     end
   end
 end

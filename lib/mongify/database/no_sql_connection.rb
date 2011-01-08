@@ -12,8 +12,9 @@ module Mongify
         @adapter = 'mongo'
       end
       
-      def collection=(value)
-        @database = value
+      def collection(value=nil)
+        @database ||= value
+        @database
       end
       
       def connection_string

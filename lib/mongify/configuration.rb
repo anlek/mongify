@@ -32,13 +32,13 @@ module Mongify
     
     def sql_connection(options={}, &block)
       @sql_connection ||= Mongify::Database::SqlConnection.new(options)
-      @sql_connection.instance_eval(&block) if block_given?
+      @sql_connection.instance_exec(&block) if block_given?
       @sql_connection
     end
     
     def no_sql_connection(options={}, &block)
       @no_sql_connection ||= Mongify::Database::NoSqlConnection.new(options)
-      @no_sql_connection.instance_eval(&block) if block_given?
+      @no_sql_connection.instance_exec(&block) if block_given?
       @no_sql_connection
     end
     
