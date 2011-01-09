@@ -1,9 +1,0 @@
-CHANGELOG.rdoc
-Manifest
-README.rdoc
-Rakefile
-bin/mongify
-lib/mongify.rb
-lib/mongify/version.rb
-mongify.gemspec
-spec/spec_helper.rb
