@@ -35,6 +35,9 @@ module Mongify
       def report_success
         @status = STATUS_SUCCESS
       end
+      def report_error
+        @status = STATUS_ERROR
+      end
     end
   end
 end

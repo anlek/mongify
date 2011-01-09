@@ -45,9 +45,9 @@ module Mongify
         raise NotImplementedError
       end
 
-      attr_reader :adapter
-      def adapter=(value)
-        @adapter = value.to_s
+      def adapter(value=nil)
+        @adapter = value.to_s unless value.nil?
+        @adapter
       end
 
 
@@ -57,18 +57,16 @@ module Mongify
       end
 
       def method_missing(method, *args)
-        method_name = method.to_s.gsub("=", '')
+        method_name = method.to_s #.gsub("=", '')
         if AVAILABLE_FIELDS.include?(method_name.to_s)
           value = args.first rescue nil
-          instance_eval <<-EOF
-                          def #{method_name}=(new_value)
-                            @#{method_name}=new_value
-                          end
-                          def #{method_name}
+          class_eval <<-EOF
+                          def #{method_name}(value=nil)
+                            @#{method_name} = value unless value.nil?
                             @#{method_name}
                           end
                         EOF
-          send(method, value)
+          send(method,value)
         else
           super(method, args)
         end

@@ -4,6 +4,11 @@ require 'rubygems'
 require 'tempfile'
 require 'fileutils'
 require 'mongify/cli/application'
+require 'spec/support/generate_database'
+require 'spec/support/config_reader'
+
+::CONNECTION_CONFIG = ConfigReader.new(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))) + '/spec/support/database.yml')
+::DATABASE_PRINT = File.read(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))) + '/spec/support/database_output.txt')
 
 class MongifyWorld
   def run(cmd)

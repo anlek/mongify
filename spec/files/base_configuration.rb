@@ -1,5 +1,5 @@
 sql_connection do
-  adapter     :sqlite3
+  adapter     'sqlite3'
   database    'spec/tmp/test.sqlite'
 end
 

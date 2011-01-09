@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Mongify::Database::Reader do
   before(:each) do
-    #TODO: make sure sqlite database exists
     @db_path = GenerateDatabase.run
     @sql_connection = Mongify::Database::SqlConnection.new(:adapter => 'sqlite3', :database => @db_path)
+    @reader = Mongify::Database::Reader.new(@sql_connection)
   end
   
   context "connection parameter" do
@@ -17,18 +17,19 @@ describe Mongify::Database::Reader do
     end
   end
   
-  context "read" do
-    before(:each) do
-      @reader = Mongify::Database::Reader.new(@sql_connection)
-    end
-    
+  it "should return a translation" do
+    translation = @reader.translation
+    translation.should be_a(Mongify::Translation)
+  end
+  
+  context "print" do
     it "should run" do
-      lambda { @reader.read }.should_not raise_error
+      lambda { @reader.print }.should_not raise_error
     end
     
-    it "should return a translation" do
-      translation = @reader.read
-      translation.should be_a(Mongify::Translation)
+    it "should output correct database format" do
+      output = @reader.print
+      output.should == (DATABASE_PRINT)
     end
   end
   

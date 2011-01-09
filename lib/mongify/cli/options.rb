@@ -20,9 +20,9 @@ Usage: #{progname} [command] database.config [database_translation.rb]
 
 Examples:
 
-#{progname} check datbase.config
-#{progname} process database.config database_translation.rb
-#{progname} process -q database.config database_translation.rb
+#{progname} translate -c datbase.config
+#{progname} t -c database.config
+#{progname} process -c database.config database_translation.rb
 
 See http://github.com/anlek/mongify for more details
 
@@ -58,21 +58,22 @@ EOB
           VersionCommand.new(@parser.program_name)
         else
           raise ConfigurationFileNotFound unless @config_file
-          #TODO: In the future, request sql_config and nosql_config from user input
+          #TODO: In the future, request sql_connection and nosql_connection from user input
           config = Configuration.parse(@config_file)
           
-          #TranslateCommand.create(sources, @report_class, @config_files)
+          WorkerCommand.new(@argv[0], config, translation_file)
         end
       end
       
       private
       
-      def extract_configuration_file(argv=@argv)
-        argv.first
-      end
-      def extract_translation_file(argv=@argv)
+      def translation_file(argv=@argv)
         return nil if argv.length < 2
         argv[1]
+      end
+      
+      def action(argv=@argv)
+        @argv.try(:[],0) || ''
       end
             
       

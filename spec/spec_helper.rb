@@ -17,3 +17,6 @@ Dir['./spec/support/**/*.rb'].map {|f| require f}
 
 ::CONNECTION_CONFIG = ConfigReader.new(File.dirname(File.expand_path(__FILE__)) + '/support/database.yml')
 
+Mongify.root = File.dirname(File.dirname(__FILE__))
+
+::DATABASE_PRINT = File.read(File.dirname(File.expand_path(__FILE__)) + '/support/database_output.txt')

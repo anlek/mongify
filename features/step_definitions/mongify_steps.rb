@@ -15,6 +15,7 @@ Then /^stderr reports:$/ do |report|
 end
 
 Then /^it succeeds$/ do
+  puts @last_stderr if @last_stderr
   @last_exit_status.should == Mongify::CLI::Application::STATUS_SUCCESS
 end
 
@@ -28,4 +29,14 @@ end
 
 Then /^it reports the error ['"](.*)['"]$/ do |string|
   @last_stderr.chomp.should == string
+end
+
+
+
+Given /^a database exists$/ do
+  GenerateDatabase.run
+end
+
+Then /^it should print out the database schema$/ do
+  @last_stdout.should == DATABASE_PRINT
 end

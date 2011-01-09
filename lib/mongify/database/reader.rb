@@ -8,23 +8,47 @@ module Mongify
       end
       
       def connection=(value)
-        @translation = nil
+        reset
         @connection=value
+        @connection.has_connection?
+        @connection
       end
       
-      def read
-        if connection.has_connection?
-          @translation = Mongify::Translation.new
-          connection.tables.each do |t|
-            columns = []
-            connection.columns_for(t).each do |ar_col|
-              columns << Mongify::Database::Column.new(ar_col.name, ar_col.type, :default => ar_col.default)
-            end
-            @translation.table(t, :columns => columns)
+      def print
+        ''.tap do |output|
+          translation.tables.each do |t|
+            output << %Q[table "#{t.name}" do\n]
+              t.columns.each do |c|
+                output << %Q[\tcolumn "#{c.name}", :#{c.type}#{ ", :default => #{c.options[:default]}" if c.options[:default]}\n]
+              end
+            output << "end\n\n"
           end
-          return @translation
         end
       end
-    end
+      
+      def translation
+        return @translation if @translation
+        @translation = Mongify::Translation.new
+        connection.tables.each do |t|
+          columns = []
+          connection.columns_for(t).each do |ar_col|
+            columns << Mongify::Database::Column.new(ar_col.name, ar_col.type, :default => ar_col.default)
+          end
+          @translation.table(t, :columns => columns)
+        end
+        @translation
+      end
+      
+      def reset
+        @translation = nil
+      end
+      
+      #######
+      private
+      #######
+
+      
+
+    end #Reader
   end
 end

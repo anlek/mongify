@@ -11,9 +11,8 @@ describe Mongify::Database::SqlConnection do
 
   context "Sqlite 3 config" do
     before(:each) do
-      @adapter = 'sqlite'
-      @database = @db_path
-      @sql_connection = Mongify::Database::SqlConnection.new(:adapter => @adapter, :database => @database)
+      @adapter = 'sqlite3'
+      @sql_connection = Mongify::Database::SqlConnection.new(:adapter => @adapter, :database => @db_path)
     end
 
     context "valid?" do
