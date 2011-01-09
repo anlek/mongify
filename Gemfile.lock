@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    Mongify (0.0.3)
+    mongify (0.0.4)
       activerecord (>= 2.3.10)
       net-ssh (>= 2.0)
 
@@ -45,10 +45,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  Mongify!
   activerecord (>= 2.3.10)
   cucumber (>= 0.10)
   mocha (>= 0.9.8)
+  mongify!
   mysql (>= 2.8.1)
   net-ssh (>= 2.0)
   rcov (>= 0.9.9)
