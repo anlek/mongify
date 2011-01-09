@@ -22,11 +22,11 @@ Feature: Mongify can be controlled using command-line options
       Usage: mongify [command] database.config [database_translation.rb]
 
       Examples:
-
-      mongify check datbase.config
-      mongify process database.config database_translation.rb
-      mongify process -q database.config database_translation.rb
-
+			
+			mongify translate -c datbase.config
+			mongify t -c database.config
+			mongify process -c database.config database_translation.rb
+      
       See http://github.com/anlek/mongify for more details
 
       Common options:

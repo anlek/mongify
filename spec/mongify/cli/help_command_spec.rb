@@ -4,8 +4,6 @@ describe Mongify::CLI::HelpCommand do
     @text = 'Piece of interesting text'
     @cmd = Mongify::CLI::HelpCommand.new(@text)
     @view = mock('view').as_null_object
-    #@view = mock('view', :null_object => true)
-    @view.should_not_receive(:report_smells)
   end
 
   it 'displays the correct text on the view' do
