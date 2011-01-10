@@ -59,13 +59,13 @@ module Mongify
       def method_missing(method, *args)
         method_name = method.to_s #.gsub("=", '')
         if AVAILABLE_FIELDS.include?(method_name.to_s)
-          value = args.first rescue nil
           class_eval <<-EOF
                           def #{method_name}(value=nil)
                             @#{method_name} = value unless value.nil?
                             @#{method_name}
                           end
                         EOF
+          value = args.first if args.size > 0
           send(method,value)
         else
           super(method, args)

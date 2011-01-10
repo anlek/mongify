@@ -15,15 +15,7 @@ module Mongify
       end
       
       def print
-        ''.tap do |output|
-          translation.tables.each do |t|
-            output << %Q[table "#{t.name}" do\n]
-              t.columns.each do |c|
-                output << %Q[\tcolumn "#{c.name}", :#{c.type}#{ ", :default => #{c.options[:default]}" if c.options[:default]}\n]
-              end
-            output << "end\n\n"
-          end
-        end
+        Mongify::Translation.load(self.connection).print
       end
       
       def translation

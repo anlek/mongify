@@ -17,17 +17,18 @@ describe Mongify::Translation do
     subject{@translation}
 
     it "should output correctly" do
-      subject.print.should == %Q{table "users" do
-  column "first_name", :string
-  column "age", :integer, "default"=>18
-  column "bio", :text
+      subject.print.should == <<-EOF 
+table "users" do
+\tcolumn "first_name", :string
+\tcolumn "age", :integer, :default => "18"
+\tcolumn "bio", :text
 end
 
 table "posts" do
-  column "id", :integer
+\tcolumn "id", :key
 end
 
-}
+EOF
     end
   end
 end

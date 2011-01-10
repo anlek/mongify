@@ -6,14 +6,41 @@ describe Mongify::Translation do
     @translation = Mongify::Translation.parse(@file_path)
   end
   
+  context "self.load" do
+    it "should require connection" do
+      lambda {Mongify::Translation.load}.should raise_error(ArgumentError)
+    end
+    it "should only take sql_connections" do
+      lambda {Mongify::Translation.load("Something else")}.should raise_error(Mongify::SqlConnectionRequired)
+    end
+    context "translation" do
+      before(:each) do
+        @connection = Mongify::Database::SqlConnection.new
+        @connection.stub(:has_connection?).and_return(true)
+        @connection.stub(:tables).and_return(['users'])
+        col = mock(:name => 'first_name', :type => 'string', :default => nil)
+        @connection.stub(:columns_for).and_return([col])
+      end
+      it "should return a translation" do
+        Mongify::Translation.load(@connection).should be_a(Mongify::Translation)
+      end
+      it "should have 1 table" do
+        Mongify::Translation.load(@connection).tables.should have(1).table
+      end
+      it "should have 1 column for the table" do
+        Mongify::Translation.load(@connection).tables.first.columns.should have(1).column
+      end
+    end
+  end
+  
   context "parsed content" do
     context "tables" do
       it "should have 3 tables" do
         @translation.should have(3).tables
       end
       
-      it "should setup 'user_accounts'" do
-        table = @translation.tables.find{|t| t.name == 'user_accounts'}
+      it "should setup 'comments'" do
+        table = @translation.tables.find{|t| t.name == 'comments'}
         table.should_not be_nil
         table.options.keys.should_not be_empty
       end

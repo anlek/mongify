@@ -17,8 +17,7 @@ module Mongify
         case @command
         when 't', 'translation'
           check_configuration
-          reader = Mongify::Database::Reader.new(@config.sql_connection)
-          view.output(reader.print)
+          view.output(Mongify::Translation.load(@config.sql_connection).print)
         else
           view.output("Unknown action #{@command}")
           view.report_error
