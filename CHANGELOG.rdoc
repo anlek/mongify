@@ -3,6 +3,7 @@
 * Fixed issue with Configuration File reader
 * Added a Rake task to setup a mysql database for testing (for development only)
 * Added a way to create a translation file from a sql configuration
+* Added a printer ability for translation and command
 == 0.0.3 / 28 Dec 2010
 * Switched gemspec generation to raw gemspec and added Bundler for easier development
 * Added LICENSE
