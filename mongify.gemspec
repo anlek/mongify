@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.default_executable = "mongify"
 
   s.add_dependency('activerecord', ">= 2.3.10")
+  s.add_dependency('activesupport', ">= 2.3.10")
   s.add_dependency('net-ssh', ">= 2.0")
 
   s.add_development_dependency('rspec', '>= 2.0')
