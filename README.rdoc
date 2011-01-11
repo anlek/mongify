@@ -22,7 +22,7 @@ Build a config file such as:
     database "my_database"
   end
 
-  mongodb_config do
+  mongodb_connection do
     host 'localhost'
     database 'my_collection'
   end
@@ -39,8 +39,8 @@ Build a translation file such as:
 
 Save the file as <tt>"my_database_translation.rb"</tt> and run the command:
 
-  mongify check datbase.config
-  mongify process database.config database_translation.rb
+  mongify check -c datbase.config
+  mongify process database_translation.rb -c database.config
   
 **this is subject to change at any time**
   
@@ -54,9 +54,8 @@ You just need bundler 1.0
   rake test:mysql:setup
 
 === Setup
-Before you can run the specs, you need to make sure to setup the database.yml file with your database info
-
-You need to have spec/support/database.yml present (you can copy database.example within the same folder).
+Before you can run the specs, you need to make sure to setup the spec/support/database.yml file with your database info
+(you can copy database.example within the same folder).
 
 == Special Thanks
 Just want to thank my wife (Alessia) who not only puts up with me working on my free time but sometimes helps out listening to my craziness or helping me name classes or functions.
