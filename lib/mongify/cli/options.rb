@@ -18,6 +18,9 @@ module Mongify
         return <<EOB
 Usage: #{progname} [command] database.config [database_translation.rb]
 
+Commands:
+#{Mongify::CLI::WorkerCommand.list_commands.join("\n")}
+
 Examples:
 
 #{progname} translate -c datbase.config
@@ -61,7 +64,7 @@ EOB
           #TODO: In the future, request sql_connection and nosql_connection from user input
           config = Configuration.parse(@config_file)
           
-          WorkerCommand.new(@argv[0], config, translation_file)
+          WorkerCommand.new(@argv[0], config, translation_file, @parser)
         end
       end
       
