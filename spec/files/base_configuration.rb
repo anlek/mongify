@@ -5,5 +5,5 @@ end
 
 mongodb_connection do
   host          '127.0.0.1'
-  collection    'my_collection'
+  database      'mongify_test'
 end

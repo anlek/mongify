@@ -9,3 +9,9 @@ mysql:
   password: passw0rd
   host: localhost
   port: 3306
+
+mongo:
+  adapter: mongo
+  database: mongify_test
+  host: localhost
+  port: 27017
