@@ -6,7 +6,7 @@ module Mongify
     class Column
       attr_reader :name, :type, :options
       
-      ::AVAILABLE_OPTIONS = ['references', 'default']
+      AVAILABLE_OPTIONS = ['references', 'default']
 
       def initialize(name, type=:string, *args)
         @name = name

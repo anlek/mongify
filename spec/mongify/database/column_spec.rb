@@ -26,7 +26,7 @@ describe Mongify::Database::Column do
       @column.references.should == "users"
     end
 
-    it "should not allow to be set unless they're in the ::AVAILABLE_OPTIONS" do
+    it "should not allow to be set unless they're in the AVAILABLE_OPTIONS" do
       @column = Mongify::Database::Column.new('first_name')
       lambda { @column.unknown = "users" }.should raise_error(NoMethodError)
     end

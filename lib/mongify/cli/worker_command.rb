@@ -7,20 +7,20 @@ module Mongify
     class WorkerCommand
       attr_accessor :view
       
-      ::AVAILABLE_COMMANDS = {
+      AVAILABLE_COMMANDS = {
                                 :check => {:commands => ['check', 'ck'], :description => "Checks connection for sql and no_sql databases", :required => [:configuration_file]},
                                 :translation => {:commands => ['translation', 'tr'], :description => "Spits out translation from a sql connection", :requires => [:configuration_file]}
                               }
       def self.list_commands
         [].tap do |commands|
-          ::AVAILABLE_COMMANDS.each do |key, obj|
+          AVAILABLE_COMMANDS.each do |key, obj|
             commands << " #{obj[:commands].map{|w| %["#{w}"]}.to_sentence(:two_words_connector => ' or ', :last_word_connector => ', or ')}     >> #{obj[:description]}#{ " [#{obj[:required]}]" if obj[:required]}"
           end
         end.sort
       end
                               
       def self.compute_command(command)
-        ::AVAILABLE_COMMANDS.each do |key, options|
+        AVAILABLE_COMMANDS.each do |key, options|
           return key if(options[:commands].include?(command.to_s.downcase))
         end
         'unknown'
