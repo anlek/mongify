@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Mongify::Database::SqlConnection do
   before(:all) do
-    @db_path = GenerateDatabase.run
+    @db_path = GenerateDatabase.sqlite
   end
 
   before(:each) do

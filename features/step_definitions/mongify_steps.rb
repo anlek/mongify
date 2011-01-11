@@ -34,7 +34,7 @@ end
 
 
 Given /^a database exists$/ do
-  GenerateDatabase.run
+  GenerateDatabase.sqlite
 end
 
 Then /^it should print out the database schema$/ do

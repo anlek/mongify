@@ -1,6 +1,6 @@
 require 'active_record'
 class GenerateDatabase
-  def self.run
+  def self.sqlite
     @db_path = File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), CONNECTION_CONFIG.sqlite['database'])
     
     File.delete(@db_path) if File.exists?(@db_path)
