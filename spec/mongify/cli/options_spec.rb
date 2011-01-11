@@ -16,6 +16,31 @@ describe Mongify::CLI::Options do
     @options.instance_variable_get(:@command_class).should == Mongify::CLI::VersionCommand  
   end
   
+  context "action" do
+    it "should get action command" do
+      @options = Mongify::CLI::Options.new(['check'])
+      @options.send(:action).should == 'check'
+    end
+    
+    it "should return blank if no action is sent" do
+      @options = Mongify::CLI::Options.new(['-v'])
+      @options.send(:action).should == ''
+    end
+  end
+  
+  context "translation" do
+    it "should return path" do
+      @options = Mongify::CLI::Options.new(['check', '-c', 'some/config', 'some/folder/translation'])
+      @options.send(:translation_file).should == 'some/folder/translation'
+    end
+    
+    it "should return nil if no path specified" do
+      @options = Mongify::CLI::Options.new(['check', '-c', 'some/config'])
+      @options.send(:translation_file).should be_nil
+    end
+  end
+  
+  
   context "Configuration file" do
     it "should take option (-c) with a file" do
       @options = Mongify::CLI::Options.new(['-c', @config_file])

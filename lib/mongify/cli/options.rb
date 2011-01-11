@@ -6,11 +6,13 @@ module Mongify
     #
     class Options
       def initialize(argv)
+        @parsed = false
         @argv = argv
         @parser = OptionParser.new
         @report_class = VerboseReport
         #@command_class = ReekCommand
         set_options
+        
       end
       
       def banner
@@ -53,7 +55,7 @@ EOB
       end
 
       def parse
-        @parser.parse!(@argv)
+        parse_options
         
         if @command_class == HelpCommand
           HelpCommand.new(@parser)
@@ -71,14 +73,20 @@ EOB
       private
       
       def translation_file(argv=@argv)
+        parse_options
         return nil if argv.length < 2
         argv[1]
       end
       
       def action(argv=@argv)
+        parse_options
         @argv.try(:[],0) || ''
       end
             
+      def parse_options
+        @parsed = true && @parser.parse!(@argv) unless @parsed
+      end      
+      
       
     end
   end
