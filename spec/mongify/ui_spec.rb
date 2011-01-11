@@ -52,4 +52,22 @@ describe Mongify::UI do
     @ui.stub(:request).and_return('aklhasdf')
     @ui.ask("foo?").should be_false
   end
+  
+  it "should add WARNING to a warn message" do
+    @ui.warn "hello"
+    @out.string.should == "WARNING: hello\n"
+  end
+  
+  context "abort" do
+    it "should abort program execution" do
+      Kernel.should_receive(:abort)
+      @ui.abort "hacker!"
+    end
+    
+    it "should output message" do
+      Kernel.stub(:abort)
+      @ui.abort "hacker!"
+      @out.string.should == "PROGRAM HALT: hacker!\n"
+    end
+  end
 end

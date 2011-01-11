@@ -30,8 +30,8 @@ module Mongify
       end
       
       def abort(message)
-        UI.puts message
-        abort
+        UI.puts "PROGRAM HALT: #{message}"
+        Kernel.abort message
       end
       
       def in_stream
