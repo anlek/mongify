@@ -4,6 +4,7 @@ require 'rubygems'
 require 'tempfile'
 require 'fileutils'
 require 'mongify/cli/application'
+require 'mongify'
 require 'spec/support/generate_database'
 require 'spec/support/config_reader'
 
