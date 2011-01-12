@@ -71,11 +71,7 @@ describe Mongify::Database::NoSqlConnection do
   
   describe "working connection" do
     before(:each) do
-      @mongodb_connection = Mongify::Database::NoSqlConnection.new(:host => CONNECTION_CONFIG.mongo['host'],
-                                                                   :port => CONNECTION_CONFIG.mongo['port'],
-                                                                   :database => CONNECTION_CONFIG.mongo['database'],
-                                                                   :username => CONNECTION_CONFIG.mongo['username'],
-                                                                   :password => CONNECTION_CONFIG.mongo['password'])
+      @mongodb_connection = GenerateDatabase.mongo_connection
     end
     
     it "should work" do

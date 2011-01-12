@@ -30,13 +30,7 @@ describe Mongify::Database::SqlConnection do
 
   context "MySql config" do
     before(:each) do
-      @adapter = 'mysql'
-      @host = CONNECTION_CONFIG.mysql['host']
-      @database = CONNECTION_CONFIG.mysql['database']
-      @username = CONNECTION_CONFIG.mysql['username']
-      @password = CONNECTION_CONFIG.mysql['password']
-      @port = CONNECTION_CONFIG.mysql['port']
-      @sql_connection = Mongify::Database::SqlConnection.new(:adapter => @adapter, :host => @host, :database => @database, :username => @username, :password => @password, :port => @port)
+      @sql_connection = GenerateDatabase.mysql_connection
     end
 
     context "valid?" do
