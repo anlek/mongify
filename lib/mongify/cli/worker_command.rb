@@ -14,7 +14,7 @@ module Mongify
       def self.list_commands
         [].tap do |commands|
           AVAILABLE_COMMANDS.each do |key, obj|
-            commands << " #{obj[:commands].map{|w| %["#{w}"]}.to_sentence(:two_words_connector => ' or ', :last_word_connector => ', or ')}     >> #{obj[:description]}#{ " [#{obj[:required]}]" if obj[:required]}"
+            commands << " #{obj[:commands].map{|w| %["#{w}"]}.to_sentence(:two_words_connector => ' or ', :last_word_connector => ', or ').ljust(25)} >> #{obj[:description]}#{ " [#{obj[:required]}]" if obj[:required]}"
           end
         end.sort
       end
