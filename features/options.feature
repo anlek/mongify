@@ -19,7 +19,7 @@ Feature: Mongify can be controlled using command-line options
     Then it succeeds
     And it reports:
       """
-      Usage: mongify [command] database.config [database_translation.rb]
+      Usage: mongify command [database_translation.rb] [-c database.config]
 			
 			Commands:
 			"check" or "ck"           >> Checks connection for sql and no_sql databases [configuration_file]

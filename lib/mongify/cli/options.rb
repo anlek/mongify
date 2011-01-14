@@ -18,7 +18,7 @@ module Mongify
       def banner
         progname = @parser.program_name
         return <<EOB
-Usage: #{progname} [command] database.config [database_translation.rb]
+Usage: #{progname} command [database_translation.rb] [-c database.config]
 
 Commands:
 #{Mongify::CLI::WorkerCommand.list_commands.join("\n")}
