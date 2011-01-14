@@ -26,19 +26,28 @@ module Mongify
         false
       end
 
+      def has_connection?
+        setup_connection_adapter
+        connection.send(:connect) if ActiveRecord::Base.connection.respond_to?(:connect)
+        true
+      end
+      
+      def connection
+        return nil unless has_connection?
+        ActiveRecord::Base.connection
+      end
+      
       def tables
         return nil unless has_connection?
-        ActiveRecord::Base.connection.tables
+        self.connection.tables
       end
 
       def columns_for(table_name)
-        ActiveRecord::Base.connection.columns(table_name)
+        self.connection.columns(table_name)
       end
-
-      def has_connection?
-        setup_connection_adapter
-        ActiveRecord::Base.connection.send(:connect) if ActiveRecord::Base.connection.respond_to?(:connect)
-        true
+      
+      def select_rows(table_name)
+        self.connection.select_rows("SELECT * FROM #{table_name}")
       end
 
       #######

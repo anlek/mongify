@@ -33,7 +33,17 @@ module Mongify
       end
       
       def find_column(name)
-        @columns.find{ |col| col.name == name }
+        #OPTIMIZE: Possible to add hash with column name, pointing to the index of the @columns array
+        self.columns.find{ |col| col.name.downcase == name.downcase }
+      end
+      
+      def translate(row)
+        new_row = {}
+        row.each do |key, value|
+          c = find_column(key)
+          new_row.merge!(c.present? ? c.translate(value) : {"#{key}" => value})
+        end
+        new_row
       end
             
       #######

@@ -6,6 +6,7 @@
 * Added a printer ability for translation and command
 * Added MongoDB connection
 * Improved test coverage
+* Added the first version of processing command (very basic)
 == 0.0.3 / 28 Dec 2010
 * Switched gemspec generation to raw gemspec and added Bundler for easier development
 * Added LICENSE

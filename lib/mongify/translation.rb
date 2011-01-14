@@ -1,10 +1,14 @@
 require 'mongify/translation/printer'
+require 'mongify/translation/process'
 module Mongify
   #
   # Actually runs the translation from sql to no sql
   #
   class Translation
-    include Mongify::Translation::Printer
+    attr_reader :tables, :sql_connection, :no_sql_connection
+    
+    include Printer
+    include Process
     class << self
       def parse(file_name)
         translation = self.new
@@ -27,7 +31,6 @@ module Mongify
       end
     end
     
-    attr_reader :tables
     
     def initialize
       @tables = []

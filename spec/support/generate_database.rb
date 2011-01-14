@@ -14,8 +14,9 @@ class GenerateDatabase
     
     @sqlite_connecton ||= Mongify::Database::SqlConnection.new(:adapter => CONNECTION_CONFIG.sqlite['adapter'], :database => @db_path)
   end
-  def self.sqlite
-    File.delete(sqlite_connection.database) if File.exists?(sqlite_connection.database)
+  def self.sqlite(include_data=true)
+    puts ">\n\n>>sqlite_connection.database: #{sqlite_connection.database} :: Exists? #{File.exists?(sqlite_connection.database)}"
+    puts ("DELETING>>>>") && File.delete(sqlite_connection.database) if File.exists?(sqlite_connection.database)
 
     conn = sqlite_connection.connection
 
@@ -40,6 +41,38 @@ class GenerateDatabase
       t.timestamps
     end
     
+    if include_data
+      
+      #Users
+      [ 
+        {:first_name => 'Timmy', :last_name => 'Zuza'},
+        {:first_name => 'Bob', :last_name => 'Smith'},
+        {:first_name => 'Joe', :last_name => 'Franklin'}
+      ].each do |values|
+        conn.insert("INSERT INTO users (first_name, last_name, created_at, updated_at) VALUES ('#{values[:first_name]}', '#{values[:last_name]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+      end
+      
+      #Posts
+      [ 
+        {:title => 'First Post', :owner_id => 1, :body => 'First Post Body', :published_at => (Time.now - 2).to_s(:db)},
+        {:title => 'Second Post', :owner_id => 1, :body => 'Second Post Body', :published_at => (Time.now - 1).to_s(:db)},
+        {:title => 'Third Post', :owner_id => 2, :body => 'Thrid Post Body', :published_at => (Time.now).to_s(:db)},
+      ].each do |v|
+        conn.insert("INSERT INTO posts (title, owner_id, body, published_at, created_at, updated_at) 
+                    VALUES ('#{v[:title]}', #{v[:owner_id]}, '#{v[:body]}', '#{v[:published_at]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+      end
+      
+      #Comments
+      [
+        {:post_id => 1, :user_id => 1, :body => 'First Comment Body'},
+        {:post_id => 2, :user_id => 1, :body => 'Second Comment Body'},
+        {:post_id => 2, :user_id => 2, :body => 'Thrid Comment Body'}
+      ].each do |v|
+        conn.insert("INSERT INTO comments (body, post_id, user_id, created_at, updated_at) 
+                    VALUES ('#{v[:body]}', #{v[:post_id]}, #{v[:user_id]}, '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+      end
+      
+    end
     
     sqlite_connection.database
   end

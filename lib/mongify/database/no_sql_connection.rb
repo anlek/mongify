@@ -36,6 +36,10 @@ module Mongify
         @db ||= connection[database]
       end
       
+      def insert_into(colleciton_name, row)
+        db[colleciton_name].insert(row, :safe => true)
+      end
+      
       
       def reset!
         @connection = nil

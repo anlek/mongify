@@ -19,6 +19,18 @@ describe Mongify::Database::Column do
     @column.type.should == :string
   end
   
+  context "key" do
+    it "should be true" do
+      @column = Mongify::Database::Column.new('id', :key)
+      @column.should be_a_key
+    end
+    
+    it "should be true" do
+      @column = Mongify::Database::Column.new('first_name', :string)
+      @column.should_not be_a_key
+    end
+  end
+  
   context "options" do
     it "should allow to be set by name" do
       @column = Mongify::Database::Column.new('first_name')
@@ -64,6 +76,23 @@ describe Mongify::Database::Column do
     it "should output nil options" do
       @column.default = nil
       @column.to_print.should == %Q[column "first_name", :string]
+    end
+  end
+  
+  context :translate do
+    before(:each) do
+      @column = Mongify::Database::Column.new('first_name', :string)
+    end
+    it "should return a hash with the new translation" do
+      @column.translate('bob').should == {'first_name' => 'bob'}
+    end
+    context "type :key" do
+      before(:each) do
+        @column = Mongify::Database::Column.new('id', :key)
+      end
+      it "should return premongified_id and id" do
+        @column.translate(123123).should == {"pre_mongified_id" => 123123, 'id' => nil}
+      end
     end
   end
 end

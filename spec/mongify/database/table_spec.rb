@@ -64,4 +64,24 @@ describe Mongify::Database::Table do
       end
     end
   end
+  
+  context "translate" do
+    before(:each) do
+      @column1 = mock(:translate => {'first_name' => 'Timmy'}, :name => 'first_name')
+      @column2 = mock(:translate => {'last_name' => 'Zuza'}, :name => 'last_name')
+      @table.stub(:columns).and_return([@column1, @column2])
+    end
+    it "should return a correct hash" do
+      @table.translate({'first_name' => 'Timmy', 'last_name' => 'Zuza'}).should == {'first_name' => 'Timmy', 'last_name' => 'Zuza'}
+    end
+    it "should send translate to both columns with the given value" do
+      @column1.should_receive(:translate).with('Timmy').and_return({'first_name' => 'Timmy'})
+      @column2.should_receive(:translate).with('Zuza').and_return({'last_name' => 'Zuza'})
+      @table.translate({'first_name' => 'Timmy', 'last_name' => 'Zuza'})
+    end
+    
+    it "should return same values if column doesn't exist in the translation" do
+      @table.translate({'age' => 18}).should == {'age' => 18}
+    end
+  end
 end

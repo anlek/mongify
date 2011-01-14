@@ -19,6 +19,13 @@ module Mongify
         self
       end
       
+      def translate(value)
+        if key?
+          return {"pre_mongified_#{name}" => value, "#{name}" => nil}
+        end
+        {"#{self.name}" => value}
+      end
+      
       def to_print
         "column \"#{name}\", :#{type}".tap do |output|
           output_options = options.map{|k, v| (v == nil) ? nil : ":#{k} => \"#{v}\""}.compact
@@ -46,6 +53,10 @@ module Mongify
       #######
       private
       #######
+      
+      def key?
+        self.type == :key
+      end
 
       def auto_detect!
         case name.downcase

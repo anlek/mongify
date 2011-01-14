@@ -23,7 +23,7 @@ Feature: Mongify can be controlled using command-line options
 			
 			Commands:
 			"check" or "ck"           >> Checks connection for sql and no_sql databases [configuration_file]
-			"process" or "pr"         >> Takes a translation and process it to 
+			"process" or "pr"         >> Takes a translation and process it to mongodb [configuration_file, translation_file]
 			"translate" or "tr"       >> Spits out translation from a sql connection [configuration_file]
 			
       Examples:

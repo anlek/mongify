@@ -69,6 +69,18 @@ describe Mongify::Database::NoSqlConnection do
     end
   end
   
+  context "insert_into" do
+    it "should insert into a table using the mongo driver" do
+      @collection = mock
+      @collection.should_receive(:insert).with({'first_name' => 'bob'}, anything)
+      @db = mock
+      @db.should_receive(:[]).with('users').and_return(@collection)
+      
+      @mongodb_connection.stub(:db).and_return(@db)
+      @mongodb_connection.insert_into('users', {'first_name' => 'bob'})
+    end
+  end
+  
   describe "working connection" do
     before(:each) do
       @mongodb_connection = GenerateDatabase.mongo_connection
