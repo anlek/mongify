@@ -7,12 +7,12 @@ module Mongify
       attr_accessor :in_stream, :out_stream
       
       def parse_translation(file_name)
-        raise Mongify::FileNotFound, "File #{file_name} is missing" unless File.exists?(file_name)
+        raise Mongify::TranslationFileNotFound, "File #{file_name} is missing" unless File.exists?(file_name)
         Mongify::Translation.parse(file_name)
       end
       
       def parse_configuration(file_name)
-        raise Mongify::FileNotFound, "File #{file_name} is missing" unless File.exists?(file_name)
+        raise Mongify::ConfigurationFileNotFound, "File #{file_name} is missing" unless File.exists?(file_name)
         Mongify::Configuration.parse(file_name)
       end
       
