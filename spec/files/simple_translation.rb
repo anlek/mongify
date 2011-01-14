@@ -1,5 +1,5 @@
 table "users" do
-	column "id", :integer
+	column "id", :key
 	column "first_name", :string
 	column "last_name", :string
 	column "created_at", :datetime
@@ -7,9 +7,9 @@ table "users" do
 end
 
 table "posts" do
-	column "id", :integer
+	column "id", :key
 	column "title", :string
-	column "owner_id", :integer
+	column "owner_id", :integer, :references => :users
 	column "body", :text
 	column "published_at", :datetime
 	column "created_at", :datetime
@@ -17,7 +17,7 @@ table "posts" do
 end
 
 table "comments", :embed_in => :posts, :on => :post_id do
-	column "id", :integer
+	column "id", :key
 	column "body", :text
 	column "post_id", :integer, :referneces => :posts
 	column "user_id", :integer, :references => :users
