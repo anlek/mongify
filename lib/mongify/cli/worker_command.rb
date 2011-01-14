@@ -9,7 +9,7 @@ module Mongify
       
       AVAILABLE_COMMANDS = {
                                 :check => {:commands => ['check', 'ck'], :description => "Checks connection for sql and no_sql databases", :required => [:configuration_file]},
-                                :translation => {:commands => ['translation', 'tr'], :description => "Spits out translation from a sql connection", :requires => [:configuration_file]}
+                                :translation => {:commands => ['translate', 'tr'], :description => "Spits out translation from a sql connection", :requires => [:configuration_file]}
                               }
       def self.list_commands
         [].tap do |commands|
