@@ -23,7 +23,7 @@ module Mongify
           cmd.execute(self)
         rescue Exception => error
           $stderr.puts "Error: #{error}"
-          @status = STATUS_ERROR
+          report_error
         end
         return @status
       end

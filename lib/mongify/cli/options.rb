@@ -26,8 +26,9 @@ Commands:
 Examples:
 
 #{progname} translate -c datbase.config
-#{progname} t -c database.config
-#{progname} process -c database.config database_translation.rb
+#{progname} tr -c database.config
+#{progname} check -c database.config
+#{progname} process database_translation.rb -c database.config
 
 See http://github.com/anlek/mongify for more details
 
@@ -66,7 +67,7 @@ EOB
           #TODO: In the future, request sql_connection and nosql_connection from user input
           config = Configuration.parse(@config_file)
           
-          WorkerCommand.new(@argv[0], config, translation_file, @parser)
+          WorkerCommand.new(action, config, translation_file, @parser)
         end
       end
       
