@@ -37,8 +37,7 @@ module Mongify
     end
     
     def table(table_name, options={}, &block)
-      table = Mongify::Database::Table.new(table_name, options)
-      #yield table if block
+      table = Mongify::Database::Table.new(table_name, options, &block)
       @tables << table
     end
     
