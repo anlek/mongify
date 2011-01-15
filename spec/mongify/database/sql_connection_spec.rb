@@ -82,7 +82,7 @@ describe Mongify::Database::SqlConnection do
   context "select_all" do
     it "should generate correct select statement" do
       @mock_conn = mock
-      @mock_conn.should_receive(:select_rows).with('SELECT * FROM users')
+      @mock_conn.should_receive(:select_all).with('SELECT * FROM users')
       @sql_connection.stub(:connection).and_return(@mock_conn)
       @sql_connection.select_rows('users')
     end

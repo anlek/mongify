@@ -47,7 +47,7 @@ module Mongify
       end
       
       def select_rows(table_name)
-        self.connection.select_rows("SELECT * FROM #{table_name}")
+        self.connection.select_all("SELECT * FROM #{table_name}")
       end
 
       #######

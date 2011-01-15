@@ -8,10 +8,12 @@ module Mongify
       attr_accessor :name
       attr_reader :options, :columns
       
-      def initialize(name, *args)
+      def initialize(name, *args, &block)
         @columns = []
         @options = args.extract_options!.stringify_keys
         self.name = name
+        
+        self.instance_exec(&block) if block_given?
         
         import_columns
         
