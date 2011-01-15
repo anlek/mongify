@@ -1,3 +1,5 @@
+== 0.0.5 / 15 Jan 2011
+* Improved description for mongify.
 == 0.0.4 / 15 Jan 2011
 * Switched the way connection files are written out.
 * Fixed issue with Configuration File reader

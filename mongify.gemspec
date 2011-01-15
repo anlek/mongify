@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email       = ["andrew.kalek@anlek.com"]
   s.homepage    = "http://github.com/anlek/mongify"
   s.summary     = %q{Translate your SQL data to MongoDB}
-  s.description = %q{Mongify allows you to map your data from a sql database and into a mongodb document database.}
+  s.description = %q{Mongify allows you to map your sql data into a mongodb document database.}
 
   s.default_executable = "mongify"
 

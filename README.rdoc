@@ -2,6 +2,9 @@
 
 A data translator from sql database to mongoDB.
 
+Supports MySQL, PostgreSQL, SQLite, Oracle, SQLServer, and DB2 (Basically anything ActiveRecord has built-in)
+Supports any version of MongoDB
+
 Learn more about mongoDB at: http://www.mongodb.org
 
 == Install
@@ -12,7 +15,7 @@ Learn more about mongoDB at: http://www.mongodb.org
 
 == Usage
 
-=== WARNING: Mongify is still a work in progress, so much so, that the code below will currently _NOT_ work and is likely to significantly change!
+=== WARNING: Mongify is still a work in progress.
 
 Build a config file such as:
 
@@ -42,7 +45,11 @@ Save the file as <tt>"my_database_translation.rb"</tt> and run the command:
   mongify check -c datbase.config
   mongify process database_translation.rb -c database.config
   
-**this is subject to change at any time**
+**this is subject to change during the alpha (0.0.x release)**
+
+== Notes
+I have currently only tested this in Ruby 1.8.7
+More testing will be done once the basic functionality is done
   
 == Development
 === Requirements
