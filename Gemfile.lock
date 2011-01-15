@@ -32,7 +32,7 @@ GEM
     mongo (1.1.5)
       bson (>= 1.1.5)
     mysql (2.8.1)
-    net-ssh (2.0.23)
+    net-ssh (2.0.24)
     rake (0.8.7)
     rcov (0.9.9)
     rspec (2.4.0)
