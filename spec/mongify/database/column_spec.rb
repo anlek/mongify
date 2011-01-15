@@ -80,19 +80,17 @@ describe Mongify::Database::Column do
   end
   
   context :translate do
-    before(:each) do
-      @column = Mongify::Database::Column.new('first_name', :string)
-    end
     it "should return a hash with the new translation" do
+      @column = Mongify::Database::Column.new('first_name', :string)
       @column.translate('bob').should == {'first_name' => 'bob'}
     end
-    context "type :key" do
-      before(:each) do
-        @column = Mongify::Database::Column.new('id', :key)
-      end
-      it "should return premongified_id and id" do
-        @column.translate(123123).should == {"pre_mongified_id" => 123123, 'id' => nil}
-      end
+    it "should return a datetime format" do
+      @column = Mongify::Database::Column.new('created_at', :datetime)
+      @column.translate('2011-01-14 21:23:39').should == {'created_at' => Time.utc(2011, 01, 14, 21, 23,39)}
+    end
+    it "should return pre_mongified_id when type is a key" do
+      @column = Mongify::Database::Column.new('id', :key)
+      @column.translate(123123).should == {"pre_mongified_id" => 123123}
     end
   end
 end

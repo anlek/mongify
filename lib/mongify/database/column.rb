@@ -20,10 +20,14 @@ module Mongify
       end
       
       def translate(value)
-        if key?
-          return {"pre_mongified_#{name}" => value, "#{name}" => nil}
+        case type
+        when :key
+          {"pre_mongified_#{name}" => value}
+        when :datetime
+          {"#{name}" => value.to_time}
+        else
+          {"#{self.name}" => value}
         end
-        {"#{self.name}" => value}
       end
       
       def to_print
