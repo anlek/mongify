@@ -1,4 +1,4 @@
-== 0.0.4 / In Development
+== 0.0.4 / 15 Jan 2011
 * Switched the way connection files are written out.
 * Fixed issue with Configuration File reader
 * Added a Rake task to setup a mysql database for testing (for development only)
