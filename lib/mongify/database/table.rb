@@ -10,6 +10,7 @@ module Mongify
       
       def initialize(name, *args, &block)
         @columns = []
+        @column_lookup = {}
         @options = args.extract_options!.stringify_keys
         self.name = name
         
@@ -23,6 +24,7 @@ module Mongify
       #Add a Database Column
       def add_column(column)
         raise Mongify::DatabaseColumnExpected, "Expected a Mongify::Database::Column" unless column.is_a?(Mongify::Database::Column)
+        add_column_index(column.name, @columns.size)
         @columns << column
       end
       
@@ -30,13 +32,14 @@ module Mongify
       def column(name, type=nil, options={})
         options = type and type = nil if type.is_a?(Hash)
         type = type.to_sym if type
+        add_column_index(name.to_s.downcase, @columns.size)
         @columns << (col = Mongify::Database::Column.new(name, type, options))
         col
       end
       
       def find_column(name)
-        #OPTIMIZE: Possible to add hash with column name, pointing to the index of the @columns array
-        self.columns.find{ |col| col.name.downcase == name.downcase }
+        return nil unless (index = @column_lookup[name.to_s.downcase])
+        @columns[index]
       end
       
       def translate(row)
@@ -51,6 +54,10 @@ module Mongify
       #######
       private
       #######
+      
+      def add_column_index(name, index)
+        @column_lookup[name] = index
+      end
 
       def import_columns
         return unless import_columns = @options.delete('columns')

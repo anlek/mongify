@@ -18,6 +18,13 @@ describe Mongify::Database::Table do
     @table.options.should == {'embed_in' => 'accounts', 'as' => 'users'}
   end
   
+  context "column_index (find_column)" do
+    it "should add column index on column creation" do
+      @table.should_receive(:add_column_index).with('first_name', 0)
+      @table.column('first_name', :string)
+    end
+  end
+  
   context "column" do
     it "should add to count" do
       lambda { @table.column 'name' }.should change{@table.columns.count}.by(1)
@@ -29,6 +36,7 @@ describe Mongify::Database::Table do
     end
     
     it "should be able to find" do
+      @table.column 'another'
       col = @table.column 'dark'
       @table.find_column('dark').should == col
     end
@@ -51,16 +59,25 @@ describe Mongify::Database::Table do
       lambda { @table.add_column(Mongify::Database::Column.new('test')) }.should change{@table.columns.count}.by(1)
     end
     
+    it "should be indexed" do
+      col = Mongify::Database::Column.new('test')
+      @table.add_column(col)
+      @table.find_column('test').should == col
+    end
+    
     context "on initialization" do
       before(:each) do
-        columns = [Mongify::Database::Column.new('test1'), Mongify::Database::Column.new('test2')]
-        @table = Mongify::Database::Table.new('users', :columns => columns)
+        @columns = [Mongify::Database::Column.new('test1'), Mongify::Database::Column.new('test2')]
+        @table = Mongify::Database::Table.new('users', :columns => @columns)
       end
       it "should add columns" do
         @table.columns.should have(2).columns
       end
       it "should remove columns from the options" do
         @table.options.should_not have_key('columns')
+      end
+      it "should be indexed" do
+        @table.find_column('test1').should == @columns[0]
       end
     end
   end
@@ -69,7 +86,9 @@ describe Mongify::Database::Table do
     before(:each) do
       @column1 = mock(:translate => {'first_name' => 'Timmy'}, :name => 'first_name')
       @column2 = mock(:translate => {'last_name' => 'Zuza'}, :name => 'last_name')
-      @table.stub(:columns).and_return([@column1, @column2])
+      @table.stub(:find_column).with(anything).and_return(nil)
+      @table.stub(:find_column).with('first_name').and_return(@column1)
+      @table.stub(:find_column).with('last_name').and_return(@column2)
     end
     it "should return a correct hash" do
       @table.translate({'first_name' => 'Timmy', 'last_name' => 'Zuza'}).should == {'first_name' => 'Timmy', 'last_name' => 'Zuza'}
