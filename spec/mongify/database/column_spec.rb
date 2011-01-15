@@ -79,6 +79,13 @@ describe Mongify::Database::Column do
     end
   end
   
+  context :reference? do
+    it "should be true" do
+      @column = Mongify::Database::Column.new('user_id', :integer, :references => 'users')
+      @column.should be_a_reference
+    end
+  end
+  
   context :translate do
     it "should return a hash with the new translation" do
       @column = Mongify::Database::Column.new('first_name', :string)

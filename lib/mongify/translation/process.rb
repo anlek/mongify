@@ -20,6 +20,7 @@ module Mongify
         raise "noSql Connection is not valid" unless self.no_sql_connection.valid?
         
         copy
+        update_reference_ids
         nil
       end
       
@@ -28,10 +29,23 @@ module Mongify
       #######
       
       def copy
-        
         self.tables.each do |t|
           sql_connection.select_rows(t.name).each do |row|
             no_sql_connection.insert_into(t.name, t.translate(row))
+          end
+        end
+      end
+      
+      def update_reference_ids
+        self.tables.each do |t|
+          no_sql_connection.select_rows(t.name).each do |row|
+            id = row["_id"]
+            attributes = {}
+            t.reference_columns.each do |c|
+              new_id = no_sql_connection.get_id_using_pre_mongified_id(c.references.to_s, row[c.name])
+              attributes.merge!(c.name => new_id) unless new_id.nil?
+            end
+            no_sql_connection.update(t.name, id, {"$set" => attributes}) unless attributes.blank?
           end
         end
       end

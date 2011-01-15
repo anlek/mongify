@@ -69,17 +69,48 @@ describe Mongify::Database::NoSqlConnection do
     end
   end
   
-  context "insert_into" do
-    it "should insert into a table using the mongo driver" do
-      @collection = mock
-      @collection.should_receive(:insert).with({'first_name' => 'bob'}, anything)
-      @db = mock
-      @db.should_receive(:[]).with('users').and_return(@collection)
-      
-      @mongodb_connection.stub(:db).and_return(@db)
-      @mongodb_connection.insert_into('users', {'first_name' => 'bob'})
+  
+  context "database action:" do
+    before(:each) do
+       @collection = mock
+       @db = mock
+       @db.stub(:[]).with('users').and_return(@collection)
+       @mongodb_connection.stub(:db).and_return(@db)
+    end
+    context "insert_into" do
+      it "should insert into a table using the mongo driver" do
+        @collection.should_receive(:insert).with({'first_name' => 'bob'}, anything)
+        @mongodb_connection.insert_into('users', {'first_name' => 'bob'})
+      end
+    end
+    
+    context "get_id_using_pre_mongified_id" do
+      it "should return new id" do
+        @collection.should_receive(:find_one).with({"pre_mongified_id"=>1}).and_return({'_id' => '123'})
+        @mongodb_connection.get_id_using_pre_mongified_id('users', 1).should == '123'
+      end
+      it "should return nil if nothing is found" do
+        @collection.should_receive(:find_one).with({"pre_mongified_id"=>1}).and_return(nil)
+        @mongodb_connection.get_id_using_pre_mongified_id('users', 1).should == nil
+      end
+    end
+    
+    context "select_rows" do
+      it "should return all records" do
+        @collection.should_receive(:find).with().and_return([])
+        @mongodb_connection.select_rows('users')
+      end
+    end
+    
+    context "update" do
+      it "should update the record" do
+        attributes = {'post_id' => 123}
+        @collection.should_receive(:update).with({"_id" => 1}, attributes)
+        @mongodb_connection.update('users', 1, attributes)
+      end
     end
   end
+
   
   describe "working connection" do
     before(:each) do

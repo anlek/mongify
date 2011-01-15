@@ -36,8 +36,20 @@ module Mongify
         @db ||= connection[database]
       end
       
+      def select_rows(collection)
+        db[collection].find
+      end
+      
       def insert_into(colleciton_name, row)
         db[colleciton_name].insert(row, :safe => true)
+      end
+      
+      def update(colleciton_name, id, attributes)
+        db[colleciton_name].update({"_id" => id}, attributes)
+      end
+      
+      def get_id_using_pre_mongified_id(colleciton_name, pre_mongified_id)
+        db[colleciton_name].find_one('pre_mongified_id' => pre_mongified_id).try(:[], '_id')
       end
       
       

@@ -42,6 +42,11 @@ module Mongify
         @columns[index]
       end
       
+      
+      def reference_columns
+        @columns.reject{ |c| !c.reference? } 
+      end
+      
       def translate(row)
         new_row = {}
         row.each do |key, value|

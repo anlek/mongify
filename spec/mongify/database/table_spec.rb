@@ -82,6 +82,20 @@ describe Mongify::Database::Table do
     end
   end
   
+  context "reference_colums" do
+    before(:each) do
+      @col1 = Mongify::Database::Column.new('user_id', :integer, :referneces => :users)
+      @col2 = Mongify::Database::Column.new('post_id', :integer, :references => 'posts')
+      @columns = [@col1,
+                  Mongify::Database::Column.new('body'),
+                  @col2]
+      @table = Mongify::Database::Table.new('comments', :columns => @columns)
+    end
+    it "should return an array of columns" do
+      @table.reference_columns.should == [@col1, @col2]
+    end
+  end
+  
   context "translate" do
     before(:each) do
       @column1 = mock(:translate => {'first_name' => 'Timmy'}, :name => 'first_name')

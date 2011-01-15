@@ -8,6 +8,7 @@
 * Improved test coverage
 * Added the first version of processing command (very basic)
 * Indexed columns in table class to speedup lookup time
+* Added ability to update references once database is populated
 == 0.0.3 / 28 Dec 2010
 * Switched gemspec generation to raw gemspec and added Bundler for easier development
 * Added LICENSE
