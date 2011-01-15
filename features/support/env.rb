@@ -11,7 +11,7 @@ require 'spec/support/config_reader'
 ::CONNECTION_CONFIG = ConfigReader.new(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))) + '/spec/support/database.yml')
 ::DATABASE_PRINT = File.read(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))) + '/spec/support/database_output.txt')
 
-class MongifyWorld
+module MongifyWorld
   def run(cmd)
     stderr_file = Tempfile.new('mongify-world')
     stderr_file.close
@@ -25,6 +25,4 @@ class MongifyWorld
   end
 end
 
-World do
-  MongifyWorld.new
-end
+World(MongifyWorld)
