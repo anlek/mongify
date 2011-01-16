@@ -15,8 +15,7 @@ class GenerateDatabase
     @sqlite_connecton ||= Mongify::Database::SqlConnection.new(:adapter => CONNECTION_CONFIG.sqlite['adapter'], :database => @db_path)
   end
   def self.sqlite(include_data=true)
-    puts ">\n\n>>sqlite_connection.database: #{sqlite_connection.database} :: Exists? #{File.exists?(sqlite_connection.database)}"
-    puts ("DELETING>>>>") && File.delete(sqlite_connection.database) if File.exists?(sqlite_connection.database)
+    File.delete(sqlite_connection.database) if File.exists?(sqlite_connection.database)
 
     conn = sqlite_connection.connection
 
