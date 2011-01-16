@@ -1,3 +1,6 @@
+== 0.0.6 / 16 Jan 2011
+* Added the ability to embed tables into collections (currently only one to many relationship)
+* Few tweaks and improvements in code
 == 0.0.5 / 15 Jan 2011
 * Improved description for mongify.
 == 0.0.4 / 15 Jan 2011
