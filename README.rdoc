@@ -47,9 +47,21 @@ Save the file as <tt>"my_database_translation.rb"</tt> and run the command:
   
 **this is subject to change during the alpha (0.0.x release)**
 
+
 == Notes
 I have currently only tested this in Ruby 1.8.7
 More testing will be done once the basic functionality is done
+
+
+== TODO
+Remove pre_mongify_id from all collections
+=== while processing
+allow the ability to embed_table with a one to one relationship
+Allow renaming tables
+Allow renaming of columns
+Allow deleting of columns
+Allow running a proc on column value
+
   
 == Development
 === Requirements
