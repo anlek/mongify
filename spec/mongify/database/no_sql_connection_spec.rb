@@ -109,6 +109,14 @@ describe Mongify::Database::NoSqlConnection do
         @mongodb_connection.update('users', 1, attributes)
       end
     end
+    
+    context "find_one" do
+      it "should call find_one on collection" do
+        query= {'pre_mongified_id' => 1}
+        @collection.should_receive(:find_one).with(query)
+        @mongodb_connection.find_one('users', query)
+      end
+    end
   end
 
   

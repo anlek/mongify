@@ -55,6 +55,19 @@ module Mongify
         end
         new_row
       end
+      
+      def embed_in
+        @options['embed_in'].to_s unless @options['embed_in'].nil?
+      end
+      
+      def embed?
+        embed_in.present?
+      end
+      
+      def embed_on
+        return nil unless embed?
+        (@options['on'] || "#{@options['embed_in'].singularize}_id").to_s
+      end
             
       #######
       private

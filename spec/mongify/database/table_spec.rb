@@ -96,6 +96,37 @@ describe Mongify::Database::Table do
     end
   end
   
+  context "dealing with embedding," do
+    context "embed_on" do
+      it "should return embed_on option" do
+        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').embed_in.should == 'posts'
+      end
+      it "should be nil when not embedded table" do
+        Mongify::Database::Table.new('users').embed_in.should be_nil
+      end
+    end
+    context "embed?" do
+      it "should be true" do
+        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').should be_embed
+      end
+      it "should be false" do
+        Mongify::Database::Table.new('users').should_not be_embed
+      end
+    end
+    
+    context "embed_on" do
+      it "should be post_id" do
+        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').embed_on.should == 'post_id'
+      end
+      it "should be nil when not embed?" do
+        Mongify::Database::Table.new('users', :on => 'test').embed_on.should be_nil
+      end
+      it "should calculate embed_on from embed_in" do
+        Mongify::Database::Table.new('comments', :embed_in => 'posts').embed_on.should == 'post_id'
+      end
+    end
+  end
+  
   context "translate" do
     before(:each) do
       @column1 = mock(:translate => {'first_name' => 'Timmy'}, :name => 'first_name')

@@ -45,6 +45,14 @@ module Mongify
       @tables << table
     end
     
+    def copy_tables
+      tables.reject{|t| t.embed?}
+    end
+    
+    def embed_tables
+      tables.reject{|t| !t.embed?}
+    end
+    
     #######
     private
     #######

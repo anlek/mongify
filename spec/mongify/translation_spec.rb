@@ -47,6 +47,25 @@ describe Mongify::Translation do
     end
   end
   
+  context "tables reference" do
+    before(:each) do
+      @copy_table = mock(:name => 'users', :embed? => false)
+      @embed_table = mock(:name => 'comments', :embed? => true)
+      @translation = Mongify::Translation.new()
+      @translation.stub(:tables).and_return([@copy_table, @embed_table])
+    end
+    context "copy_tables" do
+      it "should return tables that are not embeded" do
+        @translation.copy_tables.should == [@copy_table]
+      end
+    end
+    context "embed_tables" do
+      it "should return only tables for embedding" do
+        @translation.embed_tables.should == [@embed_table]
+      end
+    end
+  end
+  
   context "add_table" do
     before(:each) do
       @table = Mongify::Database::Table.new("users")
