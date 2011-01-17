@@ -63,7 +63,7 @@ EOB
         elsif @command_class == VersionCommand
           VersionCommand.new(@parser.program_name)
         else
-          raise ConfigurationFileNotFound unless @config_file
+          raise ConfigurationFileNotFound, "You need to provide a configuration file location #{@config_file}" unless @config_file
           #TODO: In the future, request sql_connection and nosql_connection from user input
           config = Configuration.parse(@config_file)
           
