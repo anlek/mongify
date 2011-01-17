@@ -39,39 +39,39 @@ Building a config file is as simple as this:
 
 ==== Generating a translation
 If you're database is large and complex, it might be a bit too much to hand write the translation file, Mongify can help by running the translate command:
-	mongify transalte -c database.config
+  mongify transalte -c database.config
 Or pipe it right into a file by running
-	mongify transalte -c database.config > translation_file.rb
-	
+  mongify transalte -c database.config > translation_file.rb
+
 ==== Building a translation
 Building a translation is pretty straight forward. It looks something like this:
 
-	table "users" do
-		column "id", :key
-		column "first_name", :string
-		column "last_name", :string
-		column "created_at", :datetime
-		column "updated_at", :datetime
-	end
-	
-	table "posts" do
-		column "id", :key
-		column "title", :string
-		column "owner_id", :integer, :references => :users
-		column "body", :text
-		column "published_at", :datetime
-		column "created_at", :datetime
-		column "updated_at", :datetime
-	end
-	
-	table "comments", :embed_in => :posts, :on => :post_id do
-		column "id", :key
-		column "body", :text
-		column "post_id", :integer, :referneces => :posts
-		column "user_id", :integer, :references => :users
-		column "created_at", :datetime
-		column "updated_at", :datetime
-	end
+  table "users" do
+    column "id", :key
+    column "first_name", :string
+    column "last_name", :string
+    column "created_at", :datetime
+    column "updated_at", :datetime
+  end
+
+  table "posts" do
+    column "id", :key
+    column "title", :string
+    column "owner_id", :integer, :references => :users
+    column "body", :text
+    column "published_at", :datetime
+    column "created_at", :datetime
+    column "updated_at", :datetime
+  end
+
+  table "comments", :embed_in => :posts, :on => :post_id do
+    column "id", :key
+    column "body", :text
+    column "post_id", :integer, :referneces => :posts
+    column "user_id", :integer, :references => :users
+    column "created_at", :datetime
+    column "updated_at", :datetime
+  end
 
 Save the file as <tt>"translation_file.rb"</tt> and run the command:
 
@@ -86,13 +86,13 @@ You can also specify :on option (while embedding) to specify which field you're 
 
 === Columns
 Columns take a few more options:
-	column "id", :key																				# Columns that are primary keys and need to be marked as :key
-	column "body", :text																		# Since mongo doesn't care about text fields, this will just be converted to string
-	column "post_id", :integer, :referneces => :posts				# Referenced columns need to be marked as such, this will mean that they will be updated
-																													# with the new BSON::ObjectID.
-	column "created_at", :datetime													# Specifying a field as :datetime will convert it to Time format as it 
-																													# gets imported into MongoDB
-  
+  column "id", :key                                   # Columns that are primary keys and need to be marked as :key
+  column "body", :text                                # Since mongo doesn't care about text fields, this will just be converted to string
+  column "post_id", :integer, :referneces => :posts   # Referenced columns need to be marked as such, this will mean that they will be updated
+                                                      # with the new BSON::ObjectID.
+  column "created_at", :datetime                      # Specifying a field as :datetime will convert it to Time format as it
+                                                      # gets imported into MongoDB
+
 **this is subject to change during the alpha (0.0.x release)**
 
 
@@ -112,11 +112,11 @@ Allow deleting of columns
 Allow running a proc on column value
 Update user on what is being processed
 
-  
+
 == Development
 === Requirements
 You just need bundler 1.0
-  
+
   gem install bundler
   bundle install
   copy over spec/support/database.example to spec/support/database.yml and fill in required info
@@ -134,7 +134,7 @@ I'd like to thank Mon_Ouie on the Ruby IRC channel for helping me figure out how
 == License
 
 Copyright (c) 2011 Andrew Kalek, Anlek Consulting
- 
+
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -142,10 +142,10 @@ without limitation the rights to use, copy, modify, merge, publish,
 distribute, sublicense, and/or sell copies of the Software, and to
 permit persons to whom the Software is furnished to do so, subject to
 the following conditions:
- 
+
 The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
- 
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
