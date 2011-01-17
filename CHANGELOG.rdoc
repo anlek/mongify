@@ -1,3 +1,6 @@
+== 0.0.7 / In Development
+* Added mysql2 as a dependency
+* Improved error message when configuration file not provided
 == 0.0.6 / 16 Jan 2011
 * Added the ability to embed tables into collections (currently only one to many relationship)
 * Few tweaks and improvements in code
