@@ -95,6 +95,12 @@ describe Mongify::Translation::Process do
         @no_sql_connection.should_receive(:update).with("posts", 500, {"$addToSet"=>{"comments"=>{'first_name' => 'bob'}}})
         @translation.send(:copy_embedded_tables)
       end
+      it "should remove the parent_id from the embedding row" do
+        @embed_table = mock(:translate => {'first_name' => 'bob', 'post_id' => 1}, :name => 'comments', :embed? => true, :embed_on => 'post_id', :embed_in => 'posts')
+        @translation.stub(:tables).and_return([@target_table, @embed_table])
+        @no_sql_connection.should_receive(:update).with("posts", 500, {"$addToSet"=>{"comments"=>{'first_name' => 'bob'}}})
+        @translation.send(:copy_embedded_tables)
+      end
     end
     
     context "update_reference_ids" do

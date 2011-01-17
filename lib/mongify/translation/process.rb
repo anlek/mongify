@@ -44,6 +44,7 @@ module Mongify
             target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => row[t.embed_on]})
             next unless target_row.present?
             row = t.translate(row)
+            row.delete(t.embed_on)
             row.merge!(fetch_reference_ids(t, row))
             row.delete('pre_mongified_id')
             no_sql_connection.update(t.embed_in, target_row['_id'], {'$addToSet' => {t.name => row}})

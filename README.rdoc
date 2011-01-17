@@ -112,8 +112,6 @@ More testing will be done once the basic functionality is done
 
 == TODO
 
-* Remove parent_id from the embedded table
-
 === while processing
 
 * allow the ability to embed_table with a one to one relationship
