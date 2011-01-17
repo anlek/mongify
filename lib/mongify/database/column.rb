@@ -24,7 +24,7 @@ module Mongify
         when :key
           {"pre_mongified_#{name}" => value}
         when :datetime
-          {"#{name}" => value.to_time}
+          {"#{name}" => value.blank? ? nil : value.to_time}
         else
           {"#{self.name}" => value}
         end

@@ -91,10 +91,17 @@ describe Mongify::Database::Column do
       @column = Mongify::Database::Column.new('first_name', :string)
       @column.translate('bob').should == {'first_name' => 'bob'}
     end
-    it "should return a datetime format" do
-      @column = Mongify::Database::Column.new('created_at', :datetime)
-      @column.translate('2011-01-14 21:23:39').should == {'created_at' => Time.utc(2011, 01, 14, 21, 23,39)}
+    context "datetime" do
+      it "should return a datetime format" do
+        @column = Mongify::Database::Column.new('created_at', :datetime)
+        @column.translate('2011-01-14 21:23:39').should == {'created_at' => Time.utc(2011, 01, 14, 21, 23,39)}
+      end
+      it "should return nil if input is nil" do
+        @column = Mongify::Database::Column.new('created_at', :datetime)
+        @column.translate(nil).should == {'created_at' => nil}
+      end
     end
+    
     it "should return pre_mongified_id when type is a key" do
       @column = Mongify::Database::Column.new('id', :key)
       @column.translate(123123).should == {"pre_mongified_id" => 123123}
