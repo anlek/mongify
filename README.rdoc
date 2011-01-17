@@ -18,7 +18,9 @@ Learn more about mongoDB at: http://www.mongodb.org
 === WARNING: Mongify is still a work in progress.
 
 ===Building a configuration file:
+
 In order for Mongify to do it's job, it needs to know where your databases are located.
+
 Building a config file is as simple as this:
 
   sql_connection do
@@ -79,8 +81,11 @@ Save the file as <tt>"translation_file.rb"</tt> and run the command:
   mongify process translation_file.rb -c database.config
 
 == Translation Options
+
 When dealing with a translation, there is a few options you can set
+
 === Table
+
 Tables have the ability to be embedded into another collection on durring processing by passing :embed_in => 'collection_name'.
 You can also specify :on option (while embedding) to specify which field you're linking the tables together on.
 
@@ -97,24 +102,30 @@ Columns take a few more options:
 
 
 == Notes
+
 I have currently only tested this in Ruby 1.8.7
+
 More testing will be done once the basic functionality is done
 
 
 == TODO
-<strike>Remove Defaults from being pulled in (no need to know what it defaults to)</strike>
-Remove pre_mongify_id from all collections
+
+* Remove pre_mongify_id from all collections
+
 === while processing
-allow the ability to embed_table with a one to one relationship
-Allow renaming tables
-Allow renaming of columns
-Allow deleting of columns
-Allow running a proc on column value
-Update user on what is being processed
+
+* allow the ability to embed_table with a one to one relationship
+* Allow renaming tables
+* Allow renaming of columns
+* Allow deleting of columns
+* Allow running a proc on column value
+* Update user on what is being processed
 
 
 == Development
+
 === Requirements
+
 You just need bundler 1.0
 
   gem install bundler
@@ -123,12 +134,16 @@ You just need bundler 1.0
   rake test:mysql:setup
 
 === Setup
+
 Before you can run the specs, you need to make sure to setup the spec/support/database.yml file with your database info
 (you can copy database.example within the same folder).
 
 == Special Thanks
+
 Just want to thank my wife (Alessia) who not only puts up with me working on my free time but sometimes helps out listening to my craziness or helping me name classes or functions.
+
 === More Special Thanks
+
 I'd like to thank Mon_Ouie on the Ruby IRC channel for helping me figure out how to setup the internal configuration file reading.
 
 == License
