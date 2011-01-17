@@ -56,6 +56,10 @@ module Mongify
         db[colleciton_name].find_one('pre_mongified_id' => pre_mongified_id).try(:[], '_id')
       end
       
+      def remove_pre_mongified_ids(collection_name)
+        db[collection_name].update({}, { '$unset' => { 'pre_mongified_id' => 1} })
+      end
+      
       
       def reset!
         @connection = nil

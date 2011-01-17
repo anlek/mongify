@@ -22,6 +22,7 @@ module Mongify
         copy_data
         copy_embedded_tables
         update_reference_ids
+        remove_pre_mongified_ids
         nil
       end
       
@@ -68,12 +69,10 @@ module Mongify
         attributes
       end
       
+      def remove_pre_mongified_ids
+        self.copy_tables.each { |t| no_sql_connection.remove_pre_mongified_ids(t.name) }
+      end
+      
     end
   end
 end
-
-
-# Process that needs to take place
-#   import the data (moving the id to premongified_id)   
-#   fix all the references to the new ids
-#   

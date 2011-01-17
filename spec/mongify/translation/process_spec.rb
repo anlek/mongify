@@ -16,16 +16,32 @@ describe Mongify::Translation::Process do
     lambda { @translation.process(@sql_connection, 'bad param2') }.should raise_error(Mongify::NoSqlConnectionRequired)
   end
   
-  it "should call copy_data" do
-    @translation.should_receive(:copy_data)
-    @translation.stub(:update_reference_ids)
-    @translation.process(@sql_connection, @no_sql_connection)
+  describe "process" do
+    before(:each) do
+      @translation.stub(:remove_pre_mongified_ids)
+      @translation.stub(:update_reference_ids)
+      @translation.stub(:copy_data)
+      @translation.stub(:copy_embedded_tables)
+    end
+    it "should call copy_data" do
+      @translation.should_receive(:copy_data)
+      @translation.process(@sql_connection, @no_sql_connection)
+    end
+    it "should call update_reference_ids" do
+      @translation.should_receive(:update_reference_ids)
+      @translation.process(@sql_connection, @no_sql_connection)
+    end
+    it "should call copy_embedded_tables" do
+      @translation.should_receive(:copy_embedded_tables)
+      @translation.process(@sql_connection, @no_sql_connection)
+    end
+    it "shuld call remove_pre_mongified_ids" do
+      @translation.should_receive(:remove_pre_mongified_ids)
+      @translation.process(@sql_connection, @no_sql_connection)
+    end
   end
-  it "should call update_reference_ids" do
-    @translation.should_receive(:update_reference_ids)
-    @translation.stub(:copy_data)
-    @translation.process(@sql_connection, @no_sql_connection)
-  end
+  
+  
   
   context "fetch_reference_ids" do
     it "should get correct information" do
@@ -88,6 +104,13 @@ describe Mongify::Translation::Process do
         @table.should_receive(:reference_columns).twice.and_return([mock(:name => 'user_id', :references=>'users')])
         @no_sql_connection.should_receive(:update).never
         @translation.send(:update_reference_ids)
+      end
+    end
+    
+    context "remove_pre_mongified_ids" do
+      it "should remove_pre_mongified_ids on no_sql_connection" do
+        @no_sql_connection.should_receive(:remove_pre_mongified_ids).with(anything)
+        @translation.send(:remove_pre_mongified_ids)
       end
     end
   end
