@@ -8,7 +8,7 @@ module Mongify
     class BaseConnection
 
       REQUIRED_FIELDS = %w{host}
-      AVAILABLE_FIELDS = %w{adapter host username password database socket port}
+      AVAILABLE_FIELDS = %w{adapter host username password database socket port encoding}
 
       def initialize(options=nil)
         if options

@@ -5,7 +5,7 @@ module Mongify
     #
     class SqlConnection < Mongify::Database::BaseConnection
 
-      REQUIRED_FIELDS = %w{host adapter database}
+      REQUIRED_FIELDS = %w{host adapter database encoding}
       
       def initialize(options=nil)
         @prefixed_db = false
