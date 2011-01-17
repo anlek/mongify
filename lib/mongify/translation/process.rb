@@ -31,14 +31,18 @@ module Mongify
       #######
       
       def copy_data
+        p = ProgressBar.new('Copying Tables', self.copy_tables.count)
         self.copy_tables.each do |t|
           sql_connection.select_rows(t.name).each do |row|
             no_sql_connection.insert_into(t.name, t.translate(row))
           end
+          p.inc
         end
+        p.finish
       end
       
       def copy_embedded_tables
+        p = ProgressBar.new('Copying Embedded Tables', self.embed_tables.count)
         self.embed_tables.each do |t|
           sql_connection.select_rows(t.name).each do |row|
             target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => row[t.embed_on]})
@@ -49,17 +53,22 @@ module Mongify
             row.delete('pre_mongified_id')
             no_sql_connection.update(t.embed_in, target_row['_id'], {'$addToSet' => {t.name => row}})
           end
+          p.inc
         end
+        p.finish
       end
       
       def update_reference_ids
+        p = ProgressBar.new('Updating Reference IDs', self.tables.count)
         self.tables.each do |t|
           no_sql_connection.select_rows(t.name).each do |row|
             id = row["_id"]
             attributes = fetch_reference_ids(t, row)
             no_sql_connection.update(t.name, id, {"$set" => attributes}) unless attributes.blank?
           end
+          p.inc
         end
+        p.finish
       end
       
       def fetch_reference_ids(table, row)
@@ -72,7 +81,9 @@ module Mongify
       end
       
       def remove_pre_mongified_ids
-        self.copy_tables.each { |t| no_sql_connection.remove_pre_mongified_ids(t.name) }
+        p = ProgressBar.new("Removed pre_mongified_ids", self.copy_tables.count)
+        self.copy_tables.each { |t| no_sql_connection.remove_pre_mongified_ids(t.name); p.inc }
+        p.finish
       end
       
     end

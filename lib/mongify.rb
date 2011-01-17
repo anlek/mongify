@@ -2,6 +2,7 @@
 # Mongify's core functionality
 #
 require 'active_support/core_ext'
+require 'progressbar'
 
 require 'mongify/ui'
 require 'mongify/exceptions'

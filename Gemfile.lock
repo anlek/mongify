@@ -8,6 +8,7 @@ PATH
       mongo (>= 1.1.5)
       mysql2
       net-ssh (>= 2.0)
+      progressbar (>= 0.9)
 
 GEM
   remote: http://rubygems.org/
@@ -35,6 +36,7 @@ GEM
     mysql (2.8.1)
     mysql2 (0.2.6)
     net-ssh (2.0.24)
+    progressbar (0.9.0)
     rake (0.8.7)
     rcov (0.9.9)
     rspec (2.4.0)
@@ -64,6 +66,7 @@ DEPENDENCIES
   mysql (>= 2.8.1)
   mysql2
   net-ssh (>= 2.0)
+  progressbar (>= 0.9)
   rcov (>= 0.9.9)
   rspec (>= 2.0)
   sqlite3-ruby (>= 1.3)

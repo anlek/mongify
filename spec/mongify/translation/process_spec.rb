@@ -84,7 +84,7 @@ describe Mongify::Translation::Process do
         @translation.stub(:fetch_reference_ids).and_return({})
       end
       it "should loop through embedded tables" do
-        @translation.should_receive(:embed_tables).and_return([@embed_table])
+        @translation.should_receive(:embed_tables).at_least(1).and_return([@embed_table])
         @no_sql_connection.should_receive(:find_one).and_return({'_id' => 500})
         @no_sql_connection.should_receive(:update)
         @translation.send(:copy_embedded_tables)
