@@ -1,4 +1,4 @@
-== 0.0.7 / In Development
+== 0.0.7 / 17 Jan 2011
 * Added mysql2 as a dependency
 * Improved error message when configuration file not provided
 * More detailed README file
