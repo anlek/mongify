@@ -112,7 +112,7 @@ More testing will be done once the basic functionality is done
 
 == TODO
 
-* Remove pre_mongify_id from all collections
+* Remove parent_id from the embedded table
 
 === while processing
 

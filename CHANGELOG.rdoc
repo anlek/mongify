@@ -3,6 +3,7 @@
 * Improved error message when configuration file not provided
 * More detailed README file
 * Removed :default flag for column (there was no need for this)
+* Removed 'pre_mongified_id' from all collections (including embedded)
 == 0.0.6 / 16 Jan 2011
 * Added the ability to embed tables into collections (currently only one to many relationship)
 * Few tweaks and improvements in code
