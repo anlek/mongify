@@ -6,6 +6,7 @@ PATH
       activesupport (>= 2.3.10)
       bson_ext (>= 1.1.5)
       mongo (>= 1.1.5)
+      mysql2
       net-ssh (>= 2.0)
 
 GEM
@@ -32,6 +33,7 @@ GEM
     mongo (1.1.5)
       bson (>= 1.1.5)
     mysql (2.8.1)
+    mysql2 (0.2.6)
     net-ssh (2.0.24)
     rake (0.8.7)
     rcov (0.9.9)
@@ -60,6 +62,7 @@ DEPENDENCIES
   mongify!
   mongo (>= 1.1.5)
   mysql (>= 2.8.1)
+  mysql2
   net-ssh (>= 2.0)
   rcov (>= 0.9.9)
   rspec (>= 2.0)

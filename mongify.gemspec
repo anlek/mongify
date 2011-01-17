@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency('activerecord', ">= 2.3.10")
   s.add_dependency('activesupport', ">= 2.3.10")
+  s.add_dependency('mysql2')
   s.add_dependency('mongo', ">= 1.1.5")
   s.add_dependency('bson_ext', ">= 1.1.5")
   s.add_dependency('net-ssh', ">= 2.0")
