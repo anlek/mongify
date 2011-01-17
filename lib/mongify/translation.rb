@@ -23,7 +23,7 @@ module Mongify
         connection.tables.each do |t|
           columns = []
           connection.columns_for(t).each do |ar_col|
-            columns << Mongify::Database::Column.new(ar_col.name, ar_col.type, :default => ar_col.default)
+            columns << Mongify::Database::Column.new(ar_col.name, ar_col.type)
           end
           translation.table(t, :columns => columns)
         end

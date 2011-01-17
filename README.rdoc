@@ -102,7 +102,7 @@ More testing will be done once the basic functionality is done
 
 
 == TODO
-Remove Defaults from being pulled in (no need to know what it defaults to)
+<strike>Remove Defaults from being pulled in (no need to know what it defaults to)</strike>
 Remove pre_mongify_id from all collections
 === while processing
 allow the ability to embed_table with a one to one relationship
