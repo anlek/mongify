@@ -54,6 +54,7 @@ More testing will be done once the basic functionality is done
 
 
 == TODO
+Remove Defaults from being pulled in (no need to know what it defaults to)
 Remove pre_mongify_id from all collections
 === while processing
 allow the ability to embed_table with a one to one relationship
@@ -61,6 +62,7 @@ Allow renaming tables
 Allow renaming of columns
 Allow deleting of columns
 Allow running a proc on column value
+Update user on what is being processed
 
   
 == Development
