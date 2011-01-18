@@ -25,3 +25,11 @@ table "comments" do
 	column "updated_at", :datetime
 end
 
+table "preferences" do
+	column "id", :key
+	column "user_id", :integer, :references => "users"
+	column "notify_by_email", :boolean
+	column "created_at", :datetime
+	column "updated_at", :datetime
+end
+

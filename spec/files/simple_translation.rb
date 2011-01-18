@@ -24,3 +24,12 @@ table "comments", :embed_in => :posts, :on => :post_id do
   column "created_at", :datetime
   column "updated_at", :datetime
 end
+
+table "preferences", :embed_in => :users, :as => :object do
+	column "id", :key
+	column "user_id", :integer, :references => "users"
+	column "notify_by_email", :boolean
+	column "created_at", :datetime
+	column "updated_at", :datetime
+end
+
