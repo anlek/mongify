@@ -2,6 +2,7 @@
 * Added ability to embed as object on an embedded table
 * Some bugs fixed
 * Updated README with new table options
+* Improved data conversion on processing
 == 0.0.7 / 17 Jan 2011
 * Added mysql2 as a dependency
 * Improved error message when configuration file not provided
