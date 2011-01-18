@@ -1,4 +1,3 @@
-require 'active_record'
 class GenerateDatabase
   def self.mysql_connection
     @sql_connection ||= Mongify::Database::SqlConnection.new( :adapter => CONNECTION_CONFIG.mysql['adapter'], 

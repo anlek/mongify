@@ -35,8 +35,8 @@ describe Mongify::Translation do
   
   context "parsed content" do
     context "tables" do
-      it "should have 3 tables" do
-        @translation.should have(3).tables
+      it "should have 4 tables" do
+        @translation.should have(4).tables
       end
       
       it "should setup 'comments'" do

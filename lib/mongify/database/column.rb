@@ -1,3 +1,4 @@
+require 'active_record/connection_adapters/abstract/schema_definitions'
 module Mongify
   module Database
     #
@@ -23,10 +24,8 @@ module Mongify
         case type
         when :key
           {"pre_mongified_#{name}" => value}
-        when :datetime
-          {"#{name}" => value.blank? ? nil : value.to_time}
         else
-          {"#{self.name}" => value}
+          {"#{name}" => type_cast(value)}
         end
       end
       
@@ -61,6 +60,24 @@ module Mongify
       #######
       private
       #######
+      
+      def type_cast(value)
+        return nil if value.nil?
+        case type
+          when :string    then value
+          when :text      then value
+          when :integer   then value.to_i rescue value ? 1 : 0
+          when :float     then value.to_f
+          when :decimal   then ActiveRecord::ConnectionAdapters::Column.value_to_decimal(value)
+          when :datetime  then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
+          when :timestamp then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
+          when :time      then ActiveRecord::ConnectionAdapters::Column.string_to_dummy_time(value)
+          when :date      then ActiveRecord::ConnectionAdapters::Column.string_to_date(value)
+          when :binary    then ActiveRecord::ConnectionAdapters::Column.binary_to_string(value)
+          when :boolean   then ActiveRecord::ConnectionAdapters::Column.value_to_boolean(value)
+          else value
+        end
+      end
       
       def key?
         self.type == :key
