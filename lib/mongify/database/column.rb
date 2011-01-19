@@ -24,7 +24,7 @@ module Mongify
         return {} if ignored?
         case type
         when :key
-          {"pre_mongified_#{name}" => value}
+          {"pre_mongified_id" => value}
         else
           {"#{name}" => type_cast(value)}
         end
