@@ -29,7 +29,7 @@ table "preferences", :embed_in => :users, :as => :object do
 	column "id", :key
 	column "user_id", :integer, :references => "users"
 	column "notify_by_email", :boolean
-	column "created_at", :datetime
-	column "updated_at", :datetime
+	column "created_at", :datetime, :ignore => true
+	column "updated_at", :datetime, :ignore => true
 end
 

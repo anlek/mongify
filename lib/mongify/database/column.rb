@@ -7,13 +7,13 @@ module Mongify
     class Column
       attr_reader :name, :type, :options
       
-      AVAILABLE_OPTIONS = ['references', 'default']
+      AVAILABLE_OPTIONS = ['references', 'ignore']
 
-      def initialize(name, type=:string, *args)
+      def initialize(name, type=:string, options={})
         @name = name
         type = :string if type.nil?
         @type = type.is_a?(Symbol) ? type : type.to_sym
-        @options = args.extract_options!.stringify_keys
+        @options = options.stringify_keys
         
         auto_detect!
         
@@ -21,6 +21,7 @@ module Mongify
       end
       
       def translate(value)
+        return {} if ignored?
         case type
         when :key
           {"pre_mongified_#{name}" => value}
@@ -81,6 +82,10 @@ module Mongify
       
       def key?
         self.type == :key
+      end
+      
+      def ignored?
+        !!self.ignore
       end
 
       def auto_detect!

@@ -90,11 +90,20 @@ Save the file as <tt>"translation_file.rb"</tt> and run the command:
 
   mongify process translation_file.rb -c database.config
 
-== Translation Options
+== Translation Layout and Options
 
 When dealing with a translation, there is a few options you can set
 
 === Table
+
+==== Structure
+
+Structure for defining a table is as follows:
+  table "table_name", {options} do
+    # columns go here...
+  end
+
+==== Options
 
 Table Options are as follow:
   table "table_name"                                        # Does a straight copy of the table
@@ -114,17 +123,36 @@ Table Options are as follow:
                                                             # This option is good for tables like: schema_migrations
 
 === Columns
-Columns take a few more options:
-  column "id", :key                                   # Columns that are primary keys and need to be marked as :key
-  column "title", :string                             # Data from this column will be copied straight over without modification
-  column "body", :text                                # Since mongo doesn't care about text fields, this will just be converted to string
+
+==== Structure
+
+Structure for defining a column is as follows:
+  column "name", :type, {options}
+<em>Columns with no type given will be set to <tt>:string</tt></em>
+
+==== Notes
+Leaving a column out when defining a table will result in a copy of the information (as a string).
+  
+==== Types
+
+Before we cover the options, you need to know what types of columns are supported:
+  :key                  # Columns that are primary keys need to be marked as :key type
+  :integer              # Will be converted to a integer
+  :float                # Will be converted to a float
+  :decimal              # Will be converted to a BigDecimal
+  :string               # Will be converted to a string
+  :text                 # Will be converted to a string
+  :datetime             # Specifying a field as :datetime will convert it to Time format as it gets imported into MongoDB
+  :binary               # Will be converted to a string
+  
+==== Options
+
   column "post_id", :integer, :referneces => :posts   # Referenced columns need to be marked as such, this will mean that they will be updated
                                                       # with the new BSON::ObjectID.
-  column "created_at", :datetime                      # Specifying a field as :datetime will convert it to Time format as it
-                                                      # gets imported into MongoDB
-  column "name"                                       # Columns without a type will be set to :string
+<b>NOTE: if you rename the table 'posts', you should set the :references to the new name</b>
+
+  column "name", :string, :ignore => true             # it will NOT be copied over to the new database during processing
                                                       
-Leaving a column out of the list will just result in a straight copy of the information.
 
 <em>**this is subject to change during the alpha (0.0.x release)**</em>
 
@@ -143,7 +171,6 @@ More testing will be done once the basic functionality is done
 === while processing
 
 * Allow renaming of columns
-* Allow deleting/ignore of columns
 * Allow running a proc on column value
 * Update user on what is being processed
 

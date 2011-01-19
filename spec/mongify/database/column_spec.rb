@@ -73,10 +73,6 @@ describe Mongify::Database::Column do
       @column = Mongify::Database::Column.new('user_id', :integer)
       @column.to_print.should == %Q[column "user_id", :integer, :references => "users"]
     end
-    it "should output nil options" do
-      @column.default = nil
-      @column.to_print.should == %Q[column "first_name", :string]
-    end
   end
   
   context :reference? do
@@ -90,6 +86,11 @@ describe Mongify::Database::Column do
     it "should return a hash with the new translation" do
       @column = Mongify::Database::Column.new('first_name', :string)
       @column.translate('bob').should == {'first_name' => 'bob'}
+    end
+    it "should ignore an ignored column" do
+      @column = Mongify::Database::Column.new('first_name', :string, :ignore => true)
+      @column.should be_ignored
+      @column.translate('bob').should == {}
     end
     context "datetime" do
       it "should return a datetime format" do
