@@ -58,7 +58,7 @@ module Mongify
         end
       end
       
-      def reference?
+      def referenced?
         !self.options['references'].nil?
       end
       

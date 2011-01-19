@@ -50,7 +50,7 @@ module Mongify
       
       
       def reference_columns
-        @columns.reject{ |c| !c.reference? } 
+        @columns.reject{ |c| !c.referenced? } 
       end
       
       def translate(row)

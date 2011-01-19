@@ -101,10 +101,10 @@ describe Mongify::Database::Column do
     end
   end
   
-  context :reference? do
+  context :referenced? do
     it "should be true" do
       @column = Mongify::Database::Column.new('user_id', :integer, :references => 'users')
-      @column.should be_a_reference
+      @column.should be_a_referenced
     end
   end
   
