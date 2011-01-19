@@ -4,12 +4,8 @@ module Mongify
   #
   class Translation
     module Process
-      def sql_connection=(value)
-        @sql_connection=value
-      end
-      def no_sql_connection=(value)
-        @no_sql_connection=value
-      end
+      attr_accessor :sql_connection, :no_sql_connection
+
       def process(sql_connection, no_sql_connection)
         raise Mongify::SqlConnectionRequired, "Can only read from Mongify::Database::SqlConnection" unless sql_connection.is_a?(Mongify::Database::SqlConnection)
         raise Mongify::NoSqlConnectionRequired, "Can only write to Mongify::Database::NoSqlConnection" unless no_sql_connection.is_a?(Mongify::Database::NoSqlConnection)

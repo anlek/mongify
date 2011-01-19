@@ -1,5 +1,7 @@
 == 0.0.9 / In Development
 * Added ability to rename table
+* Fixed bug 'pre_mogified_id' not being removed in all records
+* Added ability to ignore table
 == 0.0.8 / 18 Jan 2011
 * Added ability to embed as object on an embedded table
 * Some bugs fixed

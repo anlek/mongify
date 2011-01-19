@@ -105,9 +105,13 @@ Table Options are as follow:
   table "table_name", :embed_in => :users, :as => :object   # Embeds table_name into users as a one to one relationship
                                                             # This also assumes you have a user_id present in table_name
 <em>You can also specify both <b>:on</b> and <b>:as</b> options when embedding</em>
+
   table "table_name", :rename_to => 'my_table'              # This will allow you to rename the table as it's getting process
                                                             # Just remember that columns that use :reference need to
                                                             # reference the new name.
+
+  table "table_name", :ignore => true                       # This will ignore the whole table (like it doesn't exist)
+                                                            # This option is good for tables like: schema_migrations
 
 === Columns
 Columns take a few more options:
@@ -139,7 +143,7 @@ More testing will be done once the basic functionality is done
 === while processing
 
 * Allow renaming of columns
-* Allow deleting of columns
+* Allow deleting/ignore of columns
 * Allow running a proc on column value
 * Update user on what is being processed
 

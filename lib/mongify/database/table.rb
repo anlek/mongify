@@ -26,6 +26,10 @@ module Mongify
         @name ||= self.sql_name
       end
       
+      def ignored?
+        @options['ignore']
+      end
+      
       #Add a Database Column
       def add_column(column)
         raise Mongify::DatabaseColumnExpected, "Expected a Mongify::Database::Column" unless column.is_a?(Mongify::Database::Column)

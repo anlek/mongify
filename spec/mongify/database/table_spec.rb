@@ -16,6 +16,11 @@ describe Mongify::Database::Table do
     @table.name.should == 'accounts'
   end
   
+  it "should be ingored" do
+    table = Mongify::Database::Table.new('users', :ignore => true)
+    table.should be_ignored
+  end
+  
   it "should get setup options" do
     @table = Mongify::Database::Table.new('users', :embed_in => 'accounts', :as => 'users')
     @table.options.should == {'embed_in' => 'accounts', 'as' => 'users'}
