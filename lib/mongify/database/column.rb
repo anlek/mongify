@@ -5,12 +5,12 @@ module Mongify
     # A column in the sql table
     #
     class Column
-      attr_reader :name, :type, :options
+      attr_reader :sql_name, :type, :options
       
-      AVAILABLE_OPTIONS = ['references', 'ignore']
+      AVAILABLE_OPTIONS = ['references', 'ignore', 'rename_to']
 
-      def initialize(name, type=:string, options={})
-        @name = name
+      def initialize(sql_name, type=:string, options={})
+        @sql_name = sql_name
         type = :string if type.nil?
         @type = type.is_a?(Symbol) ? type : type.to_sym
         @options = options.stringify_keys
@@ -18,6 +18,10 @@ module Mongify
         auto_detect!
         
         self
+      end
+      
+      def name
+        @name ||= rename_to || sql_name
       end
       
       def translate(value)
@@ -56,6 +60,10 @@ module Mongify
       
       def reference?
         !self.options['references'].nil?
+      end
+      
+      def renamed?
+        self.name != self.sql_name
       end
       
       #######

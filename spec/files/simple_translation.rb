@@ -9,7 +9,7 @@ end
 table "posts" do
   column "id", :key
   column "title", :string
-  column "owner_id", :integer, :references => :users
+  column "owner_id", :integer, :references => :users, :rename_to => 'user_id'
   column "body", :text
   column "published_at", :datetime
   column "created_at", :datetime

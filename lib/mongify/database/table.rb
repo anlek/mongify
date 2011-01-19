@@ -33,17 +33,14 @@ module Mongify
       #Add a Database Column
       def add_column(column)
         raise Mongify::DatabaseColumnExpected, "Expected a Mongify::Database::Column" unless column.is_a?(Mongify::Database::Column)
-        add_column_index(column.name, @columns.size)
-        @columns << column
+        add_and_index_column(column)
       end
       
       
       def column(name, type=nil, options={})
-        options = type and type = nil if type.is_a?(Hash)
+        options, type = type, nil if type.is_a?(Hash)
         type = type.to_sym if type
-        add_column_index(name.to_s.downcase, @columns.size)
-        @columns << (col = Mongify::Database::Column.new(name, type, options))
-        col
+        add_and_index_column(Mongify::Database::Column.new(name, type, options))
       end
       
       def find_column(name)
@@ -92,8 +89,10 @@ module Mongify
       private
       #######
       
-      def add_column_index(name, index)
-        @column_lookup[name] = index
+      def add_and_index_column(column)
+        @column_lookup[column.sql_name] = @columns.size
+        @columns << column
+        column
       end
 
       def import_columns

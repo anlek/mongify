@@ -11,7 +11,7 @@ Feature: Processing a translation
   Then it succeeds
   And there should be 3 users in mongodb
   And there should be 3 posts in mongodb
-  And the first post's owner_id should be first user
+  And the first post's user_id should be first user
   And there should be 0 comments in mongodb
   And the first post should have 1 comment
 

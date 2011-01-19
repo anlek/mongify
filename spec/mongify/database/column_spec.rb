@@ -8,6 +8,9 @@ describe Mongify::Database::Column do
   it "should have name" do
     @column.name.should == 'first_name'
   end
+  it "should have a sql_name" do
+    @column.sql_name.should == 'first_name'
+  end
   
   it "should get setup options" do
     @column = Mongify::Database::Column.new('account_id', :integer, :references => 'accounts')
@@ -19,7 +22,7 @@ describe Mongify::Database::Column do
     @column.type.should == :string
   end
   
-  context "key" do
+  context "key?" do
     it "should be true" do
       @column = Mongify::Database::Column.new('id', :key)
       @column.should be_a_key
@@ -28,6 +31,29 @@ describe Mongify::Database::Column do
     it "should be true" do
       @column = Mongify::Database::Column.new('first_name', :string)
       @column.should_not be_a_key
+    end
+  end
+  
+  context "rename_to" do
+    before(:each) do
+      @column = Mongify::Database::Column.new('surname', :string, :rename_to => 'last_name')
+    end
+    it "should have the right sql_name" do
+      @column.sql_name.should == 'surname'
+    end
+    it "should have the right name" do
+      @column.name.should == 'last_name'
+    end
+    it "should translate to new name" do
+      @column.translate('value').should == {'last_name' => 'value'}
+    end
+    
+    it "should be renamed" do
+      @column.should be_renamed
+    end
+    it "should be not renamed" do
+      col = Mongify::Database::Column.new('surname', :string)
+      col.should_not be_renamed
     end
   end
   

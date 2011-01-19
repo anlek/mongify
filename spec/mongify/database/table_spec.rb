@@ -41,7 +41,7 @@ describe Mongify::Database::Table do
   
   context "column_index (find_column)" do
     it "should add column index on column creation" do
-      @table.should_receive(:add_column_index).with('first_name', 0)
+      @table.should_receive(:add_and_index_column)
       @table.column('first_name', :string)
     end
   end
@@ -52,14 +52,25 @@ describe Mongify::Database::Table do
     end
     
     it "should work without a type" do
-      col = @table.column 'name', :default => '123'
+      col = @table.column 'name'
       col.type.should == :string
+    end
+    
+    it "should work without a type with options" do
+      col = @table.column 'name', :rename_to => 'first_name'
+      col.type.should == :string
+      col.should be_renamed
     end
     
     it "should be able to find" do
       @table.column 'another'
       col = @table.column 'dark'
       @table.find_column('dark').should == col
+    end
+    
+    it "should be searchable with sql_name only" do
+      col = @table.column 'surname', :string, :rename_to => 'last_name'
+      @table.find_column('surname').should == col
     end
     
     it "should return nil if not found" do
