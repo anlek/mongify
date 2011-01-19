@@ -151,8 +151,9 @@ Before we cover the options, you need to know what types of columns are supporte
                                                       # with the new BSON::ObjectID.
 <b>NOTE: if you rename the table 'posts', you should set the :references to the new name</b>
 
-  column "name", :string, :ignore => true             # it will NOT be copied over to the new database during processing
-                                                      
+  column "name", :string, :ignore => true             # Ignoring a column will make the column NOT copy over to the new database
+  
+  column "surname", :string, :rename_to => 'last_name'# Rename_to allows you to rename the column                                                      
 
 <em>**this is subject to change during the alpha (0.0.x release)**</em>
 
@@ -170,7 +171,7 @@ More testing will be done once the basic functionality is done
 
 === while processing
 
-* Allow renaming of columns
+* Work with polymorphic tables
 * Allow running a proc on column value
 * Update user on what is being processed
 
