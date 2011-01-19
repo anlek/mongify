@@ -5,20 +5,29 @@ module Mongify
     #
     class Table
       
-      attr_accessor :name
+      attr_accessor :name, :sql_name
       attr_reader :options, :columns
       
-      def initialize(name, *args, &block)
+      def initialize(sql_name, options={}, &block)
         @columns = []
         @column_lookup = {}
-        @options = args.extract_options!.stringify_keys
-        self.name = name
+        @options = options.stringify_keys
+        self.sql_name = sql_name
         
         self.instance_exec(&block) if block_given?
         
         import_columns
         
         self
+      end
+      
+      def name
+        @name ||= @options['rename_to']
+        @name ||= self.sql_name
+      end
+      
+      def ignored?
+        @options['ignore']
       end
       
       #Add a Database Column
@@ -60,13 +69,23 @@ module Mongify
         @options['embed_in'].to_s unless @options['embed_in'].nil?
       end
       
+      def embed_as
+        return nil unless embed?
+        return 'object' if @options['as'].to_s.downcase == 'object'
+        'array'
+      end
+      
+      def embed_as_object?
+        embed_as == 'object'
+      end
+      
       def embed?
         embed_in.present?
       end
       
       def embed_on
         return nil unless embed?
-        (@options['on'] || "#{@options['embed_in'].singularize}_id").to_s
+        (@options['on'] || "#{@options['embed_in'].to_s.singularize}_id").to_s
       end
             
       #######

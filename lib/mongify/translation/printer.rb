@@ -6,7 +6,7 @@ module Mongify
     module Printer
       def print
         ''.tap do |output|
-          @tables.each do |t|
+          all_tables.each do |t|
             output << %Q[table "#{t.name}" do\n]
               t.columns.each do |c|
                 output << "\t#{c.to_print}\n"

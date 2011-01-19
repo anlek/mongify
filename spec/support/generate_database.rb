@@ -1,4 +1,3 @@
-require 'active_record'
 class GenerateDatabase
   def self.mysql_connection
     @sql_connection ||= Mongify::Database::SqlConnection.new( :adapter => CONNECTION_CONFIG.mysql['adapter'], 
@@ -40,6 +39,12 @@ class GenerateDatabase
       t.timestamps
     end
     
+    conn.create_table(:preferences) do |t|
+      t.integer :user_id
+      t.boolean :notify_by_email
+      t.timestamps
+    end
+    
     if include_data
       
       #Users
@@ -69,6 +74,15 @@ class GenerateDatabase
       ].each do |v|
         conn.insert("INSERT INTO comments (body, post_id, user_id, created_at, updated_at) 
                     VALUES ('#{v[:body]}', #{v[:post_id]}, #{v[:user_id]}, '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+      end
+      
+      [
+        {:user_id => 1, :notify_by_email => true},
+        {:user_id => 2, :notify_by_email => true},
+        {:user_id => 3, :notify_by_email => false}
+      ].each do |v|
+          conn.insert("INSERT INTO preferences (user_id, notify_by_email, created_at, updated_at) 
+                      VALUES (#{v[:user_id]}, '#{v[:notify_by_email]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
       end
       
     end

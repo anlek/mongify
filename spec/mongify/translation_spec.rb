@@ -17,9 +17,10 @@ describe Mongify::Translation do
       before(:each) do
         @connection = Mongify::Database::SqlConnection.new
         @connection.stub(:has_connection?).and_return(true)
+        @connection.stub(:valid?).and_return(true)
         @connection.stub(:tables).and_return(['users'])
         col = mock(:name => 'first_name', :type => 'string', :default => nil)
-        @connection.stub(:columns_for).and_return([col])
+        @connection.stub(:columns_for).with('users').and_return([col])
       end
       it "should return a translation" do
         Mongify::Translation.load(@connection).should be_a(Mongify::Translation)
@@ -35,8 +36,8 @@ describe Mongify::Translation do
   
   context "parsed content" do
     context "tables" do
-      it "should have 3 tables" do
-        @translation.should have(3).tables
+      it "should have 4 tables" do
+        @translation.should have(4).tables
       end
       
       it "should setup 'comments'" do
@@ -49,10 +50,16 @@ describe Mongify::Translation do
   
   context "tables reference" do
     before(:each) do
-      @copy_table = mock(:name => 'users', :embed? => false)
-      @embed_table = mock(:name => 'comments', :embed? => true)
+      @copy_table = mock(:name => 'users', :embed? => false, :ignored? => false)
+      @embed_table = mock(:name => 'comments', :embed? => true, :ignored? => false)
+      @ignored_table = mock(:name => 'apples', :ignored? => true, :embed? => false)
       @translation = Mongify::Translation.new()
-      @translation.stub(:tables).and_return([@copy_table, @embed_table])
+      @translation.stub(:all_tables).and_return([@copy_table, @embed_table, @ignored_table])
+    end
+    context "tables" do
+      it "should not show ignored" do
+        
+      end
     end
     context "copy_tables" do
       it "should return tables that are not embeded" do

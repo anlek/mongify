@@ -5,8 +5,6 @@ module Mongify
   # Actually runs the translation from sql to no sql
   #
   class Translation
-    attr_reader :tables, :sql_connection, :no_sql_connection
-    
     include Printer
     include Process
     class << self
@@ -18,7 +16,7 @@ module Mongify
       
       def load(connection)
         raise Mongify::SqlConnectionRequired, "Can only read from Mongify::Database::SqlConnection" unless connection.is_a?(Mongify::Database::SqlConnection)
-        return unless connection.has_connection?
+        return unless connection.valid? && connection.has_connection?
         translation = self.new
         connection.tables.each do |t|
           columns = []
@@ -31,18 +29,25 @@ module Mongify
       end
     end
     
-    
     def initialize
-      @tables = []
+      @all_tables = []
     end
     
     def table(table_name, options={}, &block)
       table = Mongify::Database::Table.new(table_name, options, &block)
-      @tables << table
+      @all_tables << table
     end
     
     def add_table(table)
-      @tables << table
+      @all_tables << table
+    end
+    
+    def all_tables
+      @all_tables
+    end
+    
+    def tables
+      all_tables.reject{ |t| t.ignored? }
     end
     
     def copy_tables
@@ -52,12 +57,6 @@ module Mongify
     def embed_tables
       tables.reject{|t| !t.embed?}
     end
-    
-    #######
-    private
-    #######
-
-    
     
   end
 end

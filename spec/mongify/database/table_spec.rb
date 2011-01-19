@@ -8,14 +8,35 @@ describe Mongify::Database::Table do
   it "should have name" do
     @table.name.should == "users"
   end
+  it "should have sql_name" do
+    @table.sql_name.should == "users"
+  end
   it "should allow you to change table name" do
     @table.name = 'accounts'
     @table.name.should == 'accounts'
   end
   
+  it "should be ingored" do
+    table = Mongify::Database::Table.new('users', :ignore => true)
+    table.should be_ignored
+  end
+  
   it "should get setup options" do
     @table = Mongify::Database::Table.new('users', :embed_in => 'accounts', :as => 'users')
     @table.options.should == {'embed_in' => 'accounts', 'as' => 'users'}
+  end
+  
+  context "rename_to" do
+    before(:each) do
+      @table = Mongify::Database::Table.new('users', :rename_to => 'people')
+    end
+
+    it "should have new name" do
+      @table.name.should == "people"
+    end
+    it "should have sql_name" do
+      @table.sql_name.should == "users"
+    end
   end
   
   context "column_index (find_column)" do
@@ -103,6 +124,28 @@ describe Mongify::Database::Table do
       end
       it "should be nil when not embedded table" do
         Mongify::Database::Table.new('users').embed_in.should be_nil
+      end
+    end
+    context "embed_as" do
+      it "should return nil if it's not an embed table" do
+        Mongify::Database::Table.new('comments', :as => 'array').embed_as.should be_nil
+      end
+      it "should default to :array" do
+        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').embed_as.should == 'array'
+      end
+      it "should allow Array as a value" do
+        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :array).embed_as.should == 'array'
+      end
+      it "should allow Object as a value" do
+        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :object).embed_as.should == 'object'
+      end
+      context "embed_as_object?" do
+        it "should be true" do
+          Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :object).should be_embed_as_object
+        end
+        it "should be false" do
+          Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :array).should_not be_embed_as_object
+        end
       end
     end
     context "embed?" do

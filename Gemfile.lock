@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mongify (0.0.7)
+    mongify (0.0.8)
       activerecord (>= 2.3.10)
       activesupport (>= 2.3.10)
       bson_ext (>= 1.1.5)
@@ -16,8 +16,8 @@ GEM
     activerecord (2.3.10)
       activesupport (= 2.3.10)
     activesupport (2.3.10)
-    bson (1.1.5)
-    bson_ext (1.1.5)
+    bson (1.2.0)
+    bson_ext (1.2.0)
     builder (3.0.0)
     cucumber (0.10.0)
       builder (>= 2.1.2)
@@ -31,8 +31,8 @@ GEM
     json (1.4.6)
     mocha (0.9.10)
       rake
-    mongo (1.1.5)
-      bson (>= 1.1.5)
+    mongo (1.2.0)
+      bson (>= 1.2.0)
     mysql (2.8.1)
     mysql2 (0.2.6)
     net-ssh (2.0.24)
@@ -47,7 +47,9 @@ GEM
     rspec-expectations (2.4.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.4.0)
-    sqlite3-ruby (1.3.2)
+    sqlite3 (1.3.3)
+    sqlite3-ruby (1.3.3)
+      sqlite3 (>= 1.3.3)
     term-ansicolor (1.0.5)
     watchr (0.7)
     yard (0.6.4)
@@ -56,17 +58,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (>= 2.3.10)
-  activesupport (>= 2.3.10)
-  bson_ext (>= 1.1.5)
   cucumber (>= 0.10)
   mocha (>= 0.9.8)
   mongify!
-  mongo (>= 1.1.5)
   mysql (>= 2.8.1)
-  mysql2
-  net-ssh (>= 2.0)
-  progressbar (>= 0.9)
   rcov (>= 0.9.9)
   rspec (>= 2.0)
   sqlite3-ruby (>= 1.3)

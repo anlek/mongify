@@ -79,7 +79,13 @@ Creating a translation is pretty straight forward. It looks something like this:
     column "created_at", :datetime
     column "updated_at", :datetime
   end
-
+  
+  table "preferences", :embed_in => :users, :as => :object do
+    column "id", :key
+    column "user_id", :integer, :references => "users"
+    column "notify_by_email", :boolean
+  end
+  
 Save the file as <tt>"translation_file.rb"</tt> and run the command:
 
   mongify process translation_file.rb -c database.config
@@ -90,8 +96,22 @@ When dealing with a translation, there is a few options you can set
 
 === Table
 
-Tables have the ability to be embedded into another collection on durring processing by passing :embed_in => 'collection_name'.
-You can also specify :on option (while embedding) to specify which field you're linking the tables together on.
+Table Options are as follow:
+  table "table_name"                                        # Does a straight copy of the table
+  table "table_name", :embed_in => :users                   # Embeds table_name into users, assuming a user_id is present in table_name.
+                                                            # This will also assume you want the table embedded as an array.
+  table "table_name", :embed_in => :users, :on => 'owner_id'# Embeds table_name into users, linking it via a owner_id
+                                                            # This will also assume you want the table embedded as an array.
+  table "table_name", :embed_in => :users, :as => :object   # Embeds table_name into users as a one to one relationship
+                                                            # This also assumes you have a user_id present in table_name
+<em>You can also specify both <b>:on</b> and <b>:as</b> options when embedding</em>
+
+  table "table_name", :rename_to => 'my_table'              # This will allow you to rename the table as it's getting process
+                                                            # Just remember that columns that use :reference need to
+                                                            # reference the new name.
+
+  table "table_name", :ignore => true                       # This will ignore the whole table (like it doesn't exist)
+                                                            # This option is good for tables like: schema_migrations
 
 === Columns
 Columns take a few more options:
@@ -122,10 +142,8 @@ More testing will be done once the basic functionality is done
 
 === while processing
 
-* Allow the ability to embed_table with a one to one relationship
-* Allow renaming tables
 * Allow renaming of columns
-* Allow deleting of columns
+* Allow deleting/ignore of columns
 * Allow running a proc on column value
 * Update user on what is being processed
 

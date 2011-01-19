@@ -68,7 +68,7 @@ describe Mongify::Database::SqlConnection do
 
     context "tables" do
       it "should be able to get a list" do
-        @sql_connection.tables.sort.should == ['comments', 'posts', 'users'].sort
+        @sql_connection.tables.sort.should == ['comments', 'posts', 'preferences', 'users'].sort
       end
     end
 

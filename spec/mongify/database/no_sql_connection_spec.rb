@@ -120,7 +120,7 @@ describe Mongify::Database::NoSqlConnection do
     
     context "remove_pre_mongified_ids" do
       it "should call update with unset" do
-        @collection.should_receive(:update).with({},{'$unset' => {'pre_mongified_id' => 1}})
+        @collection.should_receive(:update).with({},{'$unset' => {'pre_mongified_id' => 1}}, {:multi=>true})
         @mongodb_connection.remove_pre_mongified_ids('users')
       end
     end

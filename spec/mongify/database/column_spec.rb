@@ -94,11 +94,19 @@ describe Mongify::Database::Column do
     context "datetime" do
       it "should return a datetime format" do
         @column = Mongify::Database::Column.new('created_at', :datetime)
-        @column.translate('2011-01-14 21:23:39').should == {'created_at' => Time.utc(2011, 01, 14, 21, 23,39)}
+        @column.translate('2011-01-14 21:23:39').should == {'created_at' => Time.local(2011, 01, 14, 21, 23,39)}
       end
       it "should return nil if input is nil" do
         @column = Mongify::Database::Column.new('created_at', :datetime)
         @column.translate(nil).should == {'created_at' => nil}
+      end
+    end
+    context :integer do
+      before(:each) do
+        @column = Mongify::Database::Column.new('account_id', :integer)
+      end
+      it "should return 10" do
+        @column.translate("10").should == {'account_id' => 10}
       end
     end
     

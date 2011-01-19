@@ -4,12 +4,8 @@ module Mongify
   #
   class Translation
     module Process
-      def sql_connection=(value)
-        @sql_connection=value
-      end
-      def no_sql_connection=(value)
-        @no_sql_connection=value
-      end
+      attr_accessor :sql_connection, :no_sql_connection
+
       def process(sql_connection, no_sql_connection)
         raise Mongify::SqlConnectionRequired, "Can only read from Mongify::Database::SqlConnection" unless sql_connection.is_a?(Mongify::Database::SqlConnection)
         raise Mongify::NoSqlConnectionRequired, "Can only write to Mongify::Database::NoSqlConnection" unless no_sql_connection.is_a?(Mongify::Database::NoSqlConnection)
@@ -33,7 +29,7 @@ module Mongify
       def copy_data
         p = ProgressBar.new('Copying Tables', self.copy_tables.count)
         self.copy_tables.each do |t|
-          sql_connection.select_rows(t.name).each do |row|
+          sql_connection.select_rows(t.sql_name).each do |row|
             no_sql_connection.insert_into(t.name, t.translate(row))
           end
           p.inc
@@ -44,14 +40,15 @@ module Mongify
       def copy_embedded_tables
         p = ProgressBar.new('Copying Embedded Tables', self.embed_tables.count)
         self.embed_tables.each do |t|
-          sql_connection.select_rows(t.name).each do |row|
+          sql_connection.select_rows(t.sql_name).each do |row|
             target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => row[t.embed_on]})
             next unless target_row.present?
             row = t.translate(row)
             row.delete(t.embed_on)
             row.merge!(fetch_reference_ids(t, row))
             row.delete('pre_mongified_id')
-            no_sql_connection.update(t.embed_in, target_row['_id'], {'$addToSet' => {t.name => row}})
+            save_function_call = t.embed_as_object? ? '$set' : '$addToSet'
+            no_sql_connection.update(t.embed_in, target_row['_id'], {save_function_call => {t.name => row}})
           end
           p.inc
         end
