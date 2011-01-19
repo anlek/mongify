@@ -179,7 +179,7 @@ More testing will be done once the basic functionality is done
 
 === Requirements
 
-You just need bundler 1.0
+You just need bundler 1.0.8
 
   gem install bundler
   bundle install
