@@ -57,9 +57,8 @@ module Mongify
       end
       
       def remove_pre_mongified_ids(collection_name)
-        db[collection_name].update({}, { '$unset' => { 'pre_mongified_id' => 1} })
+        db[collection_name].update({}, { '$unset' => { 'pre_mongified_id' => 1} }, :multi => true)
       end
-      
       
       def reset!
         @connection = nil
