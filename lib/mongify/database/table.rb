@@ -5,20 +5,25 @@ module Mongify
     #
     class Table
       
-      attr_accessor :name
+      attr_accessor :name, :sql_name
       attr_reader :options, :columns
       
-      def initialize(name, options={}, &block)
+      def initialize(sql_name, options={}, &block)
         @columns = []
         @column_lookup = {}
         @options = options.stringify_keys
-        self.name = name
+        self.sql_name = sql_name
         
         self.instance_exec(&block) if block_given?
         
         import_columns
         
         self
+      end
+      
+      def name
+        @name ||= @options['rename_to']
+        @name ||= self.sql_name
       end
       
       #Add a Database Column

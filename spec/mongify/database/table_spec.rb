@@ -8,6 +8,9 @@ describe Mongify::Database::Table do
   it "should have name" do
     @table.name.should == "users"
   end
+  it "should have sql_name" do
+    @table.sql_name.should == "users"
+  end
   it "should allow you to change table name" do
     @table.name = 'accounts'
     @table.name.should == 'accounts'
@@ -16,6 +19,19 @@ describe Mongify::Database::Table do
   it "should get setup options" do
     @table = Mongify::Database::Table.new('users', :embed_in => 'accounts', :as => 'users')
     @table.options.should == {'embed_in' => 'accounts', 'as' => 'users'}
+  end
+  
+  context "rename_to" do
+    before(:each) do
+      @table = Mongify::Database::Table.new('users', :rename_to => 'people')
+    end
+
+    it "should have new name" do
+      @table.name.should == "people"
+    end
+    it "should have sql_name" do
+      @table.sql_name.should == "users"
+    end
   end
   
   context "column_index (find_column)" do

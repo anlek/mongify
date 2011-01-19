@@ -32,7 +32,7 @@ module Mongify
       
       def copy_data
         self.copy_tables.each do |t|
-          sql_connection.select_rows(t.name).each do |row|
+          sql_connection.select_rows(t.sql_name).each do |row|
             no_sql_connection.insert_into(t.name, t.translate(row))
           end
         end
@@ -40,7 +40,7 @@ module Mongify
       
       def copy_embedded_tables
         self.embed_tables.each do |t|
-          sql_connection.select_rows(t.name).each do |row|
+          sql_connection.select_rows(t.sql_name).each do |row|
             target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => row[t.embed_on]})
             next unless target_row.present?
             row = t.translate(row)
