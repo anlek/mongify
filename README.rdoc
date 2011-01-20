@@ -115,6 +115,8 @@ Table Options are as follow:
                                                             # This also assumes you have a user_id present in table_name
 <em>You can also specify both <b>:on</b> and <b>:as</b> options when embedding</em>
 
+<b>NOTE: If you rename the owner_id column, make sure you update the :on to the new column name</b>
+
   table "table_name", :rename_to => 'my_table'              # This will allow you to rename the table as it's getting process
                                                             # Just remember that columns that use :reference need to
                                                             # reference the new name.
@@ -168,13 +170,10 @@ More testing will be done once the basic functionality is done
 == TODO
 
 * Allow you to set a :force => true for mongodb_connection, so that it drops existing database before importing
-
-=== while processing
-
 * Work with polymorphic tables
 * Allow running a proc on column value
 * Update user on what is being processed
-
+* Improve RDoc
 
 == Development
 
