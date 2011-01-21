@@ -105,7 +105,6 @@ describe Mongify::CLI::WorkerCommand do
     end
     
     it "should call process on translation" do
-      puts @config.no_sql_connection.inspect
       Mongify::Translation.should_receive(:parse).and_return(mock(:process => true))
       @command.execute(@view)
     end

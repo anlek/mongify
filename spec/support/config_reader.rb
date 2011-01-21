@@ -3,7 +3,6 @@ class ConfigReader
   def initialize(filepath)
     if File.exists?(filepath)
       config = YAML.load_file(filepath)
-      #puts ">>> READING #{filepath}"
       config.each { |key, value| instance_variable_set("@#{key}", value) }
     else
       raise ">>> Can't find #{filepath} -- unable to read config file <<<"
