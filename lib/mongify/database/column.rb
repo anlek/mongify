@@ -144,7 +144,7 @@ module Mongify
         self.type == :key
       end
       
-      # REturns true if column should be auto_detected (passed via options)
+      # Returns true if column should be auto_detected (passed via options)
       def auto_detect?
         !!@auto_detect
       end
