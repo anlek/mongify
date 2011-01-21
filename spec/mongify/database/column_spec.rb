@@ -204,7 +204,7 @@ describe Mongify::Database::Column do
       before(:each) do
         @column = Mongify::Database::Column.new('created_at', :time)
       end
-      it "should return a datetime format" do
+      it "should return a time format" do
         @column.translate('21:23:39').should == {'created_at' => Time.local(2000, 01, 01, 21, 23,39)}
       end
       it "should return nil if input is nil" do
@@ -215,8 +215,8 @@ describe Mongify::Database::Column do
       before(:each) do
         @column = Mongify::Database::Column.new('created_at', :date)
       end
-      it "should return a datetime format" do
-        @column.translate('2011-01-14').should == {'created_at' => Date.new(2011, 01, 14)}
+      it "should return a time format" do
+        @column.translate('2011-01-14').should == {'created_at' => Time.local(2011, 01, 14)}
       end
       it "should return nil if input is nil" do
         @column.translate(nil).should == {'created_at' => nil}

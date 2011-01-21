@@ -22,7 +22,10 @@ module Mongify
     #   :decimal              # Will be converted to a BigDecimal
     #   :string               # Will be converted to a string
     #   :text                 # Will be converted to a string
-    #   :datetime             # Specifying a field as :datetime will convert it to Time format as it gets imported into MongoDB
+    #   :datetime             # Will be converted to a Time format (DateTime is not currently supported in the Mongo ruby driver)
+    #   :date                 # Will be converted to a Time format (Date is not currently supported in the Mongo ruby driver)
+    #   :timestamps           # Will be converted to a Time format
+    #   :time                 # Will be converted to a Time format (the date portion of the Time object will be 2000-01-01)
     #   :binary               # Will be converted to a string
     #   :boolean              # Will be converted to a true or false values
     # 
@@ -145,7 +148,7 @@ module Mongify
           when :datetime  then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
           when :timestamp then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
           when :time      then ActiveRecord::ConnectionAdapters::Column.string_to_dummy_time(value)
-          when :date      then ActiveRecord::ConnectionAdapters::Column.string_to_date(value)
+          when :date      then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
           when :binary    then ActiveRecord::ConnectionAdapters::Column.binary_to_string(value)
           when :boolean   then ActiveRecord::ConnectionAdapters::Column.value_to_boolean(value)
           else value
