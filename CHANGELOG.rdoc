@@ -1,4 +1,4 @@
-== 0.1.0 / In Development
+== 0.1.0 / 21 Jan 2011
 * Moved from Alpha to Beta! :)
 * Improved internal RDocs
 * Improved specs
