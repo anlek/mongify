@@ -38,24 +38,41 @@ module Mongify
     #   column "name", :string, :ignore => true             # Ignoring a column will make the column NOT copy over to the new database
     # 
     #   column "surname", :string, :rename_to => 'last_name'# Rename_to allows you to rename the column
+    #
+    #   column "post_id", :integer, :auto_detect => true    # Will run auto detect and make this column a :references => 'posts', :on => 'post_id' for you
+    #                                                       # More used when reading a sql database, NOT recommended for use during processing of translation
     #   
     class Column
       attr_reader :sql_name, :type, :options
       
       #List of available options for a column
       AVAILABLE_OPTIONS = ['references', 'ignore', 'rename_to']
-
+      
+      # Auto detects if a column is an :key column or is a reference column
+      def self.auto_detect(column)
+        case column.sql_name.downcase
+        when 'id'
+          column.type = :key if column.type == :integer
+        when /(.*)_id/
+          column.references = $1.to_s.pluralize unless column.referenced? || column.type != :integer
+        end
+      end
       
       def initialize(sql_name, type=:string, options={})
         @sql_name = sql_name
         options, type = type, nil if type.is_a?(Hash)
-        type = :string if type.nil?
-        @type = type.is_a?(Symbol) ? type : type.to_sym
+        self.type = type
         @options = options.stringify_keys
-        
-        auto_detect!
+        @auto_detect = @options.delete('auto_detect')
+        run_auto_detect!
         
         self
+      end
+      
+      # Allows you to set a type
+      def type=(value=:string)
+        value = :string if value.nil?
+        @type = value.is_a?(Symbol) ? value : value.to_sym
       end
       
       # Returns the no_sql record name
@@ -127,6 +144,11 @@ module Mongify
         self.type == :key
       end
       
+      # REturns true if column should be auto_detected (passed via options)
+      def auto_detect?
+        !!@auto_detect
+      end
+      
       # Returns true if column is ignored
       def ignored?
         !!self.ignore
@@ -156,14 +178,9 @@ module Mongify
       end
       
 
-      # Autodetects the column if it's an :key column or a :referencing column based on sql_name
-      def auto_detect!
-        case sql_name.downcase
-        when 'id'
-          @type = :key if self.type == :integer
-        when /(.*)_id/
-          self.references = $1.to_s.pluralize unless self.references
-        end
+      # runs auto detect (see {Mongify::Database::Column.auto_detect})
+      def run_auto_detect!
+        self.class.auto_detect(self) if auto_detect?
       end
       
       

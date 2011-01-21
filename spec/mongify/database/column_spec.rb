@@ -27,6 +27,53 @@ describe Mongify::Database::Column do
     @column.type.should == :string
   end
   
+  context "auto_detect!" do
+    it "should not auto detect automatically" do
+      Mongify::Database::Column.should_receive(:auto_detect).never
+      @column = Mongify::Database::Column.new('id', :integer)
+      @column.should_not be_key
+    end
+    
+    it "should auto_detect when option is passed in" do
+      @column = Mongify::Database::Column.new('id', :integer, :auto_detect => true)
+      @column.should be_key
+    end
+    
+    context "id column" do
+      before(:each) do
+        @col = mock(:sql_name => 'id', :type => :integer)
+      end
+      it "should detect column with type :integer as a :key column" do
+        @col.should_receive('type=').with(:key)
+        Mongify::Database::Column.auto_detect(@col)
+      end
+      it "should not detect column with type other then :integer as a :key column" do
+        @col.stub(:type).and_return(:string)
+        @col.should_receive('type=').never
+        Mongify::Database::Column.auto_detect(@col)
+      end
+    end
+    context "references" do
+      before(:each) do
+        @col = mock(:sql_name => 'post_id', :type => :integer, :referenced? => false)
+      end
+      it "should detect column references" do
+        @col.should_receive('references=').with('posts')
+        Mongify::Database::Column.auto_detect(@col)
+      end
+      it "should not detect column references if it's already referenced" do
+        @col.stub(:referenced?).and_return(true)
+        @col.should_receive('references=').never
+        Mongify::Database::Column.auto_detect(@col)
+      end
+      it "should not detect column referneces if column type is not :integer" do
+        @col.stub(:type).and_return(:string)
+        @col.should_receive('references=').never
+        Mongify::Database::Column.auto_detect(@col)
+      end
+    end
+  end
+  
   context "key?" do
     it "should be true" do
       @column = Mongify::Database::Column.new('id', :key)
@@ -75,24 +122,6 @@ describe Mongify::Database::Column do
     end
   end  
   
-  context "auto_detect" do
-    context "id" do
-      it "should type to key" do
-        @column = Mongify::Database::Column.new('id', :integer)
-        @column.type.should == :key
-      end
-      it "should not set type to key if original type is not integer" do
-        @column = Mongify::Database::Column.new('id', :string)
-        @column.type.should == :string
-      end
-    end
-    
-    it "should detect references" do
-      @column = Mongify::Database::Column.new('user_id', :integer)
-      @column.references.should == "users"
-    end
-  end
-  
   context :to_print do
     before(:each) do
       @column = Mongify::Database::Column.new('first_name', :string)
@@ -104,7 +133,7 @@ describe Mongify::Database::Column do
       @column.to_s.should == %Q[column "first_name", :string]
     end
     it "should detect references" do
-      @column = Mongify::Database::Column.new('user_id', :integer)
+      @column = Mongify::Database::Column.new('user_id', :integer, :auto_detect => true)
       @column.to_print.should == %Q[column "user_id", :integer, :references => "users"]
     end
   end

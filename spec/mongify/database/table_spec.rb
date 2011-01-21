@@ -116,7 +116,7 @@ describe Mongify::Database::Table do
   
   context "reference_colums" do
     before(:each) do
-      @col1 = Mongify::Database::Column.new('user_id', :integer, :referneces => :users)
+      @col1 = Mongify::Database::Column.new('user_id', :integer, :references => 'users')
       @col2 = Mongify::Database::Column.new('post_id', :integer, :references => 'posts')
       @columns = [@col1,
                   Mongify::Database::Column.new('body'),
@@ -124,7 +124,7 @@ describe Mongify::Database::Table do
       @table = Mongify::Database::Table.new('comments', :columns => @columns)
     end
     it "should return an array of columns" do
-      @table.reference_columns.should == [@col1, @col2]
+      @table.reference_columns.should =~ [@col1, @col2]
     end
   end
   
