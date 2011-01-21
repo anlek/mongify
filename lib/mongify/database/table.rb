@@ -1,8 +1,36 @@
 module Mongify
   module Database
     #
-    #  A representation of a sql table and how it should map to a no_sql system 
+    #  A representation of a sql table and how it should map to a no_sql collection 
     #
+    # ==== Structure
+    # 
+    # Structure for defining a table is as follows:
+    #   table "table_name", {options} do
+    #     # columns go here...
+    #   end
+    # 
+    # ==== Options
+    # 
+    # Table Options are as follow:
+    #   table "table_name"                                        # Does a straight copy of the table
+    #   table "table_name", :embed_in => :users                   # Embeds table_name into users, assuming a user_id is present in table_name.
+    #                                                             # This will also assume you want the table embedded as an array.
+    #   table "table_name", :embed_in => :users, :on => 'owner_id'# Embeds table_name into users, linking it via a owner_id
+    #                                                             # This will also assume you want the table embedded as an array.
+    #   table "table_name", :embed_in => :users, :as => :object   # Embeds table_name into users as a one to one relationship
+    #                                                             # This also assumes you have a user_id present in table_name
+    #   table "table_name", :embed_in => :posts, :on => 'post_id', :as => 'array'
+    #                                                             # You can also do both :on and :as
+    # 
+    # <b>NOTE: If you rename the owner_id column, make sure you update the :on to the new column name</b>
+    # 
+    #   table "table_name", :rename_to => 'my_table'              # This will allow you to rename the table as it's getting process
+    #                                                             # Just remember that columns that use :reference need to
+    #                                                             # reference the new name.
+    # 
+    #   table "table_name", :ignore => true                       # This will ignore the whole table (like it doesn't exist)
+    #                                                             # This option is good for tables like: schema_migrations
     class Table
       
       attr_accessor :name, :sql_name
@@ -21,38 +49,45 @@ module Mongify
         self
       end
       
+      # Returns the no_sql collection name
       def name
         @name ||= @options['rename_to']
         @name ||= self.sql_name
       end
       
+      # Returns true if table is ignored
       def ignored?
         @options['ignore']
       end
       
-      #Add a Database Column
+      # Add a Database Column to the table
+      # This expects to get a {Mongify::Database::Column} or it will raise {Mongify::DatabaseColumnExpected} otherwise
       def add_column(column)
         raise Mongify::DatabaseColumnExpected, "Expected a Mongify::Database::Column" unless column.is_a?(Mongify::Database::Column)
         add_and_index_column(column)
       end
       
-      
+      # Lets you build a column in the table
       def column(name, type=nil, options={})
         options, type = type, nil if type.is_a?(Hash)
         type = type.to_sym if type
         add_and_index_column(Mongify::Database::Column.new(name, type, options))
       end
       
+      # Returns the column if found by the no_sql collection name (or just name)
+      # If you renamed the table, it will NOT use the sql_name to search for a column
       def find_column(name)
         return nil unless (index = @column_lookup[name.to_s.downcase])
         @columns[index]
       end
       
-      
+      # Returns a array of Columns which reference other columns
       def reference_columns
         @columns.reject{ |c| !c.referenced? } 
       end
       
+      # Returns a translated row
+      # Takes in a hash of values
       def translate(row)
         new_row = {}
         row.each do |key, value|
@@ -62,24 +97,29 @@ module Mongify
         new_row
       end
       
+      # Returns the name of the embed_in collection
       def embed_in
         @options['embed_in'].to_s unless @options['embed_in'].nil?
       end
       
+      # Returns the type of embed it will be [object or array]
       def embed_as
         return nil unless embed?
         return 'object' if @options['as'].to_s.downcase == 'object'
         'array'
       end
-      
+
+      # Returns true if table is being embed as an object
       def embed_as_object?
         embed_as == 'object'
       end
       
+      # Returns true if this is an embedded table
       def embed?
         embed_in.present?
       end
       
+      # Returns the name of the target column to embed on
       def embed_on
         return nil unless embed?
         (@options['on'] || "#{@options['embed_in'].to_s.singularize}_id").to_s
@@ -94,7 +134,7 @@ module Mongify
         @columns << column
         column
       end
-
+      
       def import_columns
         return unless import_columns = @options.delete('columns')
         import_columns.each { |c| add_column(c) }

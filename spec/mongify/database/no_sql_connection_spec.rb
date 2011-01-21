@@ -24,6 +24,10 @@ describe Mongify::Database::NoSqlConnection do
     end
   end
   
+  it "should rename mongo to mongodb for adapter" do
+    Mongify::Database::NoSqlConnection.new(:host => 'localhost', :database => 'blue', :adapter => 'mongo').adapter.should == 'mongodb'
+  end
+  
   context "connection string" do
     before(:each) do
       @mongodb_connection.host @host
@@ -61,12 +65,6 @@ describe Mongify::Database::NoSqlConnection do
       @mongodb_connection.connection
     end
     
-    it "should reset connection on reset" do
-      Mongo::Connection.should_receive(:new).twice
-      @mongodb_connection.connection
-      @mongodb_connection.reset!
-      @mongodb_connection.connection
-    end
   end
   
   

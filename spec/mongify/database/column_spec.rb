@@ -12,6 +12,11 @@ describe Mongify::Database::Column do
     @column.sql_name.should == 'first_name'
   end
   
+  it "should allow you to omit the type while giving options" do
+    @column = Mongify::Database::Column.new('account_id', :references => 'accounts')
+    @column.options.should == {'references' => 'accounts'}
+  end
+  
   it "should get setup options" do
     @column = Mongify::Database::Column.new('account_id', :integer, :references => 'accounts')
     @column.options.should == {'references' => 'accounts'}
@@ -95,6 +100,9 @@ describe Mongify::Database::Column do
     it "should output column name and type" do
       @column.to_print.should == %Q[column "first_name", :string]
     end
+    it "should output the same when called .to_s" do
+      @column.to_s.should == %Q[column "first_name", :string]
+    end
     it "should detect references" do
       @column = Mongify::Database::Column.new('user_id', :integer)
       @column.to_print.should == %Q[column "user_id", :integer, :references => "users"]
@@ -118,13 +126,21 @@ describe Mongify::Database::Column do
       @column.should be_ignored
       @column.translate('bob').should == {}
     end
+    
+    it "should return pre_mongified_id when type is a key" do
+      @column = Mongify::Database::Column.new('id', :key)
+      @column.translate(123123).should == {"pre_mongified_id" => 123123}
+    end
+  end
+  context :type_cast do
     context "datetime" do
-      it "should return a datetime format" do
+      before(:each) do
         @column = Mongify::Database::Column.new('created_at', :datetime)
+      end
+      it "should return a datetime format" do
         @column.translate('2011-01-14 21:23:39').should == {'created_at' => Time.local(2011, 01, 14, 21, 23,39)}
       end
       it "should return nil if input is nil" do
-        @column = Mongify::Database::Column.new('created_at', :datetime)
         @column.translate(nil).should == {'created_at' => nil}
       end
     end
@@ -135,11 +151,105 @@ describe Mongify::Database::Column do
       it "should return 10" do
         @column.translate("10").should == {'account_id' => 10}
       end
+      it "should return 0 when string given" do
+        @column.translate("bob").should == {'account_id' => 0}
+      end
     end
-    
-    it "should return pre_mongified_id when type is a key" do
-      @column = Mongify::Database::Column.new('id', :key)
-      @column.translate(123123).should == {"pre_mongified_id" => 123123}
+    context :text do
+      it "should return a string" do
+        @column = Mongify::Database::Column.new('body', :text)
+        @column.translate("Something of a body").should == {'body' => "Something of a body"}
+      end
+    end
+    context :float do
+      before(:each) do
+        @column = Mongify::Database::Column.new('price', :float)
+      end
+      it "should convert numbers to floats" do
+        @column.translate(101.43).should == {'price' => 101.43}
+      end
+      it "should convert integers to floats" do
+        @column.translate(101).should == {'price' => 101.0}
+      end
+      it "should convert strings to 0.0" do
+        @column.translate('zuza').should == {'price' => 0.0}
+      end
+    end
+    context :decimal do
+      before(:each) do
+        @column = Mongify::Database::Column.new('price', :decimal)
+      end
+      it "should convert numbers to decimal" do
+        @column.translate(101.43).should == {'price' => BigDecimal.new("101.43")}
+      end
+      it "should convert integers to decimal" do
+        @column.translate(101).should == {'price' => BigDecimal.new("101.0")}
+      end
+      it "should convert strings to 0.0" do
+        @column.translate('zuza').should == {'price' => BigDecimal.new("0")}
+      end
+    end
+    context :timestamp do
+      before(:each) do
+        @column = Mongify::Database::Column.new('created_at', :timestamp)
+      end
+      it "should return a datetime format" do
+        @column.translate('2011-01-14 21:23:39').should == {'created_at' => Time.local(2011, 01, 14, 21, 23,39)}
+      end
+      it "should return nil if input is nil" do
+        @column.translate(nil).should == {'created_at' => nil}
+      end
+    end
+    context :time do
+      before(:each) do
+        @column = Mongify::Database::Column.new('created_at', :time)
+      end
+      it "should return a datetime format" do
+        @column.translate('21:23:39').should == {'created_at' => Time.local(2000, 01, 01, 21, 23,39)}
+      end
+      it "should return nil if input is nil" do
+        @column.translate(nil).should == {'created_at' => nil}
+      end
+    end
+    context :date do
+      before(:each) do
+        @column = Mongify::Database::Column.new('created_at', :date)
+      end
+      it "should return a datetime format" do
+        @column.translate('2011-01-14').should == {'created_at' => Date.new(2011, 01, 14)}
+      end
+      it "should return nil if input is nil" do
+        @column.translate(nil).should == {'created_at' => nil}
+      end
+    end
+    context :binary do
+      it "should return a string" do
+        @column = Mongify::Database::Column.new('body', :binary)
+        @column.translate("Something of a body").should == {'body' => "Something of a body"}
+      end
+    end
+    context :boolean do
+      before(:each) do
+        @column = Mongify::Database::Column.new('email_me', :boolean)
+      end
+      it "should be true when true" do
+        result = {'email_me' => true}
+        @column.translate("true").should == result
+        @column.translate("1").should == result
+        @column.translate("T").should == result
+      end
+      it "should be false when false" do
+        result = {'email_me' => false}
+        @column.translate("false").should == result
+        @column.translate("0").should == result
+        @column.translate("F").should == result
+      end
+      it "should be nil if nil or blank" do
+        result = {'email_me' => nil}
+        @column.translate(nil).should == result
+        @column.translate("").should == result
+      end
+      
     end
   end
 end
