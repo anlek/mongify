@@ -1,3 +1,7 @@
+== 0.1.0 / In Development
+* Improved internal RDocs
+* Improved specs
+* Refactored
 == 0.0.9 / 19 Jan 2011
 * Added ability to rename tables
 * Fixed bug 'pre_mogified_id' not being removed in all records

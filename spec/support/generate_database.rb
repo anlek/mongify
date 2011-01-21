@@ -1,4 +1,6 @@
+# Used during testing to generate and load database information and connection strings
 class GenerateDatabase
+  # Returns a mysql connection (using the database.yml)
   def self.mysql_connection
     @sql_connection ||= Mongify::Database::SqlConnection.new( :adapter => CONNECTION_CONFIG.mysql['adapter'], 
                                                             :host => CONNECTION_CONFIG.mysql['host'], 
@@ -8,11 +10,14 @@ class GenerateDatabase
                                                             :database => CONNECTION_CONFIG.mysql['database']
                                                           )
   end
+  # Returns a sqlite connection (using the database.yml )
   def self.sqlite_connection
     @db_path = File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), CONNECTION_CONFIG.sqlite['database'])
     
     @sqlite_connecton ||= Mongify::Database::SqlConnection.new(:adapter => CONNECTION_CONFIG.sqlite['adapter'], :database => @db_path)
   end
+  
+  # Creates a new mysql database (and deletes the old one)
   def self.sqlite(include_data=true)
     File.delete(sqlite_connection.database) if File.exists?(sqlite_connection.database)
 
@@ -90,10 +95,12 @@ class GenerateDatabase
     sqlite_connection.database
   end
   
+  # Drops the database in mongo
   def self.clear_mongodb
     mongo_connection.connection.drop_database mongo_connection.database
   end
   
+  # Returns a mongo connection (based on the database.yml)
   def self.mongo_connection
     @mongodb_connection ||= Mongify::Database::NoSqlConnection.new(:host => CONNECTION_CONFIG.mongo['host'],
                                                                    :port => CONNECTION_CONFIG.mongo['port'],

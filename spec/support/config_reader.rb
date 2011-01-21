@@ -1,3 +1,4 @@
+# Used during testing to read in a config file
 class ConfigReader
   def initialize(filepath)
     if File.exists?(filepath)

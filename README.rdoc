@@ -7,11 +7,9 @@ However, I've only tested it with MySql and SQLite
 
 Supports any version of MongoDB
 
-Learn more about mongoDB at: http://www.mongodb.org
+Learn more about MongoDB at: http://www.mongodb.org
 
 == Install
-
-<b>WARNING: This gem is still in alpha</b>
 
   gem install mongify
 
@@ -33,7 +31,7 @@ Building a config file is as simple as this:
 
   mongodb_connection do
     host      "localhost"
-    database  "my_collection"
+    database  "my_database"
   end
   
 You can check your configuration by running
@@ -144,9 +142,13 @@ Before we cover the options, you need to know what types of columns are supporte
   :decimal              # Will be converted to a BigDecimal
   :string               # Will be converted to a string
   :text                 # Will be converted to a string
-  :datetime             # Specifying a field as :datetime will convert it to Time format as it gets imported into MongoDB
+  :datetime             # Will be converted to a Time format (DateTime is not currently supported in the Mongo ruby driver)
+  :date                 # Will be converted to a Time format (Date is not currently supported in the Mongo ruby driver)
+  :timestamps           # Will be converted to a Time format
+  :time                 # Will be converted to a Time format (the date portion of the Time object will be 2000-01-01)
   :binary               # Will be converted to a string
-  
+  :boolean              # Will be converted to a true or false values
+
 ==== Options
 
   column "post_id", :integer, :referneces => :posts   # Referenced columns need to be marked as such, this will mean that they will be updated
@@ -156,9 +158,6 @@ Before we cover the options, you need to know what types of columns are supporte
   column "name", :string, :ignore => true             # Ignoring a column will make the column NOT copy over to the new database
   
   column "surname", :string, :rename_to => 'last_name'# Rename_to allows you to rename the column                                                      
-
-<em>**this is subject to change during the alpha (0.0.x release)**</em>
-
 
 == Notes
 
