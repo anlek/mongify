@@ -3,7 +3,6 @@ Feature: Processing a translation
   As a user
   I want to be able to process a translation and move my data to mongodb!
 
-  @wip
   Scenario: Process
   Given a database exists
   And a blank mongodb

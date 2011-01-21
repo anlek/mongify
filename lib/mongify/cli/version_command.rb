@@ -9,6 +9,7 @@ module Mongify
       def initialize(progname)
         @progname = progname
       end
+      #Executes version command
       def execute(view)
         view.output("#{@progname} #{Mongify::VERSION}\n")
         view.report_success

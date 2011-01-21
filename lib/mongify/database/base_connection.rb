@@ -1,4 +1,5 @@
 module Mongify
+  # Module that deals with all database related items
   module Database
     #
     # This is a Basic configuration for any sql or non sql database

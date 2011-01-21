@@ -59,14 +59,14 @@ describe Mongify::CLI::WorkerCommand do
     end
   end
 
-  context "translate command" do
+  context "translation command" do
     before(:each) do
-      @command = Mongify::CLI::WorkerCommand.new('translate', @config)
+      @command = Mongify::CLI::WorkerCommand.new('translation', @config)
       Mongify::Translation.stub(:load).with(@sql_connection).and_return(stub(:print => 'worked'))
     end
     
     it "should require configuration file" do
-      lambda { Mongify::CLI::WorkerCommand.new('translate').execute(@view) }.should raise_error(Mongify::ConfigurationFileNotFound)
+      lambda { Mongify::CLI::WorkerCommand.new('translation').execute(@view) }.should raise_error(Mongify::ConfigurationFileNotFound)
     end
     
     it "should check sql connection" do

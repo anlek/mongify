@@ -10,7 +10,7 @@ require 'mongify/translation'
 require 'mongify/configuration'
 require 'mongify/database'
 
-module Mongify # :nodoc:
+module Mongify # Namespace for Mongify
   class << self
     # Handles setting root for the application
     def root=(value)

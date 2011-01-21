@@ -14,6 +14,7 @@ module Mongify
         
       end
       
+      # Banner for help output
       def banner
         progname = @parser.program_name
         return <<EOB
@@ -24,9 +25,8 @@ Commands:
 
 Examples:
 
-#{progname} translate -c datbase.config
-#{progname} tr -c database.config
 #{progname} check -c database.config
+#{progname} translation -c datbase.config > database_translation.rb
 #{progname} process database_translation.rb -c database.config
 
 See http://github.com/anlek/mongify for more details
@@ -34,7 +34,8 @@ See http://github.com/anlek/mongify for more details
 EOB
       end
       
-      
+      # Sets the options for CLI
+      # Also used for help output
       def set_options
         @parser.banner = banner
         @parser.separator "Common options:"
@@ -48,7 +49,8 @@ EOB
           @config_file = file
         end
       end
-
+      
+      # Parses CLI passed attributes and figures out what command user is trying to run
       def parse
         parse_options
         
@@ -65,24 +67,27 @@ EOB
         end
       end
       
+      #######
       private
+      #######
       
+      # Returns the translation_file or nil
       def translation_file(argv=@argv)
         parse_options
         return nil if argv.length < 2
         argv[1]
       end
       
+      # Returns action (command) user is calling or ''
       def action(argv=@argv)
         parse_options
         @argv.try(:[],0) || ''
       end
-            
+       
+      # option parser, ensuring parse_options is only called once     
       def parse_options
         @parsed = true && @parser.parse!(@argv) unless @parsed
-      end      
-      
-      
+      end
     end
   end
 end
