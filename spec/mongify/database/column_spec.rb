@@ -133,15 +133,19 @@ describe Mongify::Database::Column do
     end
   end
   context :type_cast do
+    it "should return value if unknown type" do
+      @column = Mongify::Database::Column.new('first_name', :car)
+      @column.send(:type_cast, 'bob').should == 'bob'
+    end
     context "datetime" do
       before(:each) do
         @column = Mongify::Database::Column.new('created_at', :datetime)
       end
       it "should return a datetime format" do
-        @column.translate('2011-01-14 21:23:39').should == {'created_at' => Time.local(2011, 01, 14, 21, 23,39)}
+        @column.send(:type_cast, '2011-01-14 21:23:39').should == Time.local(2011, 01, 14, 21, 23,39)
       end
       it "should return nil if input is nil" do
-        @column.translate(nil).should == {'created_at' => nil}
+        @column.send(:type_cast, nil).should == nil
       end
     end
     context :integer do
@@ -149,16 +153,16 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('account_id', :integer)
       end
       it "should return 10" do
-        @column.translate("10").should == {'account_id' => 10}
+        @column.send(:type_cast, "10").should == 10
       end
       it "should return 0 when string given" do
-        @column.translate("bob").should == {'account_id' => 0}
+        @column.send(:type_cast, "bob").should == 0
       end
     end
     context :text do
       it "should return a string" do
         @column = Mongify::Database::Column.new('body', :text)
-        @column.translate("Something of a body").should == {'body' => "Something of a body"}
+        @column.send(:type_cast, "Something of a body").should == "Something of a body"
       end
     end
     context :float do
@@ -166,13 +170,13 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('price', :float)
       end
       it "should convert numbers to floats" do
-        @column.translate(101.43).should == {'price' => 101.43}
+        @column.send(:type_cast, 101.43).should == 101.43
       end
       it "should convert integers to floats" do
-        @column.translate(101).should == {'price' => 101.0}
+        @column.send(:type_cast, 101).should == 101.0
       end
       it "should convert strings to 0.0" do
-        @column.translate('zuza').should == {'price' => 0.0}
+        @column.send(:type_cast, 'zuza').should == 0.0
       end
     end
     context :decimal do
@@ -180,13 +184,13 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('price', :decimal)
       end
       it "should convert numbers to decimal" do
-        @column.translate(101.43).should == {'price' => BigDecimal.new("101.43")}
+        @column.send(:type_cast, 101.43).should == BigDecimal.new("101.43")
       end
       it "should convert integers to decimal" do
-        @column.translate(101).should == {'price' => BigDecimal.new("101.0")}
+        @column.send(:type_cast, 101).should == BigDecimal.new("101.0")
       end
       it "should convert strings to 0.0" do
-        @column.translate('zuza').should == {'price' => BigDecimal.new("0")}
+        @column.send(:type_cast, 'zuza').should == BigDecimal.new("0")
       end
     end
     context :timestamp do
@@ -194,10 +198,10 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('created_at', :timestamp)
       end
       it "should return a datetime format" do
-        @column.translate('2011-01-14 21:23:39').should == {'created_at' => Time.local(2011, 01, 14, 21, 23,39)}
+        @column.send(:type_cast, '2011-01-14 21:23:39').should == Time.local(2011, 01, 14, 21, 23,39)
       end
       it "should return nil if input is nil" do
-        @column.translate(nil).should == {'created_at' => nil}
+        @column.send(:type_cast, nil).should == nil
       end
     end
     context :time do
@@ -205,10 +209,10 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('created_at', :time)
       end
       it "should return a time format" do
-        @column.translate('21:23:39').should == {'created_at' => Time.local(2000, 01, 01, 21, 23,39)}
+        @column.send(:type_cast, '21:23:39').should == Time.local(2000, 01, 01, 21, 23,39)
       end
       it "should return nil if input is nil" do
-        @column.translate(nil).should == {'created_at' => nil}
+        @column.send(:type_cast, nil).should == nil
       end
     end
     context :date do
@@ -216,16 +220,16 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('created_at', :date)
       end
       it "should return a time format" do
-        @column.translate('2011-01-14').should == {'created_at' => Time.local(2011, 01, 14)}
+        @column.send(:type_cast, '2011-01-14').should == Time.local(2011, 01, 14)
       end
       it "should return nil if input is nil" do
-        @column.translate(nil).should == {'created_at' => nil}
+        @column.send(:type_cast, nil).should == nil
       end
     end
     context :binary do
       it "should return a string" do
         @column = Mongify::Database::Column.new('body', :binary)
-        @column.translate("Something of a body").should == {'body' => "Something of a body"}
+        @column.send(:type_cast, "Something of a body").should == "Something of a body"
       end
     end
     context :boolean do
@@ -233,21 +237,21 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('email_me', :boolean)
       end
       it "should be true when true" do
-        result = {'email_me' => true}
-        @column.translate("true").should == result
-        @column.translate("1").should == result
-        @column.translate("T").should == result
+        result = true
+        @column.send(:type_cast, "true").should == result
+        @column.send(:type_cast, "1").should == result
+        @column.send(:type_cast, "T").should == result
       end
       it "should be false when false" do
-        result = {'email_me' => false}
-        @column.translate("false").should == result
-        @column.translate("0").should == result
-        @column.translate("F").should == result
+        result = false
+        @column.send(:type_cast, "false").should == result
+        @column.send(:type_cast, "0").should == result
+        @column.send(:type_cast, "F").should == result
       end
       it "should be nil if nil or blank" do
-        result = {'email_me' => nil}
-        @column.translate(nil).should == result
-        @column.translate("").should == result
+        result = nil
+        @column.send(:type_cast, nil).should == result
+        @column.send(:type_cast, "").should == result
       end
       
     end
