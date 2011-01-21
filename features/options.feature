@@ -40,7 +40,4 @@ Feature: Mongify can be controlled using command-line options
           -v, --version                    Show version
           -c, --config FILE                Configuration File to use
 
-      Report formatting:
-          -q, --[no-]quiet                 Suppress extra output
-
       """

@@ -9,7 +9,6 @@ module Mongify
         @parsed = false
         @argv = argv
         @parser = OptionParser.new
-        @report_class = VerboseReport
         #@command_class = ReekCommand
         set_options
         
@@ -47,11 +46,6 @@ EOB
         end
         @parser.on('-c', '--config FILE', "Configuration File to use") do |file|
           @config_file = file
-        end
-
-        @parser.separator "\nReport formatting:"
-        @parser.on("-q", "--[no-]quiet", "Suppress extra output") do |opt|
-          @report_class = opt ? QuietReport : VerboseReport
         end
       end
 
