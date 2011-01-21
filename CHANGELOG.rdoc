@@ -2,6 +2,7 @@
 * Improved internal RDocs
 * Improved specs
 * Refactored
+* Renamed 'translate' command to 'translation'
 == 0.0.9 / 19 Jan 2011
 * Added ability to rename tables
 * Fixed bug 'pre_mogified_id' not being removed in all records
