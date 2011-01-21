@@ -1,11 +1,13 @@
 module Mongify
-  #
-  # This will take the Translation and do the processing on it
-  #
   class Translation
+    #
+    # This module does the processing on the translation object
+    #
     module Process
       attr_accessor :sql_connection, :no_sql_connection
-
+      
+      # Does the actual act of processing the translation.
+      # Takes in boht a sql connection and a no sql connection
       def process(sql_connection, no_sql_connection)
         raise Mongify::SqlConnectionRequired, "Can only read from Mongify::Database::SqlConnection" unless sql_connection.is_a?(Mongify::Database::SqlConnection)
         raise Mongify::NoSqlConnectionRequired, "Can only write to Mongify::Database::NoSqlConnection" unless no_sql_connection.is_a?(Mongify::Database::NoSqlConnection)
@@ -26,6 +28,7 @@ module Mongify
       private
       #######
       
+      # Does the straight copy (of tables)
       def copy_data
         self.copy_tables.each do |t|
           sql_connection.select_rows(t.sql_name).each do |row|
@@ -34,6 +37,7 @@ module Mongify
         end
       end
       
+      # Does a copy of the embedded tables
       def copy_embedded_tables
         self.embed_tables.each do |t|
           sql_connection.select_rows(t.sql_name).each do |row|
@@ -49,6 +53,7 @@ module Mongify
         end
       end
       
+      # Updates the reference ids in the no sql database
       def update_reference_ids
         self.tables.each do |t|
           no_sql_connection.select_rows(t.name).each do |row|
@@ -59,6 +64,7 @@ module Mongify
         end
       end
       
+      # Fetches the new _id from a collection
       def fetch_reference_ids(table, row)
         attributes = {}
         table.reference_columns.each do |c|
@@ -68,6 +74,7 @@ module Mongify
         attributes
       end
       
+      # Removes 'pre_mongiifed_id's from all collection
       def remove_pre_mongified_ids
         self.copy_tables.each { |t| no_sql_connection.remove_pre_mongified_ids(t.name) }
       end

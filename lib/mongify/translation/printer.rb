@@ -1,9 +1,10 @@
 module Mongify
-  #
-  # Actually runs the translation from sql to no sql
-  #
   class Translation
+    #
+    # Actually runs the translation from sql to no sql
+    #
     module Printer
+      # Outputs a translation into a string format
       def print
         ''.tap do |output|
           all_tables.each do |t|
