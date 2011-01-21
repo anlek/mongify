@@ -31,6 +31,12 @@ module Mongify
     # 
     #   table "table_name", :ignore => true                       # This will ignore the whole table (like it doesn't exist)
     #                                                             # This option is good for tables like: schema_migrations
+    # 
+    #   table "table_name" do                                     # A table can take a before_save block that will be called just
+    #     before_save do |row|                                    # before the row is saved to the no sql database.
+    #       row.admin = row.delete('permission').to_i > 50        # This gives you the ability to do very powerful things like:
+    #     end                                                     # Moving records around, renaming records, changing values in row based on
+    #   end                                                       # some values! Checkout {Mongify::Database::DataRow} to learn more
     class Table
       
       attr_accessor :name, :sql_name
@@ -74,8 +80,7 @@ module Mongify
         add_and_index_column(Mongify::Database::Column.new(name, type, options))
       end
       
-      # Returns the column if found by the no_sql collection name (or just name)
-      # If you renamed the table, it will NOT use the sql_name to search for a column
+      # Returns the column if found by the sql_name
       def find_column(name)
         return nil unless (index = @column_lookup[name.to_s.downcase])
         @columns[index]
@@ -94,8 +99,9 @@ module Mongify
           c = find_column(key)
           new_row.merge!(c.present? ? c.translate(value) : {"#{key}" => value})
         end
-        new_row
+        run_before_save(new_row)
       end
+      
       
       # Returns the name of the embed_in collection
       def embed_in
@@ -124,17 +130,33 @@ module Mongify
         return nil unless embed?
         (@options['on'] || "#{@options['embed_in'].to_s.singularize}_id").to_s
       end
+      
+      # Used to save a block to be ran after the row has been processed but before it's saved to the no sql database
+      def before_save(&block)
+        @before_save = block
+      end
             
       #######
       private
       #######
       
+      # Runs the before save
+      # Returns: a new modified row
+      def run_before_save(row)
+        return row unless @before_save
+        datarow = Mongify::Database::DataRow.new(row)
+        @before_save.call(datarow)
+        datarow.to_hash
+      end
+      
+      # Indexes the column on the sql_name and adds column to the array
       def add_and_index_column(column)
         @column_lookup[column.sql_name] = @columns.size
         @columns << column
         column
       end
       
+      # Imports colunms that are sent in via the options['columns']
       def import_columns
         return unless import_columns = @options.delete('columns')
         import_columns.each { |c| add_column(c) }

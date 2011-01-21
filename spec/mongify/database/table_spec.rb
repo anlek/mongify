@@ -181,6 +181,27 @@ describe Mongify::Database::Table do
     end
   end
   
+  context "before_save" do
+    before(:each) do
+      @table = Mongify::Database::Table.new('users')
+      @table.before_save do |row|
+        puts "my keys are: #{row.keys}"
+        row.admin = row.delete('permission').to_i > 50
+      end
+    end
+    context "run_before_save" do
+      it "should create a new DataRow" do
+        row = {'first_name' => 'Bob'}
+        dr = Mongify::Database::DataRow.new(row)
+        Mongify::Database::DataRow.should_receive(:new).and_return(dr)
+        @table.send(:run_before_save, row)
+      end
+    end
+    it "should work" do
+      @table.translate({'permission' => 51}).should == {'admin' => true}
+    end
+  end
+  
   context "translate" do
     before(:each) do
       @column1 = mock(:translate => {'first_name' => 'Timmy'}, :name => 'first_name')

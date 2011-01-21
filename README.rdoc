@@ -142,6 +142,12 @@ Table Options are as follow:
 
   table "table_name", :ignore => true                       # This will ignore the whole table (like it doesn't exist)
                                                             # This option is good for tables like: schema_migrations
+                                                            
+  table "table_name" do                                     # A table can take a before_save block that will be called just
+    before_save do |row|                                    # before the row is saved to the no sql database.
+      row.admin = row.delete('permission').to_i > 50        # This gives you the ability to do very powerful things like:
+    end                                                     # Moving records around, renaming records, changing values in row based on
+  end                                                       # some values! Checkout {Mongify::Database::DataRow} to learn more
 
 === Columns
 
@@ -191,7 +197,6 @@ More testing will be done once the basic functionality is done
 
 * Allow you to set a :force => true for mongodb_connection, so that it drops existing database before importing
 * Work with polymorphic tables
-* Allow running a proc on column value
 * Update user on what is being processed
 * Improve RDoc
 
