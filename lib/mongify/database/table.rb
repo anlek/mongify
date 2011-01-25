@@ -110,7 +110,7 @@ module Mongify
       
       # Returns the type of embed it will be [object or array]
       def embed_as
-        return nil unless embed?
+        return nil unless embedded?
         return 'object' if @options['as'].to_s.downcase == 'object'
         'array'
       end
@@ -121,13 +121,13 @@ module Mongify
       end
       
       # Returns true if this is an embedded table
-      def embed?
+      def embedded?
         embed_in.present?
       end
       
       # Returns the name of the target column to embed on
       def embed_on
-        return nil unless embed?
+        return nil unless embedded?
         (@options['on'] || "#{@options['embed_in'].to_s.singularize}_id").to_s
       end
       

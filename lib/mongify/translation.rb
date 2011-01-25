@@ -93,12 +93,12 @@ module Mongify
     
     # Returns an array of all tables that have not been ignored and are just straight copy tables
     def copy_tables
-      tables.reject{|t| t.embed?}
+      tables.reject{|t| t.embedded?}
     end
     
     # Returns an array of all tables that have not been ignored and are to be embedded
     def embed_tables
-      tables.reject{|t| !t.embed?}
+      tables.reject{|t| !t.embedded?}
     end
     
   end

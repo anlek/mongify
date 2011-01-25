@@ -50,9 +50,9 @@ describe Mongify::Translation do
   
   context "tables reference" do
     before(:each) do
-      @copy_table = mock(:name => 'users', :embed? => false, :ignored? => false)
-      @embed_table = mock(:name => 'comments', :embed? => true, :ignored? => false)
-      @ignored_table = mock(:name => 'apples', :ignored? => true, :embed? => false)
+      @copy_table = mock(:name => 'users', :embedded? => false, :ignored? => false)
+      @embed_table = mock(:name => 'comments', :embedded? => true, :ignored? => false)
+      @ignored_table = mock(:name => 'apples', :ignored? => true, :embedded? => false)
       @translation = Mongify::Translation.new()
       @translation.stub(:all_tables).and_return([@copy_table, @embed_table, @ignored_table])
     end

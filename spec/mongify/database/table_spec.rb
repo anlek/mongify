@@ -159,12 +159,12 @@ describe Mongify::Database::Table do
         end
       end
     end
-    context "embed?" do
+    context "embedded?" do
       it "should be true" do
-        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').should be_embed
+        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').should be_embedded
       end
       it "should be false" do
-        Mongify::Database::Table.new('users').should_not be_embed
+        Mongify::Database::Table.new('users').should_not be_embedded
       end
     end
     
@@ -172,7 +172,7 @@ describe Mongify::Database::Table do
       it "should be post_id" do
         Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').embed_on.should == 'post_id'
       end
-      it "should be nil when not embed?" do
+      it "should be nil when not embedded?" do
         Mongify::Database::Table.new('users', :on => 'test').embed_on.should be_nil
       end
       it "should calculate embed_on from embed_in" do
@@ -185,7 +185,6 @@ describe Mongify::Database::Table do
     before(:each) do
       @table = Mongify::Database::Table.new('users')
       @table.before_save do |row|
-        puts "my keys are: #{row.keys}"
         row.admin = row.delete('permission').to_i > 50
       end
     end
