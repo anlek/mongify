@@ -116,7 +116,7 @@ module Mongify
       end
 
       # Returns true if table is being embed as an object
-      def embed_as_object?
+      def embedded_as_object?
         embed_as == 'object'
       end
       

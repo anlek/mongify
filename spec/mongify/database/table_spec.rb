@@ -150,12 +150,12 @@ describe Mongify::Database::Table do
       it "should allow Object as a value" do
         Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :object).embed_as.should == 'object'
       end
-      context "embed_as_object?" do
+      context "embedded_as_object?" do
         it "should be true" do
-          Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :object).should be_embed_as_object
+          Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :object).should be_embedded_as_object
         end
         it "should be false" do
-          Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :array).should_not be_embed_as_object
+          Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :array).should_not be_embedded_as_object
         end
       end
     end

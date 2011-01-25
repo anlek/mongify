@@ -47,7 +47,7 @@ module Mongify
             row.delete(t.embed_on)
             row.merge!(fetch_reference_ids(t, row))
             row.delete('pre_mongified_id')
-            save_function_call = t.embed_as_object? ? '$set' : '$addToSet'
+            save_function_call = t.embedded_as_object? ? '$set' : '$addToSet'
             no_sql_connection.update(t.embed_in, target_row['_id'], {save_function_call => {t.name => row}})
           end
         end
