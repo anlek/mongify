@@ -1,5 +1,5 @@
 # Used during testing to generate and load database information and connection strings
-class GenerateDatabase
+class DatabaseGenerator
   # Returns a mysql connection (using the database.yml)
   def self.mysql_connection
     @sql_connection ||= Mongify::Database::SqlConnection.new( :adapter => CONNECTION_CONFIG.mysql['adapter'], 

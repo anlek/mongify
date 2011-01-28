@@ -127,7 +127,7 @@ describe Mongify::Database::NoSqlConnection do
   
   describe "working connection" do
     before(:each) do
-      @mongodb_connection = GenerateDatabase.mongo_connection
+      @mongodb_connection = DatabaseGenerator.mongo_connection
     end
     
     it "should work" do

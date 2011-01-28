@@ -5,7 +5,7 @@ require 'tempfile'
 require 'fileutils'
 require 'mongify/cli/application'
 require 'mongify'
-require 'spec/support/generate_database'
+require 'spec/support/database_generator'
 require 'spec/support/config_reader'
 
 ::CONNECTION_CONFIG = ConfigReader.new(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))) + '/spec/support/database.yml')

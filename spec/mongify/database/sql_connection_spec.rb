@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Mongify::Database::SqlConnection do
   before(:all) do
-    @db_path = GenerateDatabase.sqlite
+    @db_path = DatabaseGenerator.sqlite
   end
 
   before(:each) do
@@ -30,7 +30,7 @@ describe Mongify::Database::SqlConnection do
 
   context "MySql config" do
     before(:each) do
-      @sql_connection = GenerateDatabase.mysql_connection
+      @sql_connection = DatabaseGenerator.mysql_connection
     end
 
     context "valid?" do
