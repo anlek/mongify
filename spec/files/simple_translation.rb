@@ -33,3 +33,15 @@ table "preferences", :embed_in => :users, :as => :object do
 	column "updated_at", :datetime, :ignore => true
 end
 
+table "notes", :embed_in => true, :polymorphic => 'notable' do
+	column "id", :key
+	column "user_id", :integer, :references => "users"
+	column "notable_id", :integer
+	column "notable_type", :string
+	column "body", :text
+	column "created_at", :datetime
+	column "updated_at", :datetime
+end
+
+
+

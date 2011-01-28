@@ -69,6 +69,11 @@ module Mongify
       @all_tables = []
     end
     
+    # finds table by name
+    def find(name)
+      all_tables.find{ |t| t.name == name }
+    end
+    
     # Creates a {Mongify::Database::Table} from the given input and adds it to the list of tables
     def table(table_name, options={}, &block)
       table = Mongify::Database::Table.new(table_name, options, &block)
@@ -88,12 +93,16 @@ module Mongify
     
     # Returns an array of all tables that have not been ingored
     def tables
-      all_tables.reject{ |t| t.ignored? }
+      all_tables.reject{ |t| t.ignored? || t.polymorphic? }
     end
     
     # Returns an array of all tables that have not been ignored and are just straight copy tables
     def copy_tables
       tables.reject{|t| t.embedded?}
+    end
+    
+    def polymorphic_tables
+      all_tables.reject{ |t| t.ignored? || !t.polymorphic? }
     end
     
     # Returns an array of all tables that have not been ignored and are to be embedded

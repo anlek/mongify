@@ -50,6 +50,14 @@ class DatabaseGenerator
       t.timestamps
     end
     
+    conn.create_table(:notes) do |t|
+      t.integer :user_id
+      t.integer :notable_id
+      t.string :notable_type
+      t.text :body
+      t.timestamps
+    end
+    
     if include_data
       
       #Users
@@ -75,19 +83,31 @@ class DatabaseGenerator
       [
         {:post_id => 1, :user_id => 1, :body => 'First Comment Body'},
         {:post_id => 2, :user_id => 1, :body => 'Second Comment Body'},
-        {:post_id => 2, :user_id => 2, :body => 'Thrid Comment Body'}
+        {:post_id => 2, :user_id => 2, :body => 'Thrid Comment Body'},
       ].each do |v|
         conn.insert("INSERT INTO comments (body, post_id, user_id, created_at, updated_at) 
                     VALUES ('#{v[:body]}', #{v[:post_id]}, #{v[:user_id]}, '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
       end
       
+      #Preferences
       [
         {:user_id => 1, :notify_by_email => true},
         {:user_id => 2, :notify_by_email => true},
-        {:user_id => 3, :notify_by_email => false}
+        {:user_id => 3, :notify_by_email => false},
       ].each do |v|
           conn.insert("INSERT INTO preferences (user_id, notify_by_email, created_at, updated_at) 
                       VALUES (#{v[:user_id]}, '#{v[:notify_by_email]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+      end
+      
+      #Notes
+      [
+        {:user_id => 1, :body => 'note 1', :notable_id => 1, :notable_type => 'Post'},
+        {:user_id => 2, :body => 'note 2', :notable_id => 2, :notable_type => 'Post'},
+        {:user_id => 2, :body => 'note 3', :notable_id => 1, :notable_type => 'User'},
+        {:user_id => 3, :body => 'note 4', :notable_id => 2, :notable_type => 'User'},
+      ].each do |v|
+          conn.insert("INSERT INTO notes (user_id, body, notable_id, notable_type, created_at, updated_at) 
+                      VALUES (#{v[:user_id]}, '#{v[:body]}', #{v[:notable_id]}, '#{v[:notable_type]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
       end
       
     end

@@ -20,6 +20,7 @@ module Mongify
         copy_data
         copy_embedded_tables
         update_reference_ids
+        copy_polymorphic_tables
         remove_pre_mongified_ids
         nil
       end
@@ -49,6 +50,34 @@ module Mongify
             row.delete('pre_mongified_id')
             save_function_call = t.embedded_as_object? ? '$set' : '$addToSet'
             no_sql_connection.update(t.embed_in, target_row['_id'], {save_function_call => {t.name => row}})
+          end
+        end
+      end
+      
+      # Moves over polymorphic data
+      def copy_polymorphic_tables
+        self.polymorphic_tables.each do |t|
+          polymorphic_id_col, polymorphic_type_col = "#{t.polymorphic_as}_id", "#{t.polymorphic_as}_type"
+          sql_connection.select_rows(t.sql_name).each do |row|
+            table_name = row[polymorphic_type_col].tableize            
+            new_id = no_sql_connection.get_id_using_pre_mongified_id(table_name, row[polymorphic_id_col])
+            puts "getting new id for #{table_name}, #{row[polymorphic_id_col]} and getting #{new_id}"
+            if new_id
+              row = t.translate(row)
+              row.merge!(fetch_reference_ids(t, row))
+              row[polymorphic_id_col] = new_id
+              row.delete('pre_mongified_id')
+              if t.embedded?
+                row.delete(polymorphic_id_col)
+                row.delete(polymorphic_type_col)
+                save_function_call = t.embedded_as_object? ? '$set' : '$addToSet'
+                no_sql_connection.update(table_name, new_id, {save_function_call => {t.name => row}})
+              else
+                no_sql_connection.insert_into(t.name, row)
+              end
+            else
+              puts "#{table_name} table not found on #{t.sql_name} polymorphic import"
+            end
           end
         end
       end

@@ -32,6 +32,9 @@ module Mongify
     #   table "table_name", :ignore => true                       # This will ignore the whole table (like it doesn't exist)
     #                                                             # This option is good for tables like: schema_migrations
     # 
+    #   table "table_name", :polymorphic => 'commentable'         # This will identfiy the table as polymorphic and the new ids
+    #                                                             # will be updated as needed.
+    # 
     #   table "table_name" do                                     # A table can take a before_save block that will be called just
     #     before_save do |row|                                    # before the row is saved to the no sql database.
     #       row.admin = row.delete('permission').to_i > 50        # This gives you the ability to do very powerful things like:
@@ -64,6 +67,16 @@ module Mongify
       # Returns true if table is ignored
       def ignored?
         @options['ignore']
+      end
+      
+      # Returns true if table is marked as polymorphic
+      def polymorphic?
+        !!@options['polymorphic']
+      end
+      
+      # Returns the name of the polymorphic association
+      def polymorphic_as
+        @options['polymorphic'].to_s
       end
       
       # Add a Database Column to the table

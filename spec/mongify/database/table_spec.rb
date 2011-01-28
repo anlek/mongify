@@ -201,6 +201,31 @@ describe Mongify::Database::Table do
     end
   end
   
+  context "polymorphic" do
+    before(:each) do
+      @table = Mongify::Database::Table.new('comments', :polymorphic => :commentable)
+    end
+    it "should be true" do
+      @table.should be_polymorphic
+    end
+    it "should be false" do
+      Mongify::Database::Table.new('users').should_not be_polymorphic
+    end
+    it "should return 'commentable'" do
+      @table.polymorphic_as.should == 'commentable'
+    end
+    
+    context "embed" do
+      before(:each) do
+        @table = Mongify::Database::Table.new('comments', :polymorphic => :commentable, :embed_in => true)
+      end
+      it "should be embedded" do
+        @table.should be_embedded
+      end
+      
+    end
+  end
+  
   context "translate" do
     before(:each) do
       @column1 = mock(:translate => {'first_name' => 'Timmy'}, :name => 'first_name')

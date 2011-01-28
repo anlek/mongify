@@ -68,13 +68,13 @@ describe Mongify::Database::SqlConnection do
 
     context "tables" do
       it "should be able to get a list" do
-        @sql_connection.tables.sort.should == ['comments', 'posts', 'preferences', 'users'].sort
+        @sql_connection.tables.should =~ ['comments', 'notes', 'posts', 'preferences', 'users']
       end
     end
 
     context "columns" do
       it "should see columns for a table" do
-        @sql_connection.columns_for(:users).map{ |column| column.name }.sort.should == ['id', 'first_name', 'last_name', 'created_at', 'updated_at'].sort
+        @sql_connection.columns_for(:users).map{ |column| column.name }.should =~ ['id', 'first_name', 'last_name', 'created_at', 'updated_at']
       end
     end
   end
