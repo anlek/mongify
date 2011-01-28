@@ -203,9 +203,7 @@ More testing will be done once the basic functionality is done
 == TODO
 
 * Allow you to set a :force => true for mongodb_connection, so that it drops existing database before importing
-* Work with polymorphic tables
 * Update user on what is being processed
-* Improve RDoc
 
 == Development
 
