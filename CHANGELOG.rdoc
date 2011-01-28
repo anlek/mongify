@@ -1,4 +1,4 @@
-== 0.1.1 / In Development
+== 0.1.1 / 28 Jan 2011
 * Renamed GenerateDatabase to DatabaseGenerator
 * Renamed Table#embed? to Table#embedded?
 * Renamed Table#embed_as_object? to Table#embedded_as_object?
