@@ -10,6 +10,7 @@ class DatabaseGenerator
                                                             :database => CONNECTION_CONFIG.mysql['database']
                                                           )
   end
+  
   # Returns a sqlite connection (using the database.yml )
   def self.sqlite_connection
     @db_path = File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), CONNECTION_CONFIG.sqlite['database'])
