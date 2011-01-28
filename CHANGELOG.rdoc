@@ -1,3 +1,8 @@
+== 0.1.1 / In Development
+* Renamed GenerateDatabase to DatabaseGenerator
+* Renamed Table#embed? to Table#embedded?
+* Renamed Table#embed_as_object? to Table#embedded_as_object?
+* Added support for polymorphic tables
 == 0.1.0 / 21 Jan 2011
 * Moved from Alpha to Beta! :)
 * Improved internal RDocs
