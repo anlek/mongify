@@ -6,7 +6,7 @@ Feature: Processing a translation
   Scenario: Process
   Given a database exists
   And a blank mongodb
-  When I run mongify process spec/files/simple_translation.rb -c spec/files/base_configuration.rb
+  When I run mongify process spec/files/translation.rb -c spec/files/base_configuration.rb
   Then it succeeds
   And there should be 3 users in mongodb
   And there should be 3 posts in mongodb

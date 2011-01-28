@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Mongify::Translation do
   before(:all) do
-    @file_path = File.expand_path(File.dirname(__FILE__) + '/../files/simple_translation.rb')
+    @file_path = File.expand_path(File.dirname(__FILE__) + '/../files/translation.rb')
     @translation = Mongify::Translation.parse(@file_path)
   end
   

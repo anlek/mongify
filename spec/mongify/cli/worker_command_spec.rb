@@ -12,7 +12,7 @@ describe Mongify::CLI::WorkerCommand do
     @no_sql_connection.stub(:has_connection?).and_return(true)
     @config.stub(:no_sql_connection).and_return(@no_sql_connection)
     
-    @translation_file = 'spec/files/simple_translation.rb'
+    @translation_file = 'spec/files/translation.rb'
     
     Mongify::Translation.stub(:load).and_return(stub(:print => 'worked'))
     @view = mock('view').as_null_object
@@ -82,7 +82,7 @@ describe Mongify::CLI::WorkerCommand do
   
   context "process command" do
     before(:each) do
-      @command = Mongify::CLI::WorkerCommand.new('process', @config, 'spec/files/simple_translation.rb')
+      @command = Mongify::CLI::WorkerCommand.new('process', @config, 'spec/files/translation.rb')
       Mongify::Translation.stub(:parse).and_return(mock(:process => true))
     end
     it "should report success" do
