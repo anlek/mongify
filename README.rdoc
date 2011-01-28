@@ -143,11 +143,18 @@ Table Options are as follow:
   table "table_name", :ignore => true                       # This will ignore the whole table (like it doesn't exist)
                                                             # This option is good for tables like: schema_migrations
                                                             
+  table "table_name",                                       # This allows you to specify the table as being polymorphic
+    :polymorphic => 'notable',                              # and provide the name of the polymorphic relationship.
+    :embed_in => true                                       # Setting embed_in => true allows the relationship to be
+                                                            # embedded directly into the parent class.
+                                                            # If you do not embed it, the polymorphic table will be copied in to
+                                                            # MongoDB and the notable_id will be updated to the new BSON::ObjectID
+                                                            
   table "table_name" do                                     # A table can take a before_save block that will be called just
     before_save do |row|                                    # before the row is saved to the no sql database.
       row.admin = row.delete('permission').to_i > 50        # This gives you the ability to do very powerful things like:
     end                                                     # Moving records around, renaming records, changing values in row based on
-  end                                                       # some values! Checkout {Mongify::Database::DataRow} to learn more
+  end                                                       # some values! Checkout Mongify::Database::DataRow to learn more
 
 === Columns
 

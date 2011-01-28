@@ -35,6 +35,11 @@ module Mongify
     #   table "table_name", :polymorphic => 'commentable'         # This will identfiy the table as polymorphic and the new ids
     #                                                             # will be updated as needed.
     # 
+    #   table "table_name",                                       # This allows you to specify the table as being polymorphic
+    #     :polymorphic => 'notable',                              # and provide the name of the polymorphic relationship.
+    #     :embed_in => true                                       # Setting embed_in => true allows the relationship to be
+    #                                                             # embedded directly into the parent class.
+    #
     #   table "table_name" do                                     # A table can take a before_save block that will be called just
     #     before_save do |row|                                    # before the row is saved to the no sql database.
     #       row.admin = row.delete('permission').to_i > 50        # This gives you the ability to do very powerful things like:
