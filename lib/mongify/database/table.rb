@@ -14,16 +14,19 @@ module Mongify
     # 
     # Table Options are as follow:
     #   table "table_name"                                        # Does a straight copy of the table
-    #   table "table_name", :embed_in => :users                   # Embeds table_name into users, assuming a user_id is present in table_name.
+    #   table "table_name", :embed_in => 'users'                  # Embeds table_name into users, assuming a user_id is present in table_name.
     #                                                             # This will also assume you want the table embedded as an array.
-    #   table "table_name", :embed_in => :users, :on => 'owner_id'# Embeds table_name into users, linking it via a owner_id
-    #                                                             # This will also assume you want the table embedded as an array.
-    #   table "table_name", :embed_in => :users, :as => :object   # Embeds table_name into users as a one to one relationship
-    #                                                             # This also assumes you have a user_id present in table_name
-    #   table "table_name", :embed_in => :posts, :on => 'post_id', :as => 'array'
-    #                                                             # You can also do both :on and :as
     # 
-    # <b>NOTE: If you rename the owner_id column, make sure you update the :on to the new column name</b>
+    #   table "table_name",                                       # Embeds table_name into users, linking it via a owner_id
+    #         :embed_in => 'users',                               # This will also assume you want the table embedded as an array.
+    #         :on => 'owner_id'                                   
+    # 
+    #   table "table_name",                                       # Embeds table_name into users as a one to one relationship
+    #         :embed_in => 'users',                               # This also assumes you have a user_id present in table_name
+    #         :on => 'owner_id',                                  # You can also specify both :on and :as options when embedding
+    #         :as => 'object'                                     # NOTE: If you rename the owner_id column, make sure you 
+    #                                                             # update the :on to the new column name
+    # 
     # 
     #   table "table_name", :rename_to => 'my_table'              # This will allow you to rename the table as it's getting process
     #                                                             # Just remember that columns that use :reference need to
@@ -32,19 +35,19 @@ module Mongify
     #   table "table_name", :ignore => true                       # This will ignore the whole table (like it doesn't exist)
     #                                                             # This option is good for tables like: schema_migrations
     # 
-    #   table "table_name", :polymorphic => 'commentable'         # This will identfiy the table as polymorphic and the new ids
-    #                                                             # will be updated as needed.
-    # 
     #   table "table_name",                                       # This allows you to specify the table as being polymorphic
-    #     :polymorphic => 'notable',                              # and provide the name of the polymorphic relationship.
-    #     :embed_in => true                                       # Setting embed_in => true allows the relationship to be
+    #         :polymorphic => 'notable',                          # and provide the name of the polymorphic relationship.
+    #         :embed_in => true                                   # Setting embed_in => true allows the relationship to be
     #                                                             # embedded directly into the parent class.
-    #
+    #                                                             # If you do not embed it, the polymorphic table will be copied in to
+    #                                                             # MongoDB and the notable_id will be updated to the new BSON::ObjectID
+    # 
     #   table "table_name" do                                     # A table can take a before_save block that will be called just
     #     before_save do |row|                                    # before the row is saved to the no sql database.
     #       row.admin = row.delete('permission').to_i > 50        # This gives you the ability to do very powerful things like:
     #     end                                                     # Moving records around, renaming records, changing values in row based on
-    #   end                                                       # some values! Checkout {Mongify::Database::DataRow} to learn more
+    #   end                                                       # some values! Checkout Mongify::Database::DataRow to learn more
+
     class Table
       
       attr_accessor :name, :sql_name
