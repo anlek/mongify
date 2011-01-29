@@ -244,9 +244,10 @@ I'd like to thank Mon_Ouie on the Ruby IRC channel for helping me figure out how
 
 This gem was made by Andrew Kalek
 
-You can reach me on twitter at {@anlek}[http://www.twitter.com/anlek]
+Reach me at:
+* Twitter: {@anlek}[http://www.twitter.com/anlek]
+* Email: andrew.kalek@anlek[dot]com
 
-Or email me at andrew.kalek@anlek[dot]com
 
 == License
 
