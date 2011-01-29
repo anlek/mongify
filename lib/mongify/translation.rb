@@ -113,6 +113,7 @@ module Mongify
       tables.reject{|t| t.embedded?}
     end
     
+    # Returns an array of all tables that have a polymorphic relationship
     def polymorphic_tables
       all_tables.reject{ |t| t.ignored? || !t.polymorphic? }
     end
