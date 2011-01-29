@@ -84,6 +84,16 @@ Creating a translation is pretty straight forward. It looks something like this:
     column "notify_by_email", :boolean
   end
   
+  table "notes", :embed_in => true, :polymorphic => 'notable' do
+    column "id", :key
+    column "user_id", :integer, :references => "users"
+    column "notable_id", :integer
+    column "notable_type", :string
+    column "body", :text
+    column "created_at", :datetime
+    column "updated_at", :datetime
+  end
+  
 Save the file as <tt>"translation_file.rb"</tt> and run the command:
 
   mongify process translation_file.rb -c database.config
@@ -229,6 +239,14 @@ Just want to thank my wife (Alessia) who not only puts up with me working on my 
 === More Special Thanks
 
 I'd like to thank Mon_Ouie on the Ruby IRC channel for helping me figure out how to setup the internal configuration file reading.
+
+== About
+
+This gem was made by Andrew Kalek
+
+You can reach me on twitter at {@anlek}[http://www.twitter.com/anlek]
+
+Or email me at andrew.kalek@anlek[dot]com
 
 == License
 
