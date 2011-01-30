@@ -7,17 +7,15 @@ However, I've only tested it with MySql and SQLite
 
 Supports any version of MongoDB
 
-Learn more about mongoDB at: http://www.mongodb.org
+Learn more about MongoDB at: http://www.mongodb.org
 
 == Install
-
-<b>WARNING: This gem is still in alpha</b>
 
   gem install mongify
 
 == Usage
 
-===Creating a configuration file
+=== Creating a configuration file
 
 In order for Mongify to do it's job, it needs to know where your databases are located.
 
@@ -33,11 +31,18 @@ Building a config file is as simple as this:
 
   mongodb_connection do
     host      "localhost"
-    database  "my_collection"
+    database  "my_database"
   end
   
 You can check your configuration by running
   mongify check -c datbase.config
+  
+==== Options
+Currently the only option that is support it is for the mongodb_connection.
+
+  mongodb_connection :force => true do                # Forcing a mongodb_connection will drop the database before processing
+    # ...
+  end
 
 <em>You can omit the mongodb connection till you're ready to process your translation</em>
 
@@ -46,9 +51,9 @@ You can check your configuration by running
 
 ==== Generating a translation
 If you're database is large and complex, it might be a bit too much to hand write the translation file, Mongify can help by running the translate command:
-  mongify transalte -c database.config
+  mongify translation -c database.config
 Or pipe it right into a file by running
-  mongify transalte -c database.config > translation_file.rb
+  mongify translation -c database.config > translation_file.rb
 
 ==== Creating a translation
 Creating a translation is pretty straight forward. It looks something like this:
@@ -86,25 +91,71 @@ Creating a translation is pretty straight forward. It looks something like this:
     column "notify_by_email", :boolean
   end
   
+  table "notes", :embed_in => true, :polymorphic => 'notable' do
+    column "id", :key
+    column "user_id", :integer, :references => "users"
+    column "notable_id", :integer
+    column "notable_type", :string
+    column "body", :text
+    column "created_at", :datetime
+    column "updated_at", :datetime
+  end
+  
 Save the file as <tt>"translation_file.rb"</tt> and run the command:
 
   mongify process translation_file.rb -c database.config
+  
+=== Commands
 
-== Translation Options
+  Usage: mongify command [database_translation.rb] [-c database.config]
+
+  Commands:
+    "check" or "ck"           >> Checks connection for sql and no_sql databases [configuration_file]
+    "process" or "pr"         >> Takes a translation and process it to mongodb [configuration_file, translation_file]
+    "translation" or "tr"     >> Outputs a translation file from a sql connection [configuration_file]
+
+  Examples:
+
+    mongify translation -c datbase.config
+    mongify tr -c database.config
+    mongify check -c database.config
+    mongify process database_translation.rb -c database.config
+
+  Common options:
+      -h, --help                       Show this message
+      -v, --version                    Show version
+      -c, --config FILE                Configuration File to use
+
+== Translation Layout and Options
 
 When dealing with a translation, there is a few options you can set
 
 === Table
 
+==== Structure
+
+Structure for defining a table is as follows:
+  table "table_name", {options} do
+    # columns go here...
+  end
+
+==== Options
+
 Table Options are as follow:
   table "table_name"                                        # Does a straight copy of the table
-  table "table_name", :embed_in => :users                   # Embeds table_name into users, assuming a user_id is present in table_name.
+  table "table_name", :embed_in => 'users'                  # Embeds table_name into users, assuming a user_id is present in table_name.
                                                             # This will also assume you want the table embedded as an array.
-  table "table_name", :embed_in => :users, :on => 'owner_id'# Embeds table_name into users, linking it via a owner_id
-                                                            # This will also assume you want the table embedded as an array.
-  table "table_name", :embed_in => :users, :as => :object   # Embeds table_name into users as a one to one relationship
-                                                            # This also assumes you have a user_id present in table_name
-<em>You can also specify both <b>:on</b> and <b>:as</b> options when embedding</em>
+                                                            
+  table "table_name",                                       # Embeds table_name into users, linking it via a owner_id
+        :embed_in => 'users',                               # This will also assume you want the table embedded as an array.
+        :on => 'owner_id'                                   
+                                                            
+  table "table_name",                                       # Embeds table_name into users as a one to one relationship
+        :embed_in => 'users',                               # This also assumes you have a user_id present in table_name
+        :on => 'owner_id',                                  # You can also specify both :on and :as options when embedding
+        :as => 'object'                                     # NOTE: If you rename the owner_id column, make sure you 
+                                                            # update the :on to the new column name
+                                                            
 
   table "table_name", :rename_to => 'my_table'              # This will allow you to rename the table as it's getting process
                                                             # Just remember that columns that use :reference need to
@@ -112,22 +163,58 @@ Table Options are as follow:
 
   table "table_name", :ignore => true                       # This will ignore the whole table (like it doesn't exist)
                                                             # This option is good for tables like: schema_migrations
+                                                            
+  table "table_name",                                       # This allows you to specify the table as being polymorphic
+        :polymorphic => 'notable',                          # and provide the name of the polymorphic relationship.
+        :embed_in => true                                   # Setting embed_in => true allows the relationship to be
+                                                            # embedded directly into the parent class.
+                                                            # If you do not embed it, the polymorphic table will be copied in to
+                                                            # MongoDB and the notable_id will be updated to the new BSON::ObjectID
+                                                            
+  table "table_name" do                                     # A table can take a before_save block that will be called just
+    before_save do |row|                                    # before the row is saved to the no sql database.
+      row.admin = row.delete('permission').to_i > 50        # This gives you the ability to do very powerful things like:
+    end                                                     # Moving records around, renaming records, changing values in row based on
+  end                                                       # some values! Checkout Mongify::Database::DataRow to learn more
 
 === Columns
-Columns take a few more options:
-  column "id", :key                                   # Columns that are primary keys and need to be marked as :key
-  column "title", :string                             # Data from this column will be copied straight over without modification
-  column "body", :text                                # Since mongo doesn't care about text fields, this will just be converted to string
+
+==== Structure
+
+Structure for defining a column is as follows:
+  column "name", :type, {options}
+<em>Columns with no type given will be set to <tt>:string</tt></em>
+
+==== Notes
+Leaving a column out when defining a table will result in a copy of the information (as a string).
+  
+==== Types
+
+Before we cover the options, you need to know what types of columns are supported:
+  :key                  # Columns that are primary keys need to be marked as :key type
+  :integer              # Will be converted to a integer
+  :float                # Will be converted to a float
+  :decimal              # Will be converted to a BigDecimal
+  :string               # Will be converted to a string
+  :text                 # Will be converted to a string
+  :datetime             # Will be converted to a Time format (DateTime is not currently supported in the Mongo ruby driver)
+  :date                 # Will be converted to a Time format (Date is not currently supported in the Mongo ruby driver)
+  :timestamps           # Will be converted to a Time format
+  :time                 # Will be converted to a Time format (the date portion of the Time object will be 2000-01-01)
+  :binary               # Will be converted to a string
+  :boolean              # Will be converted to a true or false values
+
+==== Options
+
   column "post_id", :integer, :referneces => :posts   # Referenced columns need to be marked as such, this will mean that they will be updated
                                                       # with the new BSON::ObjectID.
-  column "created_at", :datetime                      # Specifying a field as :datetime will convert it to Time format as it
-                                                      # gets imported into MongoDB
-  column "name"                                       # Columns without a type will be set to :string
-                                                      
-Leaving a column out of the list will just result in a straight copy of the information.
+                                                      # NOTE: if you rename the table 'posts', you should set the :references to the new name
 
-<em>**this is subject to change during the alpha (0.0.x release)**</em>
-
+  column "name", :string, :ignore => true             # Ignoring a column will make the column NOT copy over to the new database
+  
+  column "surname", 
+         :string, 
+         :rename_to => 'last_name'                    # Rename_to allows you to rename the column                                                      
 
 == Notes
 
@@ -138,21 +225,13 @@ More testing will be done once the basic functionality is done
 
 == TODO
 
-* Allow you to set a :force => true for mongodb_connection, so that it drops existing database before importing
-
-=== while processing
-
-* Allow renaming of columns
-* Allow deleting/ignore of columns
-* Allow running a proc on column value
 * Update user on what is being processed
-
 
 == Development
 
 === Requirements
 
-You just need bundler 1.0
+You just need bundler 1.0.8
 
   gem install bundler
   bundle install
@@ -163,9 +242,16 @@ You just need bundler 1.0
 
 Just want to thank my wife (Alessia) who not only puts up with me working on my free time but sometimes helps out listening to my craziness or helping me name classes or functions.
 
-=== More Special Thanks
+I would also like to thank Mon_Ouie on the Ruby IRC channel for helping me figure out how to setup the internal configuration file reading.
 
-I'd like to thank Mon_Ouie on the Ruby IRC channel for helping me figure out how to setup the internal configuration file reading.
+== About
+
+This gem was made by Andrew Kalek
+
+Reach me at:
+* Twitter: {@anlek}[http://www.twitter.com/anlek]
+* Email: andrew.kalek@anlek[dot]com
+
 
 == License
 

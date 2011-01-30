@@ -4,9 +4,13 @@ describe Mongify::Database::BaseConnection do
   before(:each) do
     @base_connection = Mongify::Database::BaseConnection.new
   end
-  it "should set any variable name that's passed" do
-    @base_connection = Mongify::Database::BaseConnection.new(:apple => 'blue', :car => 'good')
-    @base_connection.instance_variables.should =~ ['@apple', '@car']
+  it "should set any allowed variable name that's passed" do
+    @base_connection = Mongify::Database::BaseConnection.new(:host => 'blue', :adapter => 'good')
+    @base_connection.instance_variables.should =~ ['@host', '@adapter']
+  end
+  it "should not set unknown variables on init" do
+    @base_connection = Mongify::Database::BaseConnection.new(:apple => 'blue')
+    @base_connection.instance_variables.should == []
   end
 
   context "validation" do

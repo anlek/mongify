@@ -1,7 +1,27 @@
-== 0.0.9 / In Development
-* Added ability to rename table
+== 0.1.2 / In Development
+* More Improvements to README and RDOC
+* Added ability to :force => true on a mongodb_connection, forcing it to drop database before processing.
+* Improved UI output
+== 0.1.1 / 28 Jan 2011
+* Renamed GenerateDatabase to DatabaseGenerator
+* Renamed Table#embed? to Table#embedded?
+* Renamed Table#embed_as_object? to Table#embedded_as_object?
+* Added support for polymorphic tables
+* Did some file cleanup for unused files
+== 0.1.0 / 21 Jan 2011
+* Moved from Alpha to Beta! :)
+* Improved internal RDocs
+* Improved specs
+* Refactored
+* Renamed 'translate' command to 'translation'
+* Added :auto_detect option to columns
+* Added ability to do a before_save on the table.
+== 0.0.9 / 19 Jan 2011
+* Added ability to rename tables
 * Fixed bug 'pre_mogified_id' not being removed in all records
-* Added ability to ignore table
+* Added ability to ignore tables
+* Added ability to ignore columns
+* Added ability to rename columns
 == 0.0.8 / 18 Jan 2011
 * Added ability to embed as object on an embedded table
 * Some bugs fixed

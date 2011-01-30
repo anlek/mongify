@@ -7,11 +7,15 @@ module Mongify
     class WorkerCommand
       attr_accessor :view
       
+      # A hash of available commands
+      # Including description, additional shortcuts to run the commands and requirements to run the command
       AVAILABLE_COMMANDS = {
                                 :check => {:commands => ['check', 'ck'], :description => "Checks connection for sql and no_sql databases", :required => [:configuration_file]},
-                                :translate => {:commands => ['translate', 'tr'], :description => "Spits out translation from a sql connection", :required => [:configuration_file]},
+                                :translation => {:commands => ['translation', 'tr'], :description => "Outputs a translation file from a sql connection", :required => [:configuration_file]},
                                 :process => {:commands => ['process', 'pr'], :description => "Takes a translation and process it to mongodb", :required => [:configuration_file, :translation_file]}
                               }
+      
+      # Prints out a nice display of the list of commands
       def self.list_commands
         [].tap do |commands|
           AVAILABLE_COMMANDS.each do |key, obj|
@@ -19,7 +23,8 @@ module Mongify
           end
         end.sort
       end
-                              
+                            
+      # Finds a command array by any of the shortcut commands
       def self.find_command(command)
         AVAILABLE_COMMANDS.each do |key, options|
           return [key, options] if(options[:commands].include?(command.to_s.downcase))
@@ -34,6 +39,7 @@ module Mongify
         @parser = parser
       end
       
+      #Executes the worked based on a given command
       def execute(view)
         self.view = view
         
@@ -50,7 +56,7 @@ module Mongify
         end
         
         case current_command
-        when :translate
+        when :translation
           check_connections
           view.output(Mongify::Translation.load(@config.sql_connection).print)
         when :check
@@ -67,6 +73,7 @@ module Mongify
         view.report_success
       end
       
+      # Passes find command to parent class
       def find_command(command=@command)
         self.class.find_command(command)
       end
@@ -75,19 +82,20 @@ module Mongify
       private
       #######
 
-      def check_connections(sql_only = false)
-        check_sql_connection && (sql_only || check_nosql_connection)
+      # Checks both sql and no sql connection
+      def check_connections
+        check_sql_connection && check_nosql_connection
       end
       
+      # Checks sql connection if it's valid and has_connection?
       def check_sql_connection
         @config.sql_connection.valid? && @config.sql_connection.has_connection?
       end
       
+      # Checks no sql connection if it's valid and has_connection?
       def check_nosql_connection
         @config.no_sql_connection.valid? && @config.no_sql_connection.has_connection?        
       end
-      
-      
     end
   end
 end

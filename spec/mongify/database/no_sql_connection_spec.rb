@@ -24,6 +24,10 @@ describe Mongify::Database::NoSqlConnection do
     end
   end
   
+  it "should rename mongo to mongodb for adapter" do
+    Mongify::Database::NoSqlConnection.new(:host => 'localhost', :database => 'blue', :adapter => 'mongo').adapter.should == 'mongodb'
+  end
+  
   context "connection string" do
     before(:each) do
       @mongodb_connection.host @host
@@ -61,12 +65,6 @@ describe Mongify::Database::NoSqlConnection do
       @mongodb_connection.connection
     end
     
-    it "should reset connection on reset" do
-      Mongo::Connection.should_receive(:new).twice
-      @mongodb_connection.connection
-      @mongodb_connection.reset!
-      @mongodb_connection.connection
-    end
   end
   
   
@@ -125,11 +123,48 @@ describe Mongify::Database::NoSqlConnection do
       end
     end
   end
+  
+  context "force" do
+    before(:each) do
+      @mock_connection = mock(:connected? => true, :drop_database => true)
+      Mongo::Connection.stub(:new).and_return(@mock_connection)
+      @mongodb_connection = Mongify::Database::NoSqlConnection.new(:host => 'localhost', :database => 'blue', :force => true)
+      Mongify::UI.stub(:ask).and_return(true)
+    end
+    it "should be true" do
+      @mongodb_connection.should be_forced
+    end
+    it "should be false" do
+      Mongify::Database::NoSqlConnection.new(:host => 'localhost', :database => 'blue', :force => false).should_not be_forced
+    end
+    
+    it "should drop database" do
+      @mongodb_connection.connection.should_receive(:drop_database).with('blue').and_return(true)
+      @mongodb_connection.send(:drop_database)
+    end
+    
+    context "ask permission" do
+      it "should ask to drop database" do
+        Mongify::UI.should_receive(:ask).and_return(false)
+        @mongodb_connection.send(:ask_to_drop_database)
+      end
+      it "should not drop database if permission is declined" do
+        Mongify::UI.should_receive(:ask).and_return(false)
+        @mongodb_connection.should_receive(:drop_database).never
+        @mongodb_connection.send(:ask_to_drop_database)        
+      end
+      it "should drop database if permission is granted" do
+        Mongify::UI.should_receive(:ask).and_return(true)
+        @mongodb_connection.should_receive(:drop_database).once
+        @mongodb_connection.send(:ask_to_drop_database)
+      end
+    end
+  end
 
   
   describe "working connection" do
     before(:each) do
-      @mongodb_connection = GenerateDatabase.mongo_connection
+      @mongodb_connection = DatabaseGenerator.mongo_connection
     end
     
     it "should work" do

@@ -24,13 +24,12 @@ Feature: Mongify can be controlled using command-line options
 			Commands:
 			"check" or "ck"           >> Checks connection for sql and no_sql databases [configuration_file]
 			"process" or "pr"         >> Takes a translation and process it to mongodb [configuration_file, translation_file]
-			"translate" or "tr"       >> Spits out translation from a sql connection [configuration_file]
+			"translation" or "tr"     >> Outputs a translation file from a sql connection [configuration_file]
 			
       Examples:
 			
-			mongify translate -c datbase.config
-			mongify tr -c database.config
-		 	mongify check -c database.config
+			mongify check -c database.config
+		 	mongify translation -c datbase.config > database_translation.rb
 		 	mongify process database_translation.rb -c database.config
       
       See http://github.com/anlek/mongify for more details
@@ -39,8 +38,5 @@ Feature: Mongify can be controlled using command-line options
           -h, --help                       Show this message
           -v, --version                    Show version
           -c, --config FILE                Configuration File to use
-
-      Report formatting:
-          -q, --[no-]quiet                 Suppress extra output
 
       """

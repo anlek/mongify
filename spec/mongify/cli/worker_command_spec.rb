@@ -12,7 +12,7 @@ describe Mongify::CLI::WorkerCommand do
     @no_sql_connection.stub(:has_connection?).and_return(true)
     @config.stub(:no_sql_connection).and_return(@no_sql_connection)
     
-    @translation_file = 'spec/files/simple_translation.rb'
+    @translation_file = 'spec/files/translation.rb'
     
     Mongify::Translation.stub(:load).and_return(stub(:print => 'worked'))
     @view = mock('view').as_null_object
@@ -59,14 +59,14 @@ describe Mongify::CLI::WorkerCommand do
     end
   end
 
-  context "translate command" do
+  context "translation command" do
     before(:each) do
-      @command = Mongify::CLI::WorkerCommand.new('translate', @config)
+      @command = Mongify::CLI::WorkerCommand.new('translation', @config)
       Mongify::Translation.stub(:load).with(@sql_connection).and_return(stub(:print => 'worked'))
     end
     
     it "should require configuration file" do
-      lambda { Mongify::CLI::WorkerCommand.new('translate').execute(@view) }.should raise_error(Mongify::ConfigurationFileNotFound)
+      lambda { Mongify::CLI::WorkerCommand.new('translation').execute(@view) }.should raise_error(Mongify::ConfigurationFileNotFound)
     end
     
     it "should check sql connection" do
@@ -82,7 +82,7 @@ describe Mongify::CLI::WorkerCommand do
   
   context "process command" do
     before(:each) do
-      @command = Mongify::CLI::WorkerCommand.new('process', @config, 'spec/files/simple_translation.rb')
+      @command = Mongify::CLI::WorkerCommand.new('process', @config, 'spec/files/translation.rb')
       Mongify::Translation.stub(:parse).and_return(mock(:process => true))
     end
     it "should report success" do
@@ -105,7 +105,6 @@ describe Mongify::CLI::WorkerCommand do
     end
     
     it "should call process on translation" do
-      puts @config.no_sql_connection.inspect
       Mongify::Translation.should_receive(:parse).and_return(mock(:process => true))
       @command.execute(@view)
     end

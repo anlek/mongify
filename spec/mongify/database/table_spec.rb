@@ -41,7 +41,7 @@ describe Mongify::Database::Table do
   
   context "column_index (find_column)" do
     it "should add column index on column creation" do
-      @table.should_receive(:add_column_index).with('first_name', 0)
+      @table.should_receive(:add_and_index_column)
       @table.column('first_name', :string)
     end
   end
@@ -52,14 +52,25 @@ describe Mongify::Database::Table do
     end
     
     it "should work without a type" do
-      col = @table.column 'name', :default => '123'
+      col = @table.column 'name'
       col.type.should == :string
+    end
+    
+    it "should work without a type with options" do
+      col = @table.column 'name', :rename_to => 'first_name'
+      col.type.should == :string
+      col.should be_renamed
     end
     
     it "should be able to find" do
       @table.column 'another'
       col = @table.column 'dark'
       @table.find_column('dark').should == col
+    end
+    
+    it "should be searchable with sql_name only" do
+      col = @table.column 'surname', :string, :rename_to => 'last_name'
+      @table.find_column('surname').should == col
     end
     
     it "should return nil if not found" do
@@ -105,7 +116,7 @@ describe Mongify::Database::Table do
   
   context "reference_colums" do
     before(:each) do
-      @col1 = Mongify::Database::Column.new('user_id', :integer, :referneces => :users)
+      @col1 = Mongify::Database::Column.new('user_id', :integer, :references => 'users')
       @col2 = Mongify::Database::Column.new('post_id', :integer, :references => 'posts')
       @columns = [@col1,
                   Mongify::Database::Column.new('body'),
@@ -113,7 +124,7 @@ describe Mongify::Database::Table do
       @table = Mongify::Database::Table.new('comments', :columns => @columns)
     end
     it "should return an array of columns" do
-      @table.reference_columns.should == [@col1, @col2]
+      @table.reference_columns.should =~ [@col1, @col2]
     end
   end
   
@@ -139,21 +150,21 @@ describe Mongify::Database::Table do
       it "should allow Object as a value" do
         Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :object).embed_as.should == 'object'
       end
-      context "embed_as_object?" do
+      context "embedded_as_object?" do
         it "should be true" do
-          Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :object).should be_embed_as_object
+          Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :object).should be_embedded_as_object
         end
         it "should be false" do
-          Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :array).should_not be_embed_as_object
+          Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :as => :array).should_not be_embedded_as_object
         end
       end
     end
-    context "embed?" do
+    context "embedded?" do
       it "should be true" do
-        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').should be_embed
+        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').should be_embedded
       end
       it "should be false" do
-        Mongify::Database::Table.new('users').should_not be_embed
+        Mongify::Database::Table.new('users').should_not be_embedded
       end
     end
     
@@ -161,12 +172,57 @@ describe Mongify::Database::Table do
       it "should be post_id" do
         Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').embed_on.should == 'post_id'
       end
-      it "should be nil when not embed?" do
+      it "should be nil when not embedded?" do
         Mongify::Database::Table.new('users', :on => 'test').embed_on.should be_nil
       end
       it "should calculate embed_on from embed_in" do
         Mongify::Database::Table.new('comments', :embed_in => 'posts').embed_on.should == 'post_id'
       end
+    end
+  end
+  
+  context "before_save" do
+    before(:each) do
+      @table = Mongify::Database::Table.new('users')
+      @table.before_save do |row|
+        row.admin = row.delete('permission').to_i > 50
+      end
+    end
+    context "run_before_save" do
+      it "should create a new DataRow" do
+        row = {'first_name' => 'Bob'}
+        dr = Mongify::Database::DataRow.new(row)
+        Mongify::Database::DataRow.should_receive(:new).and_return(dr)
+        @table.send(:run_before_save, row)
+      end
+    end
+    it "should work" do
+      @table.translate({'permission' => 51}).should == {'admin' => true}
+    end
+  end
+  
+  context "polymorphic" do
+    before(:each) do
+      @table = Mongify::Database::Table.new('comments', :polymorphic => :commentable)
+    end
+    it "should be true" do
+      @table.should be_polymorphic
+    end
+    it "should be false" do
+      Mongify::Database::Table.new('users').should_not be_polymorphic
+    end
+    it "should return 'commentable'" do
+      @table.polymorphic_as.should == 'commentable'
+    end
+    
+    context "embed" do
+      before(:each) do
+        @table = Mongify::Database::Table.new('comments', :polymorphic => :commentable, :embed_in => true)
+      end
+      it "should be embedded" do
+        @table.should be_embedded
+      end
+      
     end
   end
   

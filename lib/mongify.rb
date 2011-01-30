@@ -11,11 +11,13 @@ require 'mongify/translation'
 require 'mongify/configuration'
 require 'mongify/database'
 
-module Mongify
+module Mongify # Namespace for Mongify
   class << self
+    # Handles setting root for the application
     def root=(value)
       @root = value
     end
+    #Raises RootMissing if you attempt to call root without setting it
     def root
       raise RootMissing, "Root not configured" if @root.nil?
       @root

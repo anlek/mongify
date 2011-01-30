@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Mongify::Translation do
   before(:all) do
-    @file_path = File.expand_path(File.dirname(__FILE__) + '/../files/simple_translation.rb')
+    @file_path = File.expand_path(File.dirname(__FILE__) + '/../files/translation.rb')
     @translation = Mongify::Translation.parse(@file_path)
   end
   
@@ -48,17 +48,35 @@ describe Mongify::Translation do
     end
   end
   
+  context "find" do
+    before(:each) do
+      @user_table = mock(:name => 'users')
+      @translation.stub(:all_tables).and_return([mock(:name => 'comments'),
+                                                 @user_table, 
+                                                 mock(:name => 'posts')])
+    end
+    it "should work" do
+      
+      @translation.find('users').should == @user_table
+    end
+    it "should return nil if nothing is found" do
+      @translation.find('apples').should be_nil
+    end
+  end
+  
   context "tables reference" do
     before(:each) do
-      @copy_table = mock(:name => 'users', :embed? => false, :ignored? => false)
-      @embed_table = mock(:name => 'comments', :embed? => true, :ignored? => false)
-      @ignored_table = mock(:name => 'apples', :ignored? => true, :embed? => false)
+      @copy_table = mock(:name => 'users', :ignored? => false, :embedded? => false, :polymorphic? => false)
+      @embed_table = mock(:name => 'comments', :ignored? => false, :embedded? => true, :polymorphic? => false)
+      @ignored_table = mock(:name => 'apples', :ignored? => true, :embedded? => false, :polymorphic? => false)
+      @polymorphic_table = mock(:name => 'comments', :ignored? => false, :embedded? => false, :polymorphic? => true)
       @translation = Mongify::Translation.new()
-      @translation.stub(:all_tables).and_return([@copy_table, @embed_table, @ignored_table])
+      @all_tables = [@copy_table, @embed_table, @ignored_table, @polymorphic_table]
+      @translation.stub(:all_tables).and_return(@all_tables)
     end
     context "tables" do
       it "should not show ignored" do
-        
+        @translation.tables.count == @all_tables.count - 1
       end
     end
     context "copy_tables" do
@@ -70,6 +88,9 @@ describe Mongify::Translation do
       it "should return only tables for embedding" do
         @translation.embed_tables.should == [@embed_table]
       end
+    end
+    it "should return only polymorphic tables" do
+      @translation.polymorphic_tables.should == [@polymorphic_table]
     end
   end
   

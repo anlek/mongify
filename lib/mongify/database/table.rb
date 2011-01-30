@@ -1,8 +1,53 @@
 module Mongify
   module Database
     #
-    #  A representation of a sql table and how it should map to a no_sql system 
+    #  A representation of a sql table and how it should map to a no_sql collection 
     #
+    # ==== Structure
+    # 
+    # Structure for defining a table is as follows:
+    #   table "table_name", {options} do
+    #     # columns go here...
+    #   end
+    # 
+    # ==== Options
+    # 
+    # Table Options are as follow:
+    #   table "table_name"                                        # Does a straight copy of the table
+    #   table "table_name", :embed_in => 'users'                  # Embeds table_name into users, assuming a user_id is present in table_name.
+    #                                                             # This will also assume you want the table embedded as an array.
+    # 
+    #   table "table_name",                                       # Embeds table_name into users, linking it via a owner_id
+    #         :embed_in => 'users',                               # This will also assume you want the table embedded as an array.
+    #         :on => 'owner_id'                                   
+    # 
+    #   table "table_name",                                       # Embeds table_name into users as a one to one relationship
+    #         :embed_in => 'users',                               # This also assumes you have a user_id present in table_name
+    #         :on => 'owner_id',                                  # You can also specify both :on and :as options when embedding
+    #         :as => 'object'                                     # NOTE: If you rename the owner_id column, make sure you 
+    #                                                             # update the :on to the new column name
+    # 
+    # 
+    #   table "table_name", :rename_to => 'my_table'              # This will allow you to rename the table as it's getting process
+    #                                                             # Just remember that columns that use :reference need to
+    #                                                             # reference the new name.
+    # 
+    #   table "table_name", :ignore => true                       # This will ignore the whole table (like it doesn't exist)
+    #                                                             # This option is good for tables like: schema_migrations
+    # 
+    #   table "table_name",                                       # This allows you to specify the table as being polymorphic
+    #         :polymorphic => 'notable',                          # and provide the name of the polymorphic relationship.
+    #         :embed_in => true                                   # Setting embed_in => true allows the relationship to be
+    #                                                             # embedded directly into the parent class.
+    #                                                             # If you do not embed it, the polymorphic table will be copied in to
+    #                                                             # MongoDB and the notable_id will be updated to the new BSON::ObjectID
+    # 
+    #   table "table_name" do                                     # A table can take a before_save block that will be called just
+    #     before_save do |row|                                    # before the row is saved to the no sql database.
+    #       row.admin = row.delete('permission').to_i > 50        # This gives you the ability to do very powerful things like:
+    #     end                                                     # Moving records around, renaming records, changing values in row based on
+    #   end                                                       # some values! Checkout Mongify::Database::DataRow to learn more
+
     class Table
       
       attr_accessor :name, :sql_name
@@ -21,81 +66,118 @@ module Mongify
         self
       end
       
+      # Returns the no_sql collection name
       def name
         @name ||= @options['rename_to']
         @name ||= self.sql_name
       end
       
+      # Returns true if table is ignored
       def ignored?
         @options['ignore']
       end
       
-      #Add a Database Column
+      # Returns true if table is marked as polymorphic
+      def polymorphic?
+        !!@options['polymorphic']
+      end
+      
+      # Returns the name of the polymorphic association
+      def polymorphic_as
+        @options['polymorphic'].to_s
+      end
+      
+      # Add a Database Column to the table
+      # This expects to get a {Mongify::Database::Column} or it will raise {Mongify::DatabaseColumnExpected} otherwise
       def add_column(column)
         raise Mongify::DatabaseColumnExpected, "Expected a Mongify::Database::Column" unless column.is_a?(Mongify::Database::Column)
-        add_column_index(column.name, @columns.size)
-        @columns << column
+        add_and_index_column(column)
       end
       
-      
+      # Lets you build a column in the table
       def column(name, type=nil, options={})
-        options = type and type = nil if type.is_a?(Hash)
+        options, type = type, nil if type.is_a?(Hash)
         type = type.to_sym if type
-        add_column_index(name.to_s.downcase, @columns.size)
-        @columns << (col = Mongify::Database::Column.new(name, type, options))
-        col
+        add_and_index_column(Mongify::Database::Column.new(name, type, options))
       end
       
+      # Returns the column if found by the sql_name
       def find_column(name)
         return nil unless (index = @column_lookup[name.to_s.downcase])
         @columns[index]
       end
       
-      
+      # Returns a array of Columns which reference other columns
       def reference_columns
-        @columns.reject{ |c| !c.reference? } 
+        @columns.reject{ |c| !c.referenced? } 
       end
       
+      # Returns a translated row
+      # Takes in a hash of values
       def translate(row)
         new_row = {}
         row.each do |key, value|
           c = find_column(key)
           new_row.merge!(c.present? ? c.translate(value) : {"#{key}" => value})
         end
-        new_row
+        run_before_save(new_row)
       end
       
+      
+      # Returns the name of the embed_in collection
       def embed_in
         @options['embed_in'].to_s unless @options['embed_in'].nil?
       end
       
+      # Returns the type of embed it will be [object or array]
       def embed_as
-        return nil unless embed?
+        return nil unless embedded?
         return 'object' if @options['as'].to_s.downcase == 'object'
         'array'
       end
-      
-      def embed_as_object?
+
+      # Returns true if table is being embed as an object
+      def embedded_as_object?
         embed_as == 'object'
       end
       
-      def embed?
+      # Returns true if this is an embedded table
+      def embedded?
         embed_in.present?
       end
       
+      # Returns the name of the target column to embed on
       def embed_on
-        return nil unless embed?
+        return nil unless embedded?
         (@options['on'] || "#{@options['embed_in'].to_s.singularize}_id").to_s
+      end
+      
+      # Used to save a block to be ran after the row has been processed but before it's saved to the no sql database
+      def before_save(&block)
+        @before_save = block
       end
             
       #######
       private
       #######
       
-      def add_column_index(name, index)
-        @column_lookup[name] = index
+      # Runs the before save
+      # Returns: a new modified row
+      def run_before_save(row)
+        return row unless @before_save
+        datarow = Mongify::Database::DataRow.new(row)
+        @before_save.call(datarow)
+        datarow.to_hash
       end
-
+      
+      # Indexes the column on the sql_name and adds column to the array
+      def add_and_index_column(column)
+        @column_lookup[column.sql_name] = @columns.size
+        @columns << column
+        column
+      end
+      
+      # Imports colunms that are sent in via the options['columns']
       def import_columns
         return unless import_columns = @options.delete('columns')
         import_columns.each { |c| add_column(c) }

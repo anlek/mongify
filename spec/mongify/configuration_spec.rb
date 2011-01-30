@@ -2,23 +2,17 @@ require "spec_helper"
 
 describe Mongify::Configuration do
   before(:each) do
-    Mongify::Translation.stub(:parse)
-    @translation_file = File.expand_path(File.dirname(__FILE__) + '/../files/empty_translation.rb')
     @configuration_file = File.expand_path(File.dirname(__FILE__) + '/../files/base_configuration.rb')
   end
-  it "should parse file for transaltion" do
-    Mongify::Translation.should_receive(:parse).and_return(true)
-    Mongify::Configuration.parse_translation(@translation_file)
-  end
 
-  context "configuration file" do
-    it "should parse confg file" do
-      Mongify::Configuration.should_receive(:parse).and_return(true)
-      Mongify::Configuration.parse_configuration(@configuration_file)
+  context "parse" do
+    it "should parse correctly" do
+      c = Mongify::Configuration.parse(@configuration_file)
+      c.sql_connection.should be_valid
+      c.no_sql_connection.should be_valid
     end
-
     it "should validate file exists" do
-      lambda { Mongify::Configuration.parse_configuration("../missing_file.rb") }.should raise_error(Mongify::FileNotFound)
+      lambda { Mongify::Configuration.parse("../missing_file.rb") }.should raise_error(Mongify::FileNotFound)
     end
 
   end
