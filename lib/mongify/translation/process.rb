@@ -61,7 +61,6 @@ module Mongify
           sql_connection.select_rows(t.sql_name).each do |row|
             table_name = row[polymorphic_type_col].tableize            
             new_id = no_sql_connection.get_id_using_pre_mongified_id(table_name, row[polymorphic_id_col])
-            puts "getting new id for #{table_name}, #{row[polymorphic_id_col]} and getting #{new_id}"
             if new_id
               row = t.translate(row)
               row.merge!(fetch_reference_ids(t, row))
@@ -76,7 +75,7 @@ module Mongify
                 no_sql_connection.insert_into(t.name, row)
               end
             else
-              puts "#{table_name} table not found on #{t.sql_name} polymorphic import"
+              UI.warn "#{table_name} table not found on #{t.sql_name} polymorphic import"
             end
           end
         end
