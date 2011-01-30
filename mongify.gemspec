@@ -13,8 +13,8 @@ Gem::Specification.new do |s|
 
   s.default_executable = "mongify"
 
-  s.add_dependency('activerecord', ">= 2.3.10")
-  s.add_dependency('activesupport', ">= 2.3.10")
+  s.add_dependency('activerecord', ">=3.0.3")
+  s.add_dependency('activesupport', ">=3.0.3")
   s.add_dependency('mysql2')
   s.add_dependency('mongo', ">= 1.1.5")
   s.add_dependency('bson_ext', ">= 1.1.5")
