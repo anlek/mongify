@@ -15,7 +15,7 @@ Learn more about MongoDB at: http://www.mongodb.org
 
 == Usage
 
-===Creating a configuration file
+=== Creating a configuration file
 
 In order for Mongify to do it's job, it needs to know where your databases are located.
 
@@ -236,9 +236,7 @@ You just need bundler 1.0.8
 
 Just want to thank my wife (Alessia) who not only puts up with me working on my free time but sometimes helps out listening to my craziness or helping me name classes or functions.
 
-=== More Special Thanks
-
-I'd like to thank Mon_Ouie on the Ruby IRC channel for helping me figure out how to setup the internal configuration file reading.
+I would also like to thank Mon_Ouie on the Ruby IRC channel for helping me figure out how to setup the internal configuration file reading.
 
 == About
 
