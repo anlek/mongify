@@ -225,7 +225,6 @@ More testing will be done once the basic functionality is done
 
 == TODO
 
-* Allow you to set a :force => true for mongodb_connection, so that it drops existing database before importing
 * Update user on what is being processed
 
 == Development

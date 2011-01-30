@@ -6,7 +6,7 @@ module Mongify
     # 
     # Basic format should look something like this:
     # 
-    #   no_sql_connection do
+    #   no_sql_connection {options} do
     #     adapter   "mongodb"
     #     host      "localhost"
     #     database  "my_database"
@@ -19,6 +19,10 @@ module Mongify
     #   username
     #   password
     #   port
+    # 
+    # Options:
+    #   :force => true       # This will force a database drop before processing  
+    # <em>You're also able to set attributes via the options</em>
     #
     class NoSqlConnection < Mongify::Database::BaseConnection
       include Mongo
