@@ -41,6 +41,11 @@ describe Mongify::Translation::Process do
     end
   end
   
+  it "should ask_to_drop_database if mongodb_connection is forced" do
+    @no_sql_connection.should_receive(:forced?).and_return(true)
+    @no_sql_connection.should_receive(:ask_to_drop_database).and_return(false)
+    @translation.process(@sql_connection, @no_sql_connection)
+  end
   
   
   context "fetch_reference_ids" do

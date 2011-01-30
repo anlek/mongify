@@ -26,8 +26,9 @@ module Mongify
       #Required fields for a no sql connection
       REQUIRED_FIELDS = %w{host database}  
       
-      def initialize(options=nil)
+      def initialize(options={})
         super options
+        @options = options
         adapter 'mongodb' if adapter.nil? || adapter == 'mongo'
       end
       
@@ -50,6 +51,12 @@ module Mongify
         super && @database.present?
       end
       
+      # Returns true if :force was set to true
+      # This will force a drop of the database upon connection
+      def forced?
+        !!@options['force']
+      end
+      
       # Sets up a connection to the database
       def setup_connection_adapter
         connection = Connection.new(host, port)
@@ -58,8 +65,12 @@ module Mongify
       end
       
       # Returns a mongo connection
+      # NOTE: If forced? is true, the first time a connection is made, it will ask to drop the
+      # database before continuing 
       def connection
-        @connection ||= setup_connection_adapter
+        return @connection if @connection
+        @connection = setup_connection_adapter
+        @connection
       end
       
       # Returns true or false depending if we have a connection to a mongo server
@@ -101,6 +112,24 @@ module Mongify
       def remove_pre_mongified_ids(collection_name)
         db[collection_name].update({}, { '$unset' => { 'pre_mongified_id' => 1} }, :multi => true)
       end
+      
+      # Asks user permission to drop the database
+      def ask_to_drop_database
+        if UI.ask("Are you sure you want to drop #{database} database?")
+          drop_database
+        end
+      end
+      
+      #######
+      private
+      #######
+      
+      # Drops the mongodb database
+      def drop_database
+        connection.drop_database(database)
+      end
+      
+
       
     end
   end

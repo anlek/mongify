@@ -17,6 +17,8 @@ module Mongify
         self.no_sql_connection = no_sql_connection
         raise "noSql Connection is not valid" unless self.no_sql_connection.valid?
         
+        no_sql_connection.ask_to_drop_database if no_sql_connection.forced?
+        
         copy_data
         copy_embedded_tables
         update_reference_ids

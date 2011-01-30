@@ -1,5 +1,7 @@
 == 0.1.2 / In Development
 * More Improvements to README and RDOC
+* Added ability to :force => true on a mongodb_connection, forcing it to drop database before processing.
+* Improved UI output
 == 0.1.1 / 28 Jan 2011
 * Renamed GenerateDatabase to DatabaseGenerator
 * Renamed Table#embed? to Table#embedded?

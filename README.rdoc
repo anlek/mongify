@@ -36,6 +36,13 @@ Building a config file is as simple as this:
   
 You can check your configuration by running
   mongify check -c datbase.config
+  
+==== Options
+Currently the only option that is support it is for the mongodb_connection.
+
+  mongodb_connection :force => true do                # Forcing a mongodb_connection will drop the database before processing
+    # ...
+  end
 
 <em>You can omit the mongodb connection till you're ready to process your translation</em>
 
