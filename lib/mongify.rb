@@ -6,10 +6,13 @@ require 'active_record'
 require 'progressbar'
 
 require 'mongify/ui'
+require 'mongify/status'
 require 'mongify/exceptions'
 require 'mongify/translation'
 require 'mongify/configuration'
 require 'mongify/database'
+
+Mongify::Status.register
 
 module Mongify # Namespace for Mongify
   class << self
