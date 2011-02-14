@@ -1,7 +1,8 @@
-== 0.1.2 / In Development
+== 0.1.2 / 14 Feb 2011
 * More Improvements to README and RDOC
 * Added ability to :force => true on a mongodb_connection, forcing it to drop database before processing.
 * Improved UI output
+* Added activesupport notifications to keep track of what is happening with the system during import.
 == 0.1.1 / 28 Jan 2011
 * Renamed GenerateDatabase to DatabaseGenerator
 * Renamed Table#embed? to Table#embedded?
