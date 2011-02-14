@@ -26,10 +26,10 @@ describe Mongify::Database::BaseConnection do
   end
 
   it "should raise error when trying to call has_connection?" do
-    lambda { @base_connection.has_connection? }.should raise_error(NotImplementedError)
+    lambda { @base_connection.has_connection? }.should raise_error(Mongify::NotImplementedMongifyError)
   end
   it "should raise error when trying to call setup_connection_adapter" do
-    lambda { @base_connection.setup_connection_adapter}.should raise_error(NotImplementedError)
+    lambda { @base_connection.setup_connection_adapter}.should raise_error(Mongify::NotImplementedMongifyError)
   end
 
   it "should raise error on setting unknown variable setting" do

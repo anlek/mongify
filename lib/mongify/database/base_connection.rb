@@ -41,12 +41,12 @@ module Mongify
 
       # Used to setup connection, Raises NotImplementedError because it needs to be setup in BaseConnection's children
       def setup_connection_adapter
-        raise NotImplementedError
+        raise NotImplementedMongifyError
       end
 
       # Used to test connection, Raises NotImplementedError because it needs to be setup in BaseConnection's children
       def has_connection?
-        raise NotImplementedError
+        raise NotImplementedMongifyError
       end
 
 

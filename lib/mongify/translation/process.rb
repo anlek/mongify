@@ -13,9 +13,9 @@ module Mongify
         raise Mongify::NoSqlConnectionRequired, "Can only write to Mongify::Database::NoSqlConnection" unless no_sql_connection.is_a?(Mongify::Database::NoSqlConnection)
         
         self.sql_connection = sql_connection
-        raise "SQL Connection is not valid" unless self.sql_connection.valid?
+        raise SqlConnectionInvalid, "SQL Connection is not valid" unless self.sql_connection.valid?
         self.no_sql_connection = no_sql_connection
-        raise "noSql Connection is not valid" unless self.no_sql_connection.valid?
+        raise NoSqlConnectionInvalid, "noSql Connection is not valid" unless self.no_sql_connection.valid?
         
         no_sql_connection.ask_to_drop_database if no_sql_connection.forced?
         
