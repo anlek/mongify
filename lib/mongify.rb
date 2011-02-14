@@ -3,8 +3,8 @@
 #
 require 'active_support/core_ext'
 require 'active_record'
-require 'progressbar'
 
+require 'mongify/progressbar'
 require 'mongify/ui'
 require 'mongify/status'
 require 'mongify/exceptions'
