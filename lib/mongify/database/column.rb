@@ -41,27 +41,46 @@ module Mongify
     #
     #   column "post_id", :integer, :auto_detect => true    # Will run auto detect and make this column a :references => 'posts', :on => 'post_id' for you
     #                                                       # More used when reading a sql database, NOT recommended for use during processing of translation
+    # 
+    # <em>For decimal columns you can specify a few options:</em>
+    #   column "total",                                     # This is a default conversion setting.
+    #          :decimal,
+    #          :as => 'string'                              
+    #   
+    #   column "total",                                     # You can specify to convert your decimal to integer
+    #           :decimal,                                   # specifying scale will define how many decimal places to keep
+    #           :as => 'integer',                           # Example: :scale => 2 will convert 123.4567 to 12346 in to mongodb
+    #           :scale => 2
     # ==== Decimal Storage
     # 
     # Unfortunately MongoDB Ruby Drivers doesn't support BigDecimal, so to ensure all data is stored correctly (without losing information)
-    # I've chosen to store as String, however you can overwrite it and make your own custom conversion by doing a {Mongify::Database::Table#before_save}
+    # I've chosen to store as String, however you can overwrite this functionality in one of two ways:
+    # <em>The reason you would want to do this, is to make this searchable via a query.</em>
+    # 
+    # <b>1) You can specify :as => integer, :scale => 2</b>
+    #   column "total", :decimal, :as => :integer, :scale => 2
+    # 
+    #   #It would take a value of 123.456 and store it as an integer of value 12346
+    # 
+    # <b>2) You can specify your own custom conversion by doing a {Mongify::Database::Table#before_save}
     # 
     # Example:
     #   table "invoice" do
     #     column "name", :string
     #     column "total", :decimal
     #     before_save do |row|
-    #       row.total = (BigDecimal.new(row.total) * 1000).to_i
+    #       row.total = (BigDecimal.new(row.total) * 1000).round
     #     end
     #   end
     # 
-    # This would take 123.456789 in the total column and convert it to an interger of value 123456 (and in your app you can convert it back to a decimal)
-    # The reason you would want to do this, is to make this searchable via a query.
+    # This would take 123.456789 in the total column and convert it to an interger of value 123457 (and in your app you can convert it back to a decimal)
+    # 
+    # *REMEMBER* there is a limit on how big of an integer you can store in BSON/MongoDB (http://bsonspec.org/#/specification)
     class Column
       attr_reader :sql_name, :type, :options
       
       #List of available options for a column
-      AVAILABLE_OPTIONS = ['references', 'ignore', 'rename_to']
+      AVAILABLE_OPTIONS = ['references', 'ignore', 'rename_to', 'as', 'scale']
       
       # Auto detects if a column is an :key column or is a reference column
       def self.auto_detect(column)
@@ -130,14 +149,20 @@ module Mongify
       def method_missing(meth, *args, &blk)
         method_name = meth.to_s.gsub("=", '')
         if AVAILABLE_OPTIONS.include?(method_name)
-          class_eval <<-EOF
-                          def #{method_name}=(value)
-                            options['#{method_name}'] = value
-                          end
-                          def #{method_name}
-                            options['#{method_name}']
-                          end
-                        EOF
+          unless self.class.method_defined?(method_name.to_sym)
+            class_eval <<-EOF
+                            def #{method_name}=(value)
+                              options['#{method_name}'] = value
+                            end
+                          EOF
+          end
+          unless self.class.method_defined?("#{method_name}=".to_sym)
+            class_eval <<-EOF
+                            def #{method_name}
+                              options['#{method_name}']
+                            end
+                          EOF
+          end
           send(meth, *args, &blk)
         else
           super(meth, *args, &blk)
@@ -169,6 +194,34 @@ module Mongify
         !!self.ignore
       end
       
+      # Used when trying to figure out how to convert a decimal value
+      # @return [String] passed option['as'] or defaults to 'string'
+      def as
+        options['as'] ||= 'string'
+      end
+      # Sets option['as'] to either 'string' or 'integer', defults to 'string' for unknown values
+      # @param [String|Symbol] value, can be either 'string' or 'integer
+      def as=(value)
+        value = value.to_s.downcase
+        options['as'] = ['string', 'integer'].include?(value) ? value : 'string'
+      end
+      # Returns true if :as was passed as integer
+      def as_integer?
+        self.as == 'integer'
+      end
+      
+      # Get the scale option for decimal to integer conversion
+      #   column 'total', :decimal, :as => 'integer', :scale => 3
+      # @return [integer] passed option['scale'] or 0
+      def scale
+        options['scale'] ||= 0
+      end
+      # Set the scale option for decimal to integer conversion
+      #   column 'total', :decimal, :as => 'integer', :scale => 3
+      # @param [Integer] number of decimal places to round off to
+      def scale=(value)
+        options['scale'] = value.to_i
+      end
       #######
       private
       #######
@@ -179,9 +232,15 @@ module Mongify
         case type
           when :string    then value
           when :text      then value
-          when :integer   then value.to_i rescue value ? 1 : 0
+          when :integer   then value.to_i
           when :float     then value.to_f
-          when :decimal   then ActiveRecord::ConnectionAdapters::Column.value_to_decimal(value).to_s
+          when :decimal   
+            value = ActiveRecord::ConnectionAdapters::Column.value_to_decimal(value)
+            if as_integer?
+              (value * (10 ** self.scale)).round
+            else     
+              value.to_s
+            end
           when :datetime  then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
           when :timestamp then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
           when :time      then ActiveRecord::ConnectionAdapters::Column.string_to_dummy_time(value)
@@ -191,6 +250,7 @@ module Mongify
           else value
         end
       end
+
       
 
       # runs auto detect (see {Mongify::Database::Column.auto_detect})

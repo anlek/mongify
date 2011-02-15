@@ -122,6 +122,35 @@ describe Mongify::Database::Column do
     end
   end  
   
+  context "as" do
+    subject {Mongify::Database::Column.new('total', :decimal)}
+    it "should default to string" do
+      subject.as.should == 'string'
+    end
+    it "should allow it to be set to integer" do
+      subject.as = 'integer'
+      subject.should be_as_integer
+    end
+    it "should not allow other values" do
+      subject.as = "zuza"
+      subject.as.should == 'string'
+    end
+  end
+  context "scale" do
+    subject {Mongify::Database::Column.new('total', :decimal, :as => 'integer')}
+    it "should be defaulted to 0" do
+      subject.scale.should be_zero
+    end
+    it "should let you set the scale" do
+      subject.scale = 3
+      subject.scale.should == 3
+    end
+    it "should return 0 on invalid input" do
+      subject.scale = 'zuza'
+      subject.scale.should be_zero
+    end
+  end
+  
   context :to_print do
     before(:each) do
       @column = Mongify::Database::Column.new('first_name', :string)
@@ -212,14 +241,35 @@ describe Mongify::Database::Column do
       before(:each) do
         @column = Mongify::Database::Column.new('price', :decimal)
       end
-      it "should convert numbers to decimal" do
+      it "should convert numbers to decimal string" do
         @column.send(:type_cast, 101.43).should == "101.43"
       end
-      it "should convert integers to decimal" do
+      it "should convert integers to decimal string" do
         @column.send(:type_cast, 101).should == "101.0"
       end
-      it "should convert strings to 0.0" do
+      it "should convert strings to 0.0 (string)" do
         @column.send(:type_cast, 'zuza').should == "0.0"
+      end
+      
+      context "as integer" do
+        before(:each) do
+          @column = Mongify::Database::Column.new('price', :decimal, :as => 'integer')
+          @value = 101.123455
+        end
+        it "should be as_integer" do
+          @column.should be_as_integer
+        end
+        it "should convert number to integer" do
+          @column.send(:type_cast, @value).should == 101
+        end
+        it "should let you specify scale" do
+          @column.scale = 3
+          @column.send(:type_cast, @value).should == 101123
+        end
+        it "should round correctly to specified scale" do
+          @column.scale = 4
+          @column.send(:type_cast, @value).should == 1011235
+        end
       end
     end
     context :timestamp do

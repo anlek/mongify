@@ -196,7 +196,7 @@ Before we cover the options, you need to know what types of columns are supporte
   :key                  # Columns that are primary keys need to be marked as :key type
   :integer              # Will be converted to a integer
   :float                # Will be converted to a float
-  :decimal              # Will be converted to a string (due to MongoDB Ruby Drivers not supporting BigDecimal, read more in Mongify::Database::Column under Decimal Storage)
+  :decimal              # Will be converted to a string (due to MongoDB Ruby Drivers not supporting BigDecimal, read details in Mongify::Database::Column under Decimal Storage)
   :string               # Will be converted to a string
   :text                 # Will be converted to a string
   :datetime             # Will be converted to a Time format (DateTime is not currently supported in the Mongo ruby driver)
@@ -217,6 +217,16 @@ Before we cover the options, you need to know what types of columns are supporte
   column "surname", 
          :string, 
          :rename_to => 'last_name'                    # Rename_to allows you to rename the column                                                      
+  
+  <em>For decimal columns you can specify a few options:</em>
+  column "total",                                     # This is a default conversion setting.
+         :decimal,
+         :as => 'string'                              
+         
+  column "total",                                     # You can specify to convert your decimal to integer
+          :decimal,                                   # specifying scale will define how many decimal places to keep
+          :as => 'integer',                           # Example: :scale => 2 will convert 123.4567 to 12346 before saving
+          :scale => 2                                 
 
 More documentation can be found at {Mongify::Database::Column}
 
