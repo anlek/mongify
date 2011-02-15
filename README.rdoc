@@ -177,6 +177,8 @@ Table Options are as follow:
     end                                                     # Moving records around, renaming records, changing values in row based on
   end                                                       # some values! Checkout Mongify::Database::DataRow to learn more
 
+More documentation can be found at {Mongify::Database::Table}
+
 === Columns
 
 ==== Structure
@@ -194,7 +196,7 @@ Before we cover the options, you need to know what types of columns are supporte
   :key                  # Columns that are primary keys need to be marked as :key type
   :integer              # Will be converted to a integer
   :float                # Will be converted to a float
-  :decimal              # Will be converted to a BigDecimal
+  :decimal              # Will be converted to a string (due to MongoDB Ruby Drivers not supporting BigDecimal, read more in Mongify::Database::Column under Decimal Storage)
   :string               # Will be converted to a string
   :text                 # Will be converted to a string
   :datetime             # Will be converted to a Time format (DateTime is not currently supported in the Mongo ruby driver)
@@ -215,6 +217,8 @@ Before we cover the options, you need to know what types of columns are supporte
   column "surname", 
          :string, 
          :rename_to => 'last_name'                    # Rename_to allows you to rename the column                                                      
+
+More documentation can be found at {Mongify::Database::Column}
 
 == Notes
 

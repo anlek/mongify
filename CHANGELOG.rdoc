@@ -1,6 +1,7 @@
 == 0.1.3 / In Development
 * Made all exception stem from MongifyError and system always raises a child of MongifyError.
 * Brought in the progress bar into source
+* Changed behaviour on storing BigDecimal (now converts into String)
 == 0.1.2 / 14 Feb 2011
 * More Improvements to README and RDOC
 * Added ability to :force => true on a mongodb_connection, forcing it to drop database before processing.

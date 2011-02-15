@@ -19,7 +19,7 @@ module Mongify
     #   :key                  # Columns that are primary keys need to be marked as :key type
     #   :integer              # Will be converted to a integer
     #   :float                # Will be converted to a float
-    #   :decimal              # Will be converted to a BigDecimal
+    #   :decimal              # Will be converted to a string *(you can change default behaviour read below)
     #   :string               # Will be converted to a string
     #   :text                 # Will be converted to a string
     #   :datetime             # Will be converted to a Time format (DateTime is not currently supported in the Mongo ruby driver)
@@ -41,7 +41,22 @@ module Mongify
     #
     #   column "post_id", :integer, :auto_detect => true    # Will run auto detect and make this column a :references => 'posts', :on => 'post_id' for you
     #                                                       # More used when reading a sql database, NOT recommended for use during processing of translation
-    #   
+    # ==== Decimal Storage
+    # 
+    # Unfortunately MongoDB Ruby Drivers doesn't support BigDecimal, so to ensure all data is stored correctly (without losing information)
+    # I've chosen to store as String, however you can overwrite it and make your own custom conversion by doing a {Mongify::Database::Table#before_save}
+    # 
+    # Example:
+    #   table "invoice" do
+    #     column "name", :string
+    #     column "total", :decimal
+    #     before_save do |row|
+    #       row.total = (BigDecimal.new(row.total) * 1000).to_i
+    #     end
+    #   end
+    # 
+    # This would take 123.456789 in the total column and convert it to an interger of value 123456 (and in your app you can convert it back to a decimal)
+    # The reason you would want to do this, is to make this searchable via a query.
     class Column
       attr_reader :sql_name, :type, :options
       
@@ -166,7 +181,7 @@ module Mongify
           when :text      then value
           when :integer   then value.to_i rescue value ? 1 : 0
           when :float     then value.to_f
-          when :decimal   then ActiveRecord::ConnectionAdapters::Column.value_to_decimal(value)
+          when :decimal   then ActiveRecord::ConnectionAdapters::Column.value_to_decimal(value).to_s
           when :datetime  then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
           when :timestamp then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
           when :time      then ActiveRecord::ConnectionAdapters::Column.string_to_dummy_time(value)

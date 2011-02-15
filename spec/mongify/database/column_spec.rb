@@ -213,13 +213,13 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('price', :decimal)
       end
       it "should convert numbers to decimal" do
-        @column.send(:type_cast, 101.43).should == BigDecimal.new("101.43")
+        @column.send(:type_cast, 101.43).should == "101.43"
       end
       it "should convert integers to decimal" do
-        @column.send(:type_cast, 101).should == BigDecimal.new("101.0")
+        @column.send(:type_cast, 101).should == "101.0"
       end
       it "should convert strings to 0.0" do
-        @column.send(:type_cast, 'zuza').should == BigDecimal.new("0")
+        @column.send(:type_cast, 'zuza').should == "0.0"
       end
     end
     context :timestamp do
