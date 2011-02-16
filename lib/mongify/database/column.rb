@@ -234,10 +234,10 @@ module Mongify
           when :text      then value
           when :integer   then value.to_i
           when :float     then value.to_f
-          when :decimal   
+          when :decimal
             value = ActiveRecord::ConnectionAdapters::Column.value_to_decimal(value)
             if as_integer?
-              (value * (10 ** self.scale)).round
+              (value * (10 ** self.scale)).round.to_i
             else     
               value.to_s
             end

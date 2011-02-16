@@ -250,6 +250,9 @@ describe Mongify::Database::Column do
       it "should convert strings to 0.0 (string)" do
         @column.send(:type_cast, 'zuza').should == "0.0"
       end
+      it "should return a string value" do
+        @column.send(:type_cast, 101.43).should be_a_kind_of String
+      end
       
       context "as integer" do
         before(:each) do
@@ -269,6 +272,10 @@ describe Mongify::Database::Column do
         it "should round correctly to specified scale" do
           @column.scale = 4
           @column.send(:type_cast, @value).should == 1011235
+        end
+        it "should return an integer value" do
+          @column.scale = 3
+          @column.send(:type_cast, @value).should be_an_integer
         end
       end
     end
