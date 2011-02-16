@@ -30,8 +30,8 @@ module Mongify
           $stderr.puts "Mongify Error: #{error}"
           report_error
         rescue Exception => error
-          $stderr.puts "Error: #{error}"
           report_error
+          raise error
         end
         return @status
       end
