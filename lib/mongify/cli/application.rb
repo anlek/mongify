@@ -27,7 +27,7 @@ module Mongify
           cmd = @options.parse
           cmd.execute(self)
         rescue MongifyError => error
-          $stderr.puts "Mongify Error: #{error}"
+          $stderr.puts "Error: #{error}"
           report_error
         rescue Exception => error
           report_error

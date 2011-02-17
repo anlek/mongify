@@ -87,6 +87,8 @@ EOB
       # option parser, ensuring parse_options is only called once     
       def parse_options
         @parsed = true && @parser.parse!(@argv) unless @parsed
+      rescue OptionParser::InvalidOption => er
+        raise Mongify::InvalidOption, er.message, er.backtrace
       end
     end
   end

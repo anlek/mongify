@@ -28,4 +28,7 @@ module Mongify
 
   # Raised when application has no root folder set
   class RootMissing < MongifyError; end
+  
+  # Raised when an invalid option is passed via CLI
+  class InvalidOption < MongifyError; end
 end
