@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency('mongo', ">= 1.1.5")
   s.add_dependency('bson_ext', ">= 1.1.5")
   s.add_dependency('net-ssh', ">= 2.0")
+  s.add_dependency('highline', '>= 1.6.1')
 
   s.add_development_dependency('rspec', '>= 2.0')
   s.add_development_dependency('rcov', '>= 0.9.9')
