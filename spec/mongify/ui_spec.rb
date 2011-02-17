@@ -58,6 +58,12 @@ describe Mongify::UI do
     @out.string.should == "WARNING: hello\n"
   end
   
+  context "terminal_helper" do
+    it "should return a HighLine class" do
+      @ui.terminal_helper.should be_a_kind_of HighLine
+    end
+  end
+  
   context "abort" do
     it "should abort program execution" do
       Kernel.should_receive(:abort)

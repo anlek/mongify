@@ -3,6 +3,7 @@
 #
 require 'active_support/core_ext'
 require 'active_record'
+require 'highline'
 
 require 'mongify/progressbar'
 require 'mongify/ui'

@@ -49,6 +49,10 @@ module Mongify
       def out_stream
         Configuration.out_stream
       end
+      
+      def terminal_helper
+        @terminal_helper ||= HighLine.new
+      end
     end
   end
 end
