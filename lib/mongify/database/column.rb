@@ -57,8 +57,8 @@ module Mongify
     # I've chosen to store as String, however you can overwrite this functionality in one of two ways:
     # <em>The reason you would want to do this, is to make this searchable via a query.</em>
     # 
-    # <b>1) You can specify :as => integer, :scale => 2</b>
-    #   column "total", :decimal, :as => :integer, :scale => 2
+    # <b>1) You can specify :as => 'integer', :scale => 2</b>
+    #   column "total", :decimal, :as => 'integer', :scale => 2
     # 
     #   #It would take a value of 123.456 and store it as an integer of value 12346
     # 
