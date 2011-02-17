@@ -116,9 +116,23 @@ describe Mongify::Database::NoSqlConnection do
       end
     end
     
+    it "should create index for pre_mongified_id" do
+      @collection.should_receive(:create_index).with([["pre_mongified_id", Mongo::ASCENDING]]).and_return(true)
+      @mongodb_connection.create_pre_mongified_id_index('users')
+    end
+    
     context "remove_pre_mongified_ids" do
+      before(:each) do
+        @collection.stub(:index_information).and_return('pre_mongified_id_1' => 'something')
+      end
       it "should call update with unset" do
         @collection.should_receive(:update).with({},{'$unset' => {'pre_mongified_id' => 1}}, {:multi=>true})
+        @collection.stub(:drop_index)
+        @mongodb_connection.remove_pre_mongified_ids('users')
+      end
+      it "should drop the index" do
+        @collection.should_receive(:drop_index).with('pre_mongified_id_1')
+        @collection.stub(:update)
         @mongodb_connection.remove_pre_mongified_ids('users')
       end
     end

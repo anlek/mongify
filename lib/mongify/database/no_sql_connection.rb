@@ -27,6 +27,7 @@ module Mongify
     class NoSqlConnection < Mongify::Database::BaseConnection
       include Mongo
       
+      
       #Required fields for a no sql connection
       REQUIRED_FIELDS = %w{host database}  
       
@@ -114,10 +115,24 @@ module Mongify
       
       # Removes pre_mongified_id from all records in a given collection
       def remove_pre_mongified_ids(collection_name)
+        drop_mongified_index(collection_name)
         db[collection_name].update({}, { '$unset' => { 'pre_mongified_id' => 1} }, :multi => true)
       end
       
+      # Removes pre_mongified_id from collection
+      # @param [String] collection_name name of collection to remove the index from
+      # @return True if successful
+      # @raise MongoDBError if index isn't found
+      def drop_mongified_index(collection_name)
+        db[collection_name].drop_index('pre_mongified_id_1') if db[collection_name].index_information.keys.include?("pre_mongified_id_1")
+      end
+      
+      def create_pre_mongified_id_index(collection_name)
+        db[collection_name].create_index([['pre_mongified_id', Mongo::ASCENDING]])
+      end
+      
       # Asks user permission to drop the database
+      # @return true or false depending on user's response
       def ask_to_drop_database
         if UI.ask("Are you sure you want to drop #{database} database?")
           drop_database

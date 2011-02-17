@@ -3,6 +3,8 @@
 * Brought in the progress bar into source
 * Changed behaviour on storing BigDecimal (now converts into String)
 * Added ability to convert BigDecimal to integer via an :at => 'integer, :scale => 2 settings.
+* Improved Progress Bar display
+* Added an index on pre_mongified_id to speedup lookup times (Making it 42 times faster on import of embedded tables)
 == 0.1.2 / 14 Feb 2011
 * More Improvements to README and RDOC
 * Added ability to :force => true on a mongodb_connection, forcing it to drop database before processing.

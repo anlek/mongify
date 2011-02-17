@@ -23,6 +23,10 @@ describe Mongify::Translation::Process do
       @translation.stub(:copy_data)
       @translation.stub(:copy_embedded_tables)
     end
+    it "should setup index on pre_mongify_id" do
+      @translation.should_receive(:setup_db_index)
+      @translation.process(@sql_connection, @no_sql_connection)
+    end
     it "should call copy_data" do
       @translation.should_receive(:copy_data)
       @translation.process(@sql_connection, @no_sql_connection)
@@ -39,6 +43,13 @@ describe Mongify::Translation::Process do
       @translation.should_receive(:remove_pre_mongified_ids)
       @translation.process(@sql_connection, @no_sql_connection)
     end
+    
+    it "should add pre_mongified_id index to database" do
+      tables = [stub(:name => 'users')]
+      @translation.stub(:copy_tables).and_return(tables)
+      @no_sql_connection.should_receive(:create_pre_mongified_id_index).with('users')
+      @translation.process(@sql_connection, @no_sql_connection)
+    end
   end
   
   it "should ask_to_drop_database if mongodb_connection is forced" do
@@ -46,7 +57,6 @@ describe Mongify::Translation::Process do
     @no_sql_connection.should_receive(:ask_to_drop_database).and_return(false)
     @translation.process(@sql_connection, @no_sql_connection)
   end
-  
   
   context "fetch_reference_ids" do
     it "should get correct information" do

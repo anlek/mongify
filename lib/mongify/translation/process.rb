@@ -5,7 +5,6 @@ module Mongify
     #
     module Process
       attr_accessor :sql_connection, :no_sql_connection
-      
       # Does the actual act of processing the translation.
       # Takes in boht a sql connection and a no sql connection
       def process(sql_connection, no_sql_connection)
@@ -19,6 +18,7 @@ module Mongify
         
         no_sql_connection.ask_to_drop_database if no_sql_connection.forced?
         
+        setup_db_index
         copy_data
         copy_embedded_tables
         update_reference_ids
@@ -30,6 +30,13 @@ module Mongify
       #######
       private
       #######
+      
+      # Setups up pre_mongifed_id as an index to speed up lookup performance
+      def setup_db_index
+        self.copy_tables.each do |t|
+          no_sql_connection.create_pre_mongified_id_index(t.name)
+        end
+      end
       
       # Does the straight copy (of tables)
       def copy_data
