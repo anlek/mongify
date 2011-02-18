@@ -163,8 +163,8 @@ describe Mongify::Translation::Process do
                           :sql_name => 'user_accounts')
         @translation.stub(:find).with('user_accounts').and_return([@ref_table])
         
-        @sql_connection.should_receive(:select_rows).with('comments').and_return([{'commentable_id' => 1, 'commentable_type' => 'UserAccount', 'data' => 'good'}])
-        @no_sql_connection.should_receive(:get_id_using_pre_mongified_id).with('user_accounts', 1).and_return(500)
+        @sql_connection.stub(:select_rows).with('comments').and_return([{'commentable_id' => 1, 'commentable_type' => 'UserAccount', 'data' => 'good'}])
+        @no_sql_connection.stub(:get_id_using_pre_mongified_id).with('user_accounts', 1).and_return(500)
       end
       context "embedded" do
         it "should work correctly" do
@@ -197,8 +197,25 @@ describe Mongify::Translation::Process do
                           :reference_columns => [])
 
           @translation.stub(:all_tables).and_return([@table])
-            
+          @no_sql_connection.should_receive(:get_id_using_pre_mongified_id).with('user_accounts', 1).and_return(500)
           @no_sql_connection.should_receive(:insert_into).with('comments', {'data' => 123, 'commentable_type' => 'UserAccount', 'commentable_id' => 500})
+          @translation.send(:copy_polymorphic_tables)
+        end
+        it "should copy even if there is no polymorphic data" do
+          @table = mock(:translate => {'data' => 123, 'commentable_type' => nil, 'commentable_id' => nil},
+                          :name => 'comments', 
+                          :embedded? => false,
+                          :polymorphic_as => 'commentable',
+                          :polymorphic? => true, 
+                          :ignored? => false,
+                          :embedded_as_object? => false,
+                          :sql_name => 'comments',
+                          :reference_columns => [])
+
+          @translation.stub(:all_tables).and_return([@table])
+          @sql_connection.should_receive(:select_rows).with('comments').and_return([{'commentable_id' => nil, 'commentable_type' => nil, 'data' => 'good'}])
+          @no_sql_connection.should_receive(:insert_into).with('comments', {'data' => 123, 'commentable_type' => nil, 'commentable_id' => nil})
+          @no_sql_connection.should_receive(:get_id_using_pre_mongified_id).never
           @translation.send(:copy_polymorphic_tables)
         end
       end
