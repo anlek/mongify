@@ -10,6 +10,7 @@
 #
 
 module Mongify
+  # Progress bar used to display results
   class ProgressBar
     VERSION = "0.9"
 
@@ -30,12 +31,16 @@ module Mongify
       clear
       show
     end
-    attr_accessor :title
+    attr_reader   :title
     attr_reader   :current
     attr_reader   :total
     attr_accessor :start_time
 
+    #######
     private
+    #######
+
+    # Formatting for the actual bar
     def fmt_bar
       bar_width = do_percentage * @terminal_width / 100
       sprintf("|%s%s|", 
@@ -43,14 +48,17 @@ module Mongify
               " " *  (@terminal_width - bar_width))
     end
 
+    # Formatting for the percentage
     def fmt_percentage
       do_percentage
     end
 
+    # Formatting for the stat (time left or time taken to complete)
     def fmt_stat
       if @finished_p then elapsed else eta end
     end
 
+    # Formatting for file transfer
     def fmt_stat_for_file_transfer
       if @finished_p then 
         sprintf("%s %s %s", bytes, transfer_rate, elapsed)
@@ -59,14 +67,17 @@ module Mongify
       end
     end
 
+    # Formatting for title
     def fmt_title
       @title[0,(@title_width - 1)] + ":"
     end
     
+    # Formatting for count (x/y)
     def fmt_count
-      "(#{@current}/#{@total})"
+      sprintf('%15s', "(#{@current}/#{@total})")
     end
 
+    # Converts bytes to kb, mb or gb
     def convert_bytes (bytes)
       if bytes < 1024
         sprintf("%6dB", bytes)
@@ -79,11 +90,14 @@ module Mongify
       end
     end
 
+    # Returns the transfer rate
+    # works only with file transfer
     def transfer_rate
       bytes_per_second = @current.to_f / (Time.now - @start_time)
       sprintf("%s/s", convert_bytes(bytes_per_second))
     end
 
+    # Gets current byte count
     def bytes
       convert_bytes(@current)
     end
