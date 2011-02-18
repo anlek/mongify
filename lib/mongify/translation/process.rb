@@ -40,21 +40,23 @@ module Mongify
       
       # Does the straight copy (of tables)
       def copy_data
-        ActiveSupport::Notifications.instrument('mongify.copy_data.start', :size => self.copy_tables.count)
         self.copy_tables.each do |t|
-          sql_connection.select_rows(t.sql_name).each do |row|
+          rows = sql_connection.select_rows(t.sql_name)
+          Mongify::Status.publish('copy_data', :size => rows.count, :name => "Copying #{t.name}", :action => 'add')
+          rows.each do |row|
             no_sql_connection.insert_into(t.name, t.translate(row))
+            Mongify::Status.publish('copy_data')
           end
-          ActiveSupport::Notifications.instrument('mongify.copy_data.inc')
+          Mongify::Status.publish('copy_data', :action => 'finish')
         end
-        ActiveSupport::Notifications.instrument('mongify.copy_data.finish')
       end
       
       # Does a copy of the embedded tables
       def copy_embedded_tables
-        ActiveSupport::Notifications.instrument('mongify.copy_embedded_tables.start', :size => self.embed_tables.count)
         self.embed_tables.each do |t|
-          sql_connection.select_rows(t.sql_name).each do |row|
+          rows = sql_connection.select_rows(t.sql_name)
+          Mongify::Status.publish('copy_embedded', :size => rows.count, :name => "Embedding #{t.name}", :action => 'add')
+          rows.each do |row|
             target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => row[t.embed_on]})
             next unless target_row.present?
             row = t.translate(row)
@@ -63,18 +65,19 @@ module Mongify
             row.delete('pre_mongified_id')
             save_function_call = t.embedded_as_object? ? '$set' : '$addToSet'
             no_sql_connection.update(t.embed_in, target_row['_id'], {save_function_call => {t.name => row}})
+            Mongify::Status.publish('copy_embedded')
           end
-          ActiveSupport::Notifications.instrument('mongify.copy_embedded_tables.inc')
+          Mongify::Status.publish('copy_embedded', :action => 'finish')
         end
-        ActiveSupport::Notifications.instrument('mongify.copy_embedded_tables.finish')
       end
       
       # Moves over polymorphic data
       def copy_polymorphic_tables
-        ActiveSupport::Notifications.instrument('mongify.copy_polymorphic_tables.start', :size => self.polymorphic_tables.count)
         self.polymorphic_tables.each do |t|
           polymorphic_id_col, polymorphic_type_col = "#{t.polymorphic_as}_id", "#{t.polymorphic_as}_type"
-          sql_connection.select_rows(t.sql_name).each do |row|
+          rows = sql_connection.select_rows(t.sql_name)
+          Mongify::Status.publish('copy_polymorphic', :size => rows.count, :name => "Polymorphicizing #{t.name}", :action => 'add')
+          rows.each do |row|
             table_name = row[polymorphic_type_col].tableize            
             new_id = no_sql_connection.get_id_using_pre_mongified_id(table_name, row[polymorphic_id_col])
             if new_id
@@ -93,24 +96,25 @@ module Mongify
             else
               UI.warn "#{table_name} table not found on #{t.sql_name} polymorphic import"
             end
+            Mongify::Status.publish('copy_polymorphic')
           end
-          ActiveSupport::Notifications.instrument('mongify.copy_polymorphic_tables.inc')
+          Mongify::Status.publish('copy_polymorphic', :action => 'finish')
         end
-        ActiveSupport::Notifications.instrument('mongify.copy_polymorphic_tables.finish')
       end
       
       # Updates the reference ids in the no sql database
       def update_reference_ids
-        ActiveSupport::Notifications.instrument('mongify.update_reference_ids.start', :size => self.tables.size)
-        self.tables.each do |t|
-          no_sql_connection.select_rows(t.name).each do |row|
+        self.copy_tables.each do |t|
+          rows = no_sql_connection.select_rows(t.name)
+          Mongify::Status.publish('update_references', :size => rows.count, :name => "Updating References #{t.name}", :action => 'add')
+          rows.each do |row|
             id = row["_id"]
             attributes = fetch_reference_ids(t, row)
             no_sql_connection.update(t.name, id, {"$set" => attributes}) unless attributes.blank?
+            Mongify::Status.publish('update_references')
           end
-          ActiveSupport::Notifications.instrument('mongify.update_reference_ids.inc')
+          Mongify::Status.publish('update_references', :action => 'finish')
         end
-        ActiveSupport::Notifications.instrument('mongify.update_reference_ids.finish')
       end
       
       # Fetches the new _id from a collection
@@ -125,13 +129,12 @@ module Mongify
       
       # Removes 'pre_mongiifed_id's from all collection
       def remove_pre_mongified_ids
-        ActiveSupport::Notifications.instrument('mongify.remove_pre_mongified_ids.start', :size => self.tables.size)
-        p = ProgressBar.new("Removed pre_mongified_ids", self.copy_tables.count)
         self.copy_tables.each do |t| 
+          Mongify::Status.publish('remove_pre_mongified', :size => 1, :name => "Removing pre_mongified_id #{t.name}", :action => 'add')
           no_sql_connection.remove_pre_mongified_ids(t.name)
-          ActiveSupport::Notifications.instrument('mongify.remove_pre_mongified_ids.inc')
+          Mongify::Status.publish('remove_pre_mongified', :action => 'finish')
+          # Mongify::Status.publish('remove_pre_mongified')
         end
-        ActiveSupport::Notifications.instrument('mongify.remove_pre_mongified_ids.finish')
       end
       
     end

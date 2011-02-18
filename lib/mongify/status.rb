@@ -1,24 +1,56 @@
 module Mongify
   # This class is responsible for generating progress bars with status of mongify
   class Status
+    # List of known notifications
+    NOTIFICATIONS = ['copy_data', 'copy_embedded', 'copy_polymorphic', 'update_references', 'remove_pre_mongified']
+    
     class << self
+      
+      def bars
+        @bars ||= {}
+      end
+      def add_bar(name, bar)
+        self.bars[name] = bar
+      end
+      
       # Registers the ActiveSupport::Notifications for Mongify
       def register
-        @bars = {}
         ActiveSupport::Notifications.subscribe(/^mongify\./) do |*args|
           event = ActiveSupport::Notifications::Event.new(*args)
-          # puts event.name
-          mongify, name, action = event.name.split('.', 3)
-          case action
-          when 'start'
-            @bars[name] = ProgressBar.new(name.humanize, event.payload[:size] || 0)
-          when 'inc'
-            @bars[name].try(:inc)
-          when 'finish'
-            @bars[name].try(:finish)
+          
+          action_name = event.name.split('.', 2)[1]
+          
+          if Status::NOTIFICATIONS.include?(action_name)
+            case event.payload[:action]
+            when 'add'
+              self.add_bar(action_name, ProgressBar.new(event.payload[:name], event.payload[:size]))
+            when 'inc'
+              self.bars[action_name].try(:inc)
+            when 'finish'
+              self.bars[action_name].try(:finish)
+            else
+              UI.warn("Unknown Notification Action #{event.payload[:action]}")
+            end
+            #puts event.payload.inspect
           else
-            UI.warn("Unknown Notification Event #{event.name}")
+            UI.warn("Unknown Notification Event #{action_name}")
           end
+        end
+        
+        # Unregisters from {ActiveSupport::Notifications}
+        def unregister
+          ActiveSupport::Notifications.unsubscribe(/^mongify\./)
+        end
+        
+        # Publish an notification event
+        # This will publish the event as an mongify.[name]
+        # @param [String] name Name of the notification
+        # @param [Hash] payload to be sent with the notification
+        # @return [nil]
+        def publish(name, payload={})
+          payload.reverse_merge!(:name => name.humanize, :action => 'inc')
+          ActiveSupport::Notifications.instrument("mongify.#{name}", payload)
+          nil
         end
       end
     end
