@@ -24,13 +24,13 @@ module Mongify
       @finished_p = false
       @start_time = Time.now
       @previous_time = @start_time
-      @title_width = 30
-      @format = "%-#{@title_width}s %3d%% %s %s"
-      @format_arguments = [:title, :percentage, :bar, :stat]
+      @title_width = 35
+      @format = "%-#{@title_width}s %s %3d%% %s %s"
+      @format_arguments = [:title, :count, :percentage, :bar, :stat]
       clear
       show
     end
-    attr_reader   :title
+    attr_accessor :title
     attr_reader   :current
     attr_reader   :total
     attr_accessor :start_time
@@ -61,6 +61,10 @@ module Mongify
 
     def fmt_title
       @title[0,(@title_width - 1)] + ":"
+    end
+    
+    def fmt_count
+      "(#{@current}/#{@total})"
     end
 
     def convert_bytes (bytes)
