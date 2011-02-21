@@ -127,6 +127,8 @@ module Mongify
         db[collection_name].drop_index('pre_mongified_id_1') if db[collection_name].index_information.keys.include?("pre_mongified_id_1")
       end
       
+      # Creates a pre_mongified_id index to ensure
+      # speedy lookup for collections via the pre_mongified_id
       def create_pre_mongified_id_index(collection_name)
         db[collection_name].create_index([['pre_mongified_id', Mongo::ASCENDING]])
       end

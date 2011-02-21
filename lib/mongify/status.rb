@@ -5,10 +5,11 @@ module Mongify
     NOTIFICATIONS = ['copy_data', 'copy_embedded', 'copy_polymorphic', 'update_references', 'remove_pre_mongified']
     
     class << self
-      
+      #List of all the progress bars.
       def bars
         @bars ||= {}
       end
+      #Add a new bar to the list of progress bars
       def add_bar(name, bar)
         self.bars[name] = bar
       end

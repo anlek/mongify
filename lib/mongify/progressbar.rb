@@ -8,11 +8,16 @@
 # You can redistribute it and/or modify it under the terms
 # of Ruby's license.
 #
+# This has been modified by 
+#   Andrew Kalek
+#   Anlek Consulting
+#   http://anlek.com
 
 module Mongify
   # Progress bar used to display results
   class ProgressBar
-    VERSION = "0.9"
+    #Progress bar version
+    VERSION = "0.9.1"
 
     def initialize (title, total, out = STDERR)
       @title = title
@@ -101,7 +106,8 @@ module Mongify
     def bytes
       convert_bytes(@current)
     end
-
+    
+    # Gets formatting for time
     def format_time (t)
       t = t.to_i
       sec = t % 60
@@ -120,16 +126,21 @@ module Mongify
         sprintf("ETA:  %s", format_time(eta))
       end
     end
-
+    
+    # Returns elapsed time
     def elapsed
       elapsed = Time.now - @start_time
       sprintf("Time: %s", format_time(elapsed))
     end
   
+    # Returns end of line
+    # @return [String] "\n" or "\r"
     def eol
       if @finished_p then "\n" else "\r" end
     end
-
+    
+    # Calculates percentage
+    # @return [Number] the percentage
     def do_percentage
       if @total.zero?
         100
@@ -137,11 +148,13 @@ module Mongify
         @current  * 100 / @total
       end
     end
-
+    
+    # Gets the width of the terminal window
     def get_width
       UI.terminal_helper.output_cols
     end
 
+    # Draws the bar
     def show
       arguments = @format_arguments.map {|method| 
         method = sprintf("fmt_%s", method)
@@ -163,6 +176,7 @@ module Mongify
       @previous_time = Time.now
     end
 
+    # Checks if it's needed, shows if it's so
     def show_if_needed
       if @total.zero?
         cur_percentage = 100
@@ -180,39 +194,48 @@ module Mongify
     end
 
     public
+    # Clear's line
     def clear
       @out.print "\r"
       @out.print(" " * (get_width - 1))
       @out.print "\r"
     end
 
+    # Marks finished
     def finish
       @current = @total
       @finished_p = true
       show
     end
-
+    
+    # Returns if the bar is finished
     def finished?
       @finished_p
     end
 
+    # Sets bar to file trasfer mode
     def file_transfer_mode
       @format_arguments = [:title, :percentage, :bar, :stat_for_file_transfer]
     end
 
+    # Allows format to be re/defined
     def format= (format)
       @format = format
     end
 
+    # Allows to change the arguments of items that are shown
     def format_arguments= (arguments)
       @format_arguments = arguments
     end
 
+    # halts drawing of bar
     def halt
       @finished_p = true
       show
     end
 
+    # Incremets bar
+    # @return [Integer] current bar frame
     def inc (step = 1)
       @current += step
       @current = @total if @current > @total
@@ -220,6 +243,8 @@ module Mongify
       @previous = @current
     end
 
+    # Allows you to set bar frame
+    # @return [Integer] current bar frame
     def set (count)
       if count < 0 || count > @total
         raise "invalid count: #{count} (total: #{@total})"
@@ -229,12 +254,15 @@ module Mongify
       @previous = @current
     end
 
+    # Returns string representation of this object
     def inspect
       "#<ProgressBar:#{@current}/#{@total}>"
     end
   end
 
+  # Same as progress bar but this counts the progress backwards from 100% to 0
   class ReversedProgressBar < ProgressBar
+    # Calculates the percentage
     def do_percentage
       100 - super
     end
