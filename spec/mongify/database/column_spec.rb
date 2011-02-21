@@ -189,6 +189,10 @@ describe Mongify::Database::Column do
       @column = Mongify::Database::Column.new('id', :key)
       @column.translate(123123).should == {"pre_mongified_id" => 123123}
     end
+    it "should return an integer for pre_mongified_id" do
+      @column = Mongify::Database::Column.new('id', :key)
+      @column.translate('123123').should == {"pre_mongified_id" => 123123}
+    end
   end
   context :type_cast do
     it "should return value if unknown type" do
