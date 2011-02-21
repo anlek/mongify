@@ -24,7 +24,7 @@ module Mongify
         hash = {}
         instance_variables.each do |variable|
           value = self.instance_variable_get variable
-          hash[variable.gsub('@','').to_sym] = value unless value.nil?
+          hash[variable.to_s.gsub('@','').to_sym] = value unless value.nil?
         end
         hash
       end

@@ -6,11 +6,13 @@ describe Mongify::Database::BaseConnection do
   end
   it "should set any allowed variable name that's passed" do
     @base_connection = Mongify::Database::BaseConnection.new(:host => 'blue', :adapter => 'good')
-    @base_connection.instance_variables.should =~ ['@host', '@adapter']
+    @base_connection.host.should == 'blue'
+    @base_connection.adapter.should == 'good'
+    # @base_connection.instance_variables.should =~ ['@host', '@adapter']
   end
   it "should not set unknown variables on init" do
     @base_connection = Mongify::Database::BaseConnection.new(:apple => 'blue')
-    @base_connection.instance_variables.should == []
+    @base_connection.host.should be_nil
   end
 
   context "validation" do
