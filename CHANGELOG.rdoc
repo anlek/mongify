@@ -6,6 +6,7 @@
 * Improved Progress Bar display, now it gives you a better feel for what's going on.
 * Added an index on pre_mongified_id to speedup lookup times (Making it 42 times faster on import of embedded tables)
 * Fixed bug in importing of polymorphic tables where associations are nil 
+* Fixed bug where pre_mongified_id would be a string and not an integer (causing no updates of ref_ids)
 == 0.1.2 / 14 Feb 2011
 * More Improvements to README and RDOC
 * Added ability to :force => true on a mongodb_connection, forcing it to drop database before processing.
