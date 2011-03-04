@@ -1,5 +1,6 @@
-== 0.1.4 / In Development
+== 0.1.4 / 04 Mar 2011
 * Changed gemspec to point to new homepage at 'http://mongify.com'
+* Small change to attempt to fix issue in Ruby 1.9 (Mongify still doesn't work in 1.9, but making a step towards it)
 == 0.1.3 / 21 Feb 2011
 * Made all exception stem from MongifyError and system always raises a child of MongifyError.
 * Brought in the progress bar into source
