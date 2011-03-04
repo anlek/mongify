@@ -1,3 +1,5 @@
+== 0.1.4 / In Development
+* Changed gemspec to point to new homepage at 'http://mongify.com'
 == 0.1.3 / 21 Feb 2011
 * Made all exception stem from MongifyError and system always raises a child of MongifyError.
 * Brought in the progress bar into source

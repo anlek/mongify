@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Andrew Kalek"]
   s.email       = ["andrew.kalek@anlek.com"]
-  s.homepage    = "http://github.com/anlek/mongify"
-  s.summary     = %q{Translate your SQL data to MongoDB}
-  s.description = %q{Mongify allows you to map your sql data into a mongodb document database.}
+  s.homepage    = "http://mongify.com"
+  s.summary     = %q{Translate your SQL data to MongoDB with ease}
+  s.description = %q{Mongify allows you to map your sql data into a mongodb document database with a simple DSL.}
 
   s.default_executable = "mongify"
 
