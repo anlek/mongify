@@ -36,7 +36,16 @@ namespace :rcov do
   end
 end
 
+
+desc "Run rspec test"
+task :test do
+  Rake::Task["test:rspec"].invoke
+  Rake::Task["rcov:cucumber"].invoke
+end
 namespace :test do
+  RSpec::Core::RakeTask.new(:rspec)
+  Cucumber::Rake::Task.new(:cucumber)
+  
   namespace :mysql do
     desc "Setup a mysql database based on the spec/support/database.yml settings"
     task :setup do
@@ -70,4 +79,4 @@ namespace :test do
 end
 
 
-task :default => ['rcov:all']
+task :default => ['test']
