@@ -33,7 +33,7 @@ module Mongify
       def valid?
         #TODO: Improve this to create an errors array with detailed errors (or maybe just use activemodel)
         REQUIRED_FIELDS.each do |require_field|
-          return false unless instance_variables.include?("@#{require_field}") and
+          return false unless instance_variables.map(&:to_s).include?("@#{require_field}") and
                               !instance_variable_get("@#{require_field}").to_s.empty?
         end
         true
