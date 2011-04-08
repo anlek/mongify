@@ -11,8 +11,6 @@ Gem::Specification.new do |s|
   s.summary     = %q{Translate your SQL data to MongoDB with ease}
   s.description = %q{Mongify allows you to map your sql data into a mongodb document database with a simple DSL.}
 
-  s.default_executable = "mongify"
-
   s.add_dependency('activerecord', ">=3.0.3")
   s.add_dependency('activesupport', ">=3.0.3")
   s.add_dependency('mysql2')
@@ -34,7 +32,6 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
-
 
   s.extra_rdoc_files = [
     "CHANGELOG.rdoc",
