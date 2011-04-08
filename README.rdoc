@@ -232,14 +232,12 @@ More documentation can be found at {Mongify::Database::Column}
 
 == Notes
 
-I have currently only tested this in Ruby 1.8.7-p330
-
-More testing will be done once the basic functionality is done
+Mongify has been tested on Ruby 1.8.7-p330 and Ruby 1.9.2-p136
+If you have any issues, please feel free to report them here: {issue tracker}[https://github.com/anlek/mongify/issues]
 
 
 == TODO
 * Allow deeper embedding
-* Test in Ruby 1.9
 * Test in different databases
 
 == Known Issues

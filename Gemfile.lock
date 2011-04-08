@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    mongify (0.1.4)
+    mongify (0.1.5)
+      SystemTimer
       activerecord (>= 3.0.3)
       activesupport (>= 3.0.3)
       bson_ext (>= 1.1.5)
@@ -13,6 +14,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
+    SystemTimer (1.2.3)
     activemodel (3.0.6)
       activesupport (= 3.0.6)
       builder (~> 2.1.2)
