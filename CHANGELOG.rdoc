@@ -1,3 +1,5 @@
+== 0.1.5 / In Development
+* Removed Gem::Specification#default_executable= from gemspec because it's deprecated with no replacement
 == 0.1.4 / 04 Mar 2011
 * Changed gemspec to point to new homepage at 'http://mongify.com'
 * Small change to attempt to fix issue in Ruby 1.9 (Mongify still doesn't work in 1.9, but making a step towards it)
