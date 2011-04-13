@@ -28,7 +28,7 @@ Then /^the exit status indicates an error$/ do
 end
 
 Then /^it reports the error ['"](.*)['"]$/ do |string|
-  @last_stderr.chomp.should == string
+  @last_stderr.chomp.should =~ /#{string}/
 end
 
 
