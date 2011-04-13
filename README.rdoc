@@ -1,5 +1,7 @@
 = Mongify
 
+http://mongify.com
+
 A data translator from sql database to mongoDB.
 
 Supports MySQL, PostgreSQL, SQLite, Oracle, SQLServer, and DB2 (Basically anything ActiveRecord has built-in).
@@ -247,12 +249,13 @@ If you have any issues, please feel free to report them here: {issue tracker}[ht
 
 === Requirements
 
-You just need bundler 1.0.8
+You just need bundler >= 1.0.8
 
   gem install bundler
   bundle install
   copy over spec/support/database.example to spec/support/database.yml and fill in required info
   rake test:mysql:setup
+  rake test
 
 == Special Thanks
 
@@ -260,9 +263,11 @@ Just want to thank my wife (Alessia) who not only puts up with me working on my 
 
 I would also like to thank Mon_Ouie on the Ruby IRC channel for helping me figure out how to setup the internal configuration file reading.
 
+Another thanks goes out to eimermusic for his feedback on the gem, and a few bugs that he helps flush out.
+
 == About
 
-This gem was made by Andrew Kalek
+This gem was made by Andrew Kalek from Anlek Consulting
 
 Reach me at:
 * Twitter: {@anlek}[http://www.twitter.com/anlek]
