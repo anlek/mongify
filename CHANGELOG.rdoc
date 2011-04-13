@@ -1,3 +1,7 @@
+== 0.1.6 / 13 Apr 2011
+* Removed no longer needed dependencies
+* Small tweak to the cucumber tests to ensure correct feedback
+* Small changes to the README
 == 0.1.5 / 08 Apr 2011
 * Removed Gem::Specification#default_executable= from gemspec because it's deprecated with no replacement
 * Updated code to work with Ruby 1.9 (thanks to eimermusic for pointing out a ruby 1.9 issue to me)
