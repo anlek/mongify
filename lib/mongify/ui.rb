@@ -53,7 +53,7 @@ module Mongify
       # Creates an instance of HighLine
       # which lets us figure out width of console
       # plus a whole lot more
-      # @reutrn [HighLine] instance 
+      # @return [HighLine] instance 
       def terminal_helper
         @terminal_helper ||= HighLine.new
       end
