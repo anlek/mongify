@@ -131,7 +131,7 @@ module Mongify
       # Returns a string representation of the column as it would show in a translation file.
       # Mainly used during print out of translation file
       def to_print
-        "column \"#{name}\", :#{type}".tap do |output|
+        "column \"#{sql_name}\", :#{type}".tap do |output|
           output_options = options.map{|k, v| (v == nil) ? nil : ":#{k} => \"#{v}\""}.compact
           output << ", #{output_options.join(', ')}" unless output_options.blank?
         end
