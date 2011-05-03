@@ -7,6 +7,9 @@ vendor/gems/gems
 vendor/gems/specifications
 vendor/gems/doc
 vendor/gems/environment.rb
+vendor/ruby
+#not sure if this is the right way of doing this
+vendor/cache
 
 coverage.data
 
@@ -18,3 +21,5 @@ spec/tmp/*
 .rvmrc
 
 spec/support/database.yml
+
+
