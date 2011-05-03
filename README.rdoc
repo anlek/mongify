@@ -24,7 +24,7 @@ In order for Mongify to do it's job, it needs to know where your databases are l
 Building a config file is as simple as this:
 
   sql_connection do
-    adaptor   "mysql"
+    adapter   "mysql"
     host      "localhost"
     username  "root"
     password  "passw0rd"

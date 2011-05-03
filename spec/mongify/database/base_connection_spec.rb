@@ -42,7 +42,7 @@ describe Mongify::Database::BaseConnection do
     @base_connection.respond_to?(:host).should be_true
   end
 
-  it "should force adaptor to a string" do
+  it "should force adapter to a string" do
     @base_connection.adapter :sqlite
     @base_connection.adapter.should == 'sqlite'
   end

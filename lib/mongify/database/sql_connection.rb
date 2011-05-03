@@ -7,7 +7,7 @@ module Mongify
     # Basic format should look something like this:
     # 
     #   sql_connection do
-    #     adaptor   "mysql"
+    #     adapter   "mysql"
     #     host      "localhost"
     #     username  "root"
     #     password  "passw0rd"
