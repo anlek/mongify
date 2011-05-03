@@ -1,3 +1,8 @@
+== 0.2.0 / In Development
+* Changed logic to NOT translate columns that are not in the translation file. If column is not listed, it's not moved over.
+* Fixed issue with case sensitivity of column names
+* Made sure that default value returned is a string (when translating)
+* Ensured to_s/to_print would output correct column name (even if it's renamed_to)
 == 0.1.6 / 13 Apr 2011
 * Removed no longer needed dependencies
 * Small tweak to the cucumber tests to ensure correct feedback
