@@ -1,4 +1,4 @@
-== 0.2.0 / In Development
+== 0.1.7 / 03 May 2011
 * Changed logic to NOT translate columns that are not in the translation file. If column is not listed, it's not moved over.
 * Fixed issue with case sensitivity of column names
 * Made sure that default value returned is a string (when translating)
