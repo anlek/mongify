@@ -103,7 +103,7 @@ module Mongify
       
       # Returns the column if found by the sql_name
       def find_column(name)
-        return nil unless (index = @column_lookup[name.to_s.downcase])
+        return nil unless (index = @column_lookup[name.to_s.downcase.to_sym])
         @columns[index]
       end
       
@@ -172,7 +172,7 @@ module Mongify
       
       # Indexes the column on the sql_name and adds column to the array
       def add_and_index_column(column)
-        @column_lookup[column.sql_name] = @columns.size
+        @column_lookup[column.sql_name.downcase.to_sym] = @columns.size
         @columns << column
         column
       end

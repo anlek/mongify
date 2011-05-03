@@ -68,6 +68,12 @@ describe Mongify::Database::Table do
       @table.find_column('dark').should == col
     end
     
+    it "should be able to find (case sensitive)" do
+      col = @table.column 'geoCode'
+      @table.column 'filler'
+      @table.find_column('geoCode').should == col
+    end
+    
     it "should be searchable with sql_name only" do
       col = @table.column 'surname', :string, :rename_to => 'last_name'
       @table.find_column('surname').should == col
