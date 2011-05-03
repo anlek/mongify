@@ -118,7 +118,7 @@ module Mongify
         new_row = {}
         row.each do |key, value|
           c = find_column(key)
-          new_row.merge!(c.present? ? c.translate(value) : {"#{key}" => value})
+          new_row.merge!(c.translate(value)) if c.present?
         end
         run_before_save(new_row)
       end

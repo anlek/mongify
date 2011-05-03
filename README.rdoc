@@ -190,8 +190,10 @@ Structure for defining a column is as follows:
 <em>Columns with no type given will be set to <tt>:string</tt></em>
 
 ==== Notes
-Leaving a column out when defining a table will result in a copy of the information (as a string).
-  
+
+<em>as of version 0.2:</em> 
+Leaving a column out when defining a table will result in the column being *ignored*
+
 ==== Types
 
 Before we cover the options, you need to know what types of columns are supported:

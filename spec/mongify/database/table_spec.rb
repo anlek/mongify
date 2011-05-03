@@ -190,6 +190,7 @@ describe Mongify::Database::Table do
   context "before_save" do
     before(:each) do
       @table = Mongify::Database::Table.new('users')
+      @table.column "permission"
       @table.before_save do |row|
         row.admin = row.delete('permission').to_i > 50
       end
@@ -249,8 +250,8 @@ describe Mongify::Database::Table do
       @table.translate({'first_name' => 'Timmy', 'last_name' => 'Zuza'})
     end
     
-    it "should return same values if column doesn't exist in the translation" do
-      @table.translate({'age' => 18}).should == {'age' => 18}
+    it "should not return any value if column doesn't exist in the translation" do
+      @table.translate({'age' => 18}).should == {}
     end
   end
 end
