@@ -100,6 +100,11 @@ describe Mongify::Database::Column do
       @column.translate('value').should == {'last_name' => 'value'}
     end
     
+    it "should rename this" do
+      @column = Mongify::Database::Column.new("geoCode_longitude", :string, :rename_to => 'longitude')
+      @column.translate(42.2222).should == {'longitude' => '42.2222'}
+    end
+    
     it "should be renamed" do
       @column.should be_renamed
     end
@@ -258,7 +263,7 @@ describe Mongify::Database::Column do
         @column.send(:type_cast, 101.43).should be_a_kind_of String
       end
       
-      context "as integer" do
+      context :integer do
         before(:each) do
           @column = Mongify::Database::Column.new('price', :decimal, :as => 'integer')
           @value = 101.123455
@@ -320,6 +325,12 @@ describe Mongify::Database::Column do
       it "should return a string" do
         @column = Mongify::Database::Column.new('body', :binary)
         @column.send(:type_cast, "Something of a body").should == "Something of a body"
+      end
+    end
+    context :string do
+      it "should return a string" do
+        @column = Mongify::Database::Column.new('body', :string)
+        @column.send(:type_cast, 42.222).should == "42.222"
       end
     end
     context :boolean do

@@ -121,10 +121,10 @@ module Mongify
       def translate(value)
         return {} if ignored?
         case type
-        when :key
-          {"pre_mongified_id" => value.to_i}
-        else
-          {"#{name}" => type_cast(value)}
+          when :key
+            {"pre_mongified_id" => value.to_i}
+          else
+            {"#{self.name}" => type_cast(value)}
         end
       end
       
@@ -230,8 +230,8 @@ module Mongify
       def type_cast(value)
         return nil if value.nil?
         case type
-          when :string    then value
-          when :text      then value
+          when :string    then value.to_s
+          when :text      then value.to_s
           when :integer   then value.to_i
           when :float     then value.to_f
           when :decimal
@@ -247,7 +247,7 @@ module Mongify
           when :date      then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
           when :binary    then ActiveRecord::ConnectionAdapters::Column.binary_to_string(value)
           when :boolean   then ActiveRecord::ConnectionAdapters::Column.value_to_boolean(value)
-          else value
+          else value.to_s
         end
       end
 
