@@ -136,6 +136,40 @@ describe Mongify::Translation::Process do
         @no_sql_connection.should_receive(:update).with("posts", 500, {"$set"=>{"notes"=>{'first_name' => 'bob'}}})
         @translation.send(:copy_embedded_tables)
       end
+      
+      context "parent modification" do
+        it "should work with embedded objects" do
+          @embed_table = mock(:translate => [{}, {'email' => 'true'}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true)
+          @translation.stub(:tables).and_return([@target_table, @embed_table])
+          @no_sql_connection.should_receive(:update).with("posts", 500, {"$set"=>{"preferences"=>{}, "email"=>"true"}})
+          @translation.send(:copy_embedded_tables)
+        end
+        it "should work with embedded arrays" do
+          @embed_table = mock(:translate => [{}, {'email' => 'true'}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false)
+          @translation.stub(:tables).and_return([@target_table, @embed_table])
+          @no_sql_connection.should_receive(:update).with("posts", 500, {"$addToSet"=>{"preferences"=>{}}, "$set" => {"email"=>"true"}})
+          @translation.send(:copy_embedded_tables)
+        end
+      end
+    end
+    
+    context "append_parent_object" do
+      before(:each) do
+        @parent = {"preference" => "email"}
+      end
+      it "should work when $set is already present" do
+        @obj = {"$set" => {"existing" => true}}
+        @translation.send(:append_parent_object, @obj, @parent).should == {"$set" => {"existing" => true, "preference" => "email"}}
+      end
+      it "should create $set if one is missing" do
+        @obj = {"$setAppend" => {"existing" => "true"}}
+        @translation.send(:append_parent_object, @obj, @parent).should == {"$set" => {"preference" => "email"}, "$setAppend" => {"existing" => "true"}}
+      end
+      it "should do nothing if no parent is given" do
+        @parent = {}
+        @obj = {"$setAppend" => {"existing" => "true"}}
+        @translation.send(:append_parent_object, @obj, @parent).should == {"$setAppend" => {"existing" => "true"}}
+      end
     end
     
     context "update_reference_ids" do

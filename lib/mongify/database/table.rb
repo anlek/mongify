@@ -47,6 +47,14 @@ module Mongify
     #       row.admin = row.delete('permission').to_i > 50        # This gives you the ability to do very powerful things like:
     #     end                                                     # Moving records around, renaming records, changing values in row based on
     #   end                                                       # some values! Checkout Mongify::Database::DataRow to learn more
+    # 
+    # 
+    #   table "preferences", :embed_in => "users" do               # As of version 0.2, embedded tables with a before_save will take an
+    #     before_save do |pref_row, user_row|                      # extra argument which is the parent row of the embedded table.
+    #       user_row.email_me = pref_row.delete('email_me')        # This gives you the ability to move things from an embedded table row
+    #     end                                                      # to the parent row.
+    #   end
+    # 
 
     class Table
       
@@ -114,13 +122,13 @@ module Mongify
       
       # Returns a translated row
       # Takes in a hash of values
-      def translate(row)
+      def translate(row, parent=nil)
         new_row = {}
         row.each do |key, value|
           c = find_column(key)
           new_row.merge!(c.translate(value)) if c.present?
         end
-        run_before_save(new_row)
+        run_before_save(new_row, parent)
       end
       
       
@@ -154,7 +162,12 @@ module Mongify
       
       # Used to save a block to be ran after the row has been processed but before it's saved to the no sql database
       def before_save(&block)
-        @before_save = block
+        @before_save_callback = block
+      end
+      
+      #Used to remove any before save filter
+      def remove_before_save_filter!
+        @before_save_callback = nil
       end
             
       #######
@@ -163,11 +176,15 @@ module Mongify
       
       # Runs the before save
       # Returns: a new modified row
-      def run_before_save(row)
-        return row unless @before_save
+      def run_before_save(row, parent=nil)
+        parentrow = Mongify::Database::DataRow.new(parent) unless parent.nil?
         datarow = Mongify::Database::DataRow.new(row)
-        @before_save.call(datarow)
-        datarow.to_hash
+        @before_save_callback.call(datarow, parentrow) unless @before_save_callback.nil?
+        if parentrow            
+          [datarow.to_hash, parentrow.to_hash]
+        else
+          datarow.to_hash
+        end
       end
       
       # Indexes the column on the sql_name and adds column to the array

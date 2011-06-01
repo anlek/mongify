@@ -3,6 +3,7 @@ module Mongify
     # Class that will be used to allow user to modify data for the given row
     class DataRow
       def initialize(hash={})
+        hash = {} if hash.nil?
         @hash = hash.dup.stringify_keys!
       end
       

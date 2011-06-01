@@ -195,6 +195,14 @@ describe Mongify::Database::Table do
         row.admin = row.delete('permission').to_i > 50
       end
     end
+    it "should be resetable" do
+      @table.before_save do |row|
+        row.test = "removed!"
+      end
+      @table.remove_before_save_filter!
+      result = @table.send(:run_before_save, {'test'=>true})
+      result.should == {'test' => true}
+    end
     context "run_before_save" do
       it "should create a new DataRow" do
         row = {'first_name' => 'Bob'}
@@ -207,6 +215,25 @@ describe Mongify::Database::Table do
       @table.translate({'permission' => 51}).should == {'admin' => true}
     end
   end
+  context "before_save sending parent" do
+    before(:each) do
+      @parent_table = Mongify::Database::Table.new('users')
+      @table = Mongify::Database::Table.new('preferences')
+      @table.column "preferences"
+      @table.before_save do |row, parent|
+        parent.preferences = row.delete('preferences')
+      end
+    end
+    it "should work" do
+      @table.translate({'preferences' => 'yes'}, {}).should == [{}, {'preferences' => 'yes'}]
+    end
+    it "should return blank hash if parent is unchanged" do
+      @table.remove_before_save_filter!
+      @table.translate({'preferences' => "true"}, {}).should == [{'preferences' => "true"}, {}]
+    end
+  end
+  
+  
   
   context "polymorphic" do
     before(:each) do

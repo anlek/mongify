@@ -59,12 +59,16 @@ module Mongify
           rows.each do |row|
             target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => row[t.embed_on]})
             next unless target_row.present?
-            row = t.translate(row)
+            # puts "target_row = #{target_row.inspect}", "---"
+            row, parent_row = t.translate(row, target_row)
+            parent_row ||= {}
+            parent_row.delete("_id")
+            #puts "parent_row = #{parent_row.inspect}", "---"
             row.delete(t.embed_on)
             row.merge!(fetch_reference_ids(t, row))
             row.delete('pre_mongified_id')
             save_function_call = t.embedded_as_object? ? '$set' : '$addToSet'
-            no_sql_connection.update(t.embed_in, target_row['_id'], {save_function_call => {t.name => row}})
+            no_sql_connection.update(t.embed_in, target_row['_id'], append_parent_object({save_function_call => {t.name => row}}, parent_row))
             Mongify::Status.publish('copy_embedded')
           end
           Mongify::Status.publish('copy_embedded', :action => 'finish')
@@ -125,7 +129,7 @@ module Mongify
       def fetch_reference_ids(table, row)
         attributes = {}
         table.reference_columns.each do |c|
-          new_id = no_sql_connection.get_id_using_pre_mongified_id(c.references.to_s, row[c.name])
+          new_id = no_sql_connection.get_id_using_pre_mongified_id(c.references.to_s, row[c.name.to_s])
           attributes.merge!(c.name => new_id) unless new_id.nil?
         end
         attributes
@@ -140,6 +144,14 @@ module Mongify
           # Mongify::Status.publish('remove_pre_mongified')
         end
       end
+      
+      # Used to append parent object values to an embedded update call
+      def append_parent_object(object, parent)
+        return object if parent.blank?
+        object["$set"] = object.has_key?('$set') ? object["$set"].merge(parent) : parent
+        object
+      end
+      
       
     end
   end
