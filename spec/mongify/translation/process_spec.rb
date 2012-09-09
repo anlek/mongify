@@ -150,6 +150,12 @@ describe Mongify::Translation::Process do
           @no_sql_connection.should_receive(:update).with("posts", 500, {"$addToSet"=>{"preferences"=>{}}, "$set" => {"email"=>"true"}})
           @translation.send(:copy_embedded_tables)
         end
+        it "should not set embedded attribute in parent" do
+          @embed_table = mock(:translate => [{'first_name' => 'joe'}, {'email' => 'true', 'comments' => [{'first_name' => 'bob'}]}], :name => 'comments', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false)
+          @translation.stub(:tables).and_return([@target_table, @embed_table])
+          @no_sql_connection.should_receive(:update).with("posts", 500, {"$addToSet" => {"comments" => {"first_name" => "joe"}}, "$set" => {"email" => "true"}})
+          @translation.send(:copy_embedded_tables)
+        end
       end
     end
     
