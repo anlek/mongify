@@ -191,7 +191,7 @@ describe Mongify::Database::Table do
     before(:each) do
       @table = Mongify::Database::Table.new('users')
       @table.column "permission"
-      @table.before_save do |row|
+      @table.before_save do |row, _|
         row.admin = row.delete('permission').to_i > 50
       end
     end
