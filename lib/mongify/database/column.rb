@@ -31,7 +31,7 @@ module Mongify
     # 
     # ==== Options
     # 
-    #   column "post_id", :integer, :referneces => :posts   # Referenced columns need to be marked as such, this will mean that they will be updated
+    #   column "post_id", :integer, :references => :posts   # Referenced columns need to be marked as such, this will mean that they will be updated
     #                                                       # with the new BSON::ObjectID.
     # <b>NOTE: if you rename the table 'posts', you should set the :references to the new name</b>
     # 
