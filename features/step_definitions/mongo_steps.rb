@@ -10,6 +10,6 @@ Then /^the (first|sencond|third) (.+)'s (.+) should be (first|second|thrid) (.+)
   DatabaseGenerator.mongo_connection.db[collection.pluralize].find.to_a.send(collection_place.to_sym)[field].should == DatabaseGenerator.mongo_connection.db[target.pluralize].find.to_a.send(target_place)['_id']
 end
 
-Then /^the (first|sencond|third) (.+) should have (\d+) (.+)$/ do |collection_place, collection, count, target|
-  DatabaseGenerator.mongo_connection.db[collection.pluralize].find.to_a.send(collection_place.to_sym)[target.pluralize].count == count
+Then /^the (.+) with (.+) "(.+)" should have (\d+) (.+)$/ do |collection, find_by, find_value, count, target|
+  DatabaseGenerator.mongo_connection.find_one(collection.pluralize, { find_by => find_value })[target.pluralize].count.should == count.to_i
 end

@@ -12,7 +12,8 @@ Feature: Processing a translation
   And there should be 3 posts in mongodb
   And the first post's user_id should be first user
   And there should be 0 comments in mongodb
-  And the first post should have 1 comment
+  And the post with title "First Post" should have 1 comment
+  And the post with title "Second Post" should have 2 comments
   
   Scenario: Processing while modifying embedding parent.
   Given a database exists
