@@ -66,7 +66,7 @@ describe Mongify::Database::Column do
         @col.should_receive('references=').never
         Mongify::Database::Column.auto_detect(@col)
       end
-      it "should not detect column referneces if column type is not :integer" do
+      it "should not detect column references if column type is not :integer" do
         @col.stub(:type).and_return(:string)
         @col.should_receive('references=').never
         Mongify::Database::Column.auto_detect(@col)

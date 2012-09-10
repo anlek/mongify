@@ -26,7 +26,7 @@ module Mongify
   #   table "comments", :embed_in => :posts, :on => :post_id do
   #     column "id", :key
   #     column "body", :text
-  #     column "post_id", :integer, :referneces => :posts
+  #     column "post_id", :integer, :references => :posts
   #     column "user_id", :integer, :references => :users
   #     column "created_at", :datetime
   #     column "updated_at", :datetime
