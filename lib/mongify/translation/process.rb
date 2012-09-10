@@ -63,6 +63,7 @@ module Mongify
             row, parent_row = t.translate(row, target_row)
             parent_row ||= {}
             parent_row.delete("_id")
+            parent_row.delete(t.name.to_s)
             #puts "parent_row = #{parent_row.inspect}", "---"
             row.delete(t.embed_on)
             row.merge!(fetch_reference_ids(t, row))
