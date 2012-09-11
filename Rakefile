@@ -16,7 +16,7 @@ task :clobber do
   rm "Gemfile.lock" if File.exist?("Gemfile.lock")
 end
 
-if RUBY_VERSION.to_f <= 1.8
+if RUBY_VERSION.to_f == 1.8
   namespace :rcov do
     Cucumber::Rake::Task.new(:cucumber) do |t|    
       t.rcov = true
@@ -41,7 +41,11 @@ end
 desc "Run rspec test"
 task :test do
   Rake::Task["test:rspec"].invoke
-  Rake::Task["rcov:cucumber"].invoke
+  if RUBY_VERSION.to_f < 1.9
+    Rake::Task["rcov:cucumber"].invoke 
+  else
+    Rake::Task["test:cucumber"].invoke 
+  end
 end
 namespace :test do
   RSpec::Core::RakeTask.new(:rspec)
