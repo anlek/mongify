@@ -1,7 +1,10 @@
-== 0.2.1 / 11 Sep 2012
+== 0.2.2 / 11 Sep 2012
 * Fix broken specs (Pranas Kiziela)
 * Fix translation process when embedding multiple objects (Pranas Kiziela)
 * Fix typos (Pranas Kiziela)
+* Rake file fixed to work in Ruby 1.8 and Ruby 1.9
+== 0.2.1 / 11 Sep 2012
+* This version was skipped (internal issues)
 == 0.2.0 / 01 Jun 2011
 * Added the ability to modify parent table when working with embedded tables
 == 0.1.7 / 03 May 2011
