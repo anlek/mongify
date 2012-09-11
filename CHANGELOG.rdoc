@@ -1,3 +1,7 @@
+== 0.2.1 / 11 Sep 2012
+* Fix broken specs (Pranas Kiziela)
+* Fix translation process when embedding multiple objects (Pranas Kiziela)
+* Fix typos (Pranas Kiziela)
 == 0.2.0 / 01 Jun 2011
 * Added the ability to modify parent table when working with embedded tables
 == 0.1.7 / 03 May 2011
