@@ -10,7 +10,7 @@ Feature: Processing a translation
   Then it succeeds
   And there should be 3 users in mongodb
   And there should be 3 posts in mongodb
-  And the first post's user_id should be first user
+  And the "First Post" author should be Timmy
   And there should be 0 comments in mongodb
   And the post with title "First Post" should have 1 comment
   And the post with title "Second Post" should have 2 comments
