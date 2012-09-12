@@ -142,7 +142,6 @@ module Mongify
           Mongify::Status.publish('remove_pre_mongified', :size => 1, :name => "Removing pre_mongified_id #{t.name}", :action => 'add')
           no_sql_connection.remove_pre_mongified_ids(t.name)
           Mongify::Status.publish('remove_pre_mongified', :action => 'finish')
-          # Mongify::Status.publish('remove_pre_mongified')
         end
       end
       
