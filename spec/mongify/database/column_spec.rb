@@ -218,9 +218,18 @@ describe Mongify::Database::Column do
       @column = Mongify::Database::Column.new('id', :key)
       @column.translate(123123).should == {"pre_mongified_id" => 123123}
     end
-    it "should return an integer for pre_mongified_id" do
+    it "should return an integer for pre_mongified_id (by default)" do
       @column = Mongify::Database::Column.new('id', :key)
-      @column.translate('123123').should == {"pre_mongified_id" => 123123}
+      result = @column.translate('123123')
+      result.should == {"pre_mongified_id" => 123123}
+      result['pre_mongified_id'].should be_a_kind_of Integer
+
+    end
+    it "should return a string for pre_mongified_id when :as => :string is provided" do
+      @column = Mongify::Database::Column.new('id', :key, :as => :string)
+      result = @column.translate('p123')
+      result.should == {"pre_mongified_id" => 'p123'}
+      result['pre_mongified_id'].should be_a_kind_of String
     end
   end
   context :type_cast do
