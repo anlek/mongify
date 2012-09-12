@@ -88,7 +88,7 @@ Creating a translation is pretty straight forward. It looks something like this:
   end
   
   table "preferences", :embed_in => :users, :as => :object do
-    column "id", :key
+    column "id", :key, :as => :string
     column "user_id", :integer, :references => "users"
     column "notify_by_email", :boolean
   end
@@ -203,7 +203,7 @@ Leaving a column out when defining a table will result in the column being *igno
 ==== Types
 
 Before we cover the options, you need to know what types of columns are supported:
-  :key                  # Columns that are primary keys need to be marked as :key type
+  :key                  # Columns that are primary keys need to be marked as :key type. You can provide an :as if your :key is not an integer column
   :integer              # Will be converted to a integer
   :float                # Will be converted to a float
   :decimal              # Will be converted to a string (due to MongoDB Ruby Drivers not supporting BigDecimal, read details in Mongify::Database::Column under Decimal Storage)
@@ -249,6 +249,7 @@ If you have any issues, please feel free to report them here: {issue tracker}[ht
 == TODO
 * Allow deeper embedding
 * Test in different databases
+* Give an ability to mark source DB columns as imported (allowing Mongify to run as a on going converter)
 
 == Known Issues
 * Can't do anything to an embedded table

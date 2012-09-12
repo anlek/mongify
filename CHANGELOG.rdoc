@@ -1,3 +1,10 @@
+== 0.3 / 12 Sep 2012
+* Added ability to work with :key columns that were not :integer values
+  * You can now specify :as value for a type :key column
+  * Tranlsation generator will prefill :as for :key columns
+* Updated README
+* Improved tests
+* Small refactoring
 == 0.2.2 / 11 Sep 2012
 * Fix broken specs (Pranas Kiziela)
 * Fix translation process when embedding multiple objects (Pranas Kiziela)

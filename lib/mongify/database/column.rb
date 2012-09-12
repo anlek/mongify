@@ -16,7 +16,7 @@ module Mongify
     # ==== Types
     # 
     # Types of columns are supported:
-    #   :key                  # Columns that are primary keys need to be marked as :key type
+    #   :key                  # Columns that are primary keys need to be marked as :key type. You can provide an :as if your :key is not an integer column
     #   :integer              # Will be converted to a integer
     #   :float                # Will be converted to a float
     #   :decimal              # Will be converted to a string *(you can change default behaviour read below)
