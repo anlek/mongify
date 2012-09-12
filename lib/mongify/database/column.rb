@@ -86,9 +86,10 @@ module Mongify
       def self.auto_detect(column)
         case column.sql_name.downcase
         when 'id'
-          column.type = :key if column.type == :integer
+          column.as = column.type
+          column.type = :key
         when /(.*)_id/
-          column.references = $1.to_s.pluralize unless column.referenced? || column.type != :integer
+          column.references = $1.to_s.pluralize unless column.referenced?
         end
       end
       
@@ -122,7 +123,7 @@ module Mongify
         return {} if ignored?
         case type
           when :key
-            {"pre_mongified_id" => value.to_i}
+            {"pre_mongified_id" => type_cast(value)}
           else
             {"#{self.name}" => type_cast(value)}
         end
@@ -132,7 +133,10 @@ module Mongify
       # Mainly used during print out of translation file
       def to_print
         "column \"#{sql_name}\", :#{type}".tap do |output|
-          output_options = options.map{|k, v| (v == nil) ? nil : ":#{k} => \"#{v}\""}.compact
+          output_options = options.map do |k, v| 
+            next if v.nil?
+            ":#{k} => #{v.is_a?(Symbol) ? ":#{v}" : %Q["#{v}"] }"
+          end.compact
           output << ", #{output_options.join(', ')}" unless output_options.blank?
         end
       end
@@ -197,17 +201,17 @@ module Mongify
       # Used when trying to figure out how to convert a decimal value
       # @return [String] passed option['as'] or defaults to 'string'
       def as
-        options['as'] ||= 'string'
+        options['as'] ||= :string
       end
       # Sets option['as'] to either 'string' or 'integer', defults to 'string' for unknown values
       # @param [String|Symbol] value, can be either 'string' or 'integer
       def as=(value)
-        value = value.to_s.downcase
-        options['as'] = ['string', 'integer'].include?(value) ? value : 'string'
+        value = value.to_s.downcase.to_sym
+        options['as'] = [:string, :integer].include?(value) ? value : :string
       end
       # Returns true if :as was passed as integer
       def as_integer?
-        self.as == 'integer'
+        self.as == :integer
       end
       
       # Get the scale option for decimal to integer conversion
@@ -230,6 +234,7 @@ module Mongify
       def type_cast(value)
         return nil if value.nil?
         case type
+          when :key       then options['as'] == :string ? value.to_s : value.to_i #If :as is provided, check if it's string, otherwise integer
           when :string    then value.to_s
           when :text      then value.to_s
           when :integer   then value.to_i

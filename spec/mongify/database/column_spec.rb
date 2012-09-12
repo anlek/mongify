@@ -41,17 +41,26 @@ describe Mongify::Database::Column do
     
     context "id column" do
       before(:each) do
-        @col = mock(:sql_name => 'id', :type => :integer)
+        @col = mock(:sql_name => 'id')
       end
       it "should detect column with type :integer as a :key column" do
+        @col.stub(:type).and_return(:integer)
         @col.should_receive('type=').with(:key)
+        @col.should_receive('as=').with(:integer)
         Mongify::Database::Column.auto_detect(@col)
       end
-      it "should not detect column with type other then :integer as a :key column" do
-        @col.stub(:type).and_return(:string)
-        @col.should_receive('type=').never
-        Mongify::Database::Column.auto_detect(@col)
+      it "should detected as a :key even if type is :string" do
+        @column = Mongify::Database::Column.new('id', :string, :auto_detect => true)
+        @column.should be_key
+        @column.as.should == :string
       end
+
+      it "should detect as a :key with as == integer " do
+        @column = Mongify::Database::Column.new('id', :integer, :auto_detect => true)
+        @column.should be_key
+        @column.as.should == :integer
+      end
+
     end
     context "references" do
       before(:each) do
@@ -66,9 +75,9 @@ describe Mongify::Database::Column do
         @col.should_receive('references=').never
         Mongify::Database::Column.auto_detect(@col)
       end
-      it "should not detect column references if column type is not :integer" do
+      it "should detect column references even if column type is not :integer" do
         @col.stub(:type).and_return(:string)
-        @col.should_receive('references=').never
+        @col.should_receive('references=').once
         Mongify::Database::Column.auto_detect(@col)
       end
     end
@@ -130,17 +139,26 @@ describe Mongify::Database::Column do
   context "as" do
     subject {Mongify::Database::Column.new('total', :decimal)}
     it "should default to string" do
-      subject.as.should == 'string'
+      subject.as.should == :string
     end
     it "should allow it to be set to integer" do
-      subject.as = 'integer'
+      subject.as = :integer
       subject.should be_as_integer
     end
     it "should not allow other values" do
       subject.as = "zuza"
-      subject.as.should == 'string'
+      subject.as.should == :string
+    end
+    it "should not allow other values even as sym" do
+      subject.as = :zuza
+      subject.as.should == :string
+    end
+    it "should convert to symble" do
+      subject.as = 'integer'
+      subject.as.should == :integer
     end
   end
+
   context "scale" do
     subject {Mongify::Database::Column.new('total', :decimal, :as => 'integer')}
     it "should be defaulted to 0" do
@@ -169,6 +187,12 @@ describe Mongify::Database::Column do
     it "should detect references" do
       @column = Mongify::Database::Column.new('user_id', :integer, :auto_detect => true)
       @column.to_print.should == %Q[column "user_id", :integer, :references => "users"]
+    end
+
+    it "should print :key with :as" do
+      @column.as = :integer
+      @column.type = :key
+      @column.to_print.should == %q{column "first_name", :key, :as => :integer}
     end
   end
   
@@ -265,7 +289,7 @@ describe Mongify::Database::Column do
       
       context :integer do
         before(:each) do
-          @column = Mongify::Database::Column.new('price', :decimal, :as => 'integer')
+          @column = Mongify::Database::Column.new('price', :decimal, :as => :integer)
           @value = 101.123455
         end
         it "should be as_integer" do
