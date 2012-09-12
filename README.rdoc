@@ -249,7 +249,7 @@ If you have any issues, please feel free to report them here: {issue tracker}[ht
 == TODO
 * Allow deeper embedding
 * Test in different databases
-* Give an ability to mark source DB columns as imported (allowing Mongify to run as a on going converter)
+* Give an ability to mark source DB rows as imported (allowing Mongify to run as a on going converter)
 
 == Known Issues
 * Can't do anything to an embedded table
