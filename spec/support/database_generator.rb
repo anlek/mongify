@@ -45,7 +45,8 @@ class DatabaseGenerator
       t.timestamps
     end
     
-    conn.create_table(:preferences) do |t|
+    conn.create_table(:preferences, :id => false) do |t|
+      t.string :id
       t.integer :user_id
       t.boolean :notify_by_email
       t.timestamps
@@ -95,9 +96,9 @@ class DatabaseGenerator
         {:user_id => 1, :notify_by_email => true},
         {:user_id => 2, :notify_by_email => true},
         {:user_id => 3, :notify_by_email => false},
-      ].each do |v|
-          conn.insert("INSERT INTO preferences (user_id, notify_by_email, created_at, updated_at) 
-                      VALUES (#{v[:user_id]}, '#{v[:notify_by_email]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+      ].each_with_index do |v, idx|
+          conn.insert("INSERT INTO preferences (id, user_id, notify_by_email, created_at, updated_at) 
+                      VALUES ('p#{idx+1}',#{v[:user_id]}, '#{v[:notify_by_email]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
       end
       
       #Notes
