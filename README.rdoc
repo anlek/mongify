@@ -179,6 +179,12 @@ Table Options are as follow:
     end                                                     # Moving records around, renaming records, changing values in row based on
   end                                                       # some values! Checkout Mongify::Database::DataRow to learn more
 
+  table "users" do                                          # Here is how to set new ID using the old id
+    before_save do |row|                     
+      row._id = row.delete('pre_mongified_id')     
+    end                                                     
+  end
+
   table "preferences", :embed_in => "users" do              # As of version 0.2, embedded tables with a before_save will take an
     before_save do |pref_row, user_row|                     # extra argument which is the parent row of the embedded table.
       user_row.email_me = pref_row.delete('email_me')       # This gives you the ability to move things from an embedded table row
