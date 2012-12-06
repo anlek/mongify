@@ -130,7 +130,15 @@ module Mongify
       def fetch_reference_ids(table, row)
         attributes = {}
         table.reference_columns.each do |c|
-          new_id = no_sql_connection.get_id_using_pre_mongified_id(c.references.to_s, row[c.name.to_s])
+          new_id = nil
+          if row[c.name.to_s].is_a?(Array)
+            new_id = []
+            row[c.name.to_s].each do |old_id|
+              new_id << no_sql_connection.get_id_using_pre_mongified_id(c.references.to_s, old_id)
+            end
+          else
+            new_id = no_sql_connection.get_id_using_pre_mongified_id(c.references.to_s, row[c.name.to_s])
+          end
           attributes.merge!(c.name => new_id) unless new_id.nil?
         end
         attributes
