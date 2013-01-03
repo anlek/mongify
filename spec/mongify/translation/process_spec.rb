@@ -68,6 +68,17 @@ describe Mongify::Translation::Process do
       @no_sql_connection.should_receive(:get_id_using_pre_mongified_id).with('users', 1).once.and_return(500)
       @translation.send(:fetch_reference_ids, @table, {'user_id' => 1}).should == {'user_id' => 500}
     end
+
+    it "should get correct information for arrays" do
+      @no_sql_connection = mock()
+      @translation.stub(:no_sql_connection).and_return(@no_sql_connection)
+      @table = mock(:translate => {}, :name => 'users', :embedded? => false)
+      @column = mock(:name => 'user_ids', :references => 'users')
+      @table.stub(:reference_columns).and_return([@column])
+      @no_sql_connection.should_receive(:get_id_using_pre_mongified_id).with('users', 1).once.and_return(500)
+      @no_sql_connection.should_receive(:get_id_using_pre_mongified_id).with('users', 2).once.and_return(501)
+      @translation.send(:fetch_reference_ids, @table, {'user_ids' => [1, 2]}).should == {'user_ids' => [500, 501]}
+    end
   end
   
   context "processing actions" do
