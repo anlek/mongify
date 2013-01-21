@@ -19,7 +19,7 @@ Learn more about MongoDB at: http://www.mongodb.org
 
 === Creating a configuration file
 
-In order for Mongify to do it's job, it needs to know where your databases are located.
+In order for Mongify to do its job, it needs to know where your databases are located.
 
 Building a config file is as simple as this:
 
@@ -37,28 +37,28 @@ Building a config file is as simple as this:
   end
   
 You can check your configuration by running
-  mongify check -c datbase.config
+  mongify check -c database.config
   
 ==== Options
-Currently the only option that is support it is for the mongodb_connection.
+Currently the only supported option is for the mongodb_connection.
 
   mongodb_connection :force => true do                # Forcing a mongodb_connection will drop the database before processing
     # ...
   end
 
-<em>You can omit the mongodb connection till you're ready to process your translation</em>
+<em>You can omit the mongodb connection until you're ready to process your translation</em>
 
 
-=== Generating or create a translation
+=== Generating or creating a translation
 
 ==== Generating a translation
-If you're database is large and complex, it might be a bit too much to hand write the translation file, Mongify can help by running the translate command:
+If your database is large and complex, it might be a bit too much work to write the translation file by hand. Mongify's translate command can help with this:
   mongify translation -c database.config
 Or pipe it right into a file by running
   mongify translation -c database.config > translation_file.rb
 
 ==== Creating a translation
-Creating a translation is pretty straight forward. It looks something like this:
+Creating a translation is pretty straightforward. It looks something like this:
 
   table "users" do
     column "id", :key
@@ -130,7 +130,7 @@ Save the file as <tt>"translation_file.rb"</tt> and run the command:
 
 == Translation Layout and Options
 
-When dealing with a translation, there is a few options you can set
+When dealing with a translation, there are a few options you can set
 
 === Table
 
