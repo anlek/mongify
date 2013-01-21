@@ -1,3 +1,7 @@
+== 0.3.1 / 21 Jan 2013
+* README examples updated
+* README typos fixed.
+* Added ability to fetch IDs of fields that have an array of ids
 == 0.3 / 12 Sep 2012
 * Added ability to work with :key columns that were not :integer values
   * You can now specify :as value for a type :key column
