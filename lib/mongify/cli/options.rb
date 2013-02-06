@@ -11,9 +11,9 @@ module Mongify
         @parser = OptionParser.new
         #@command_class = ReekCommand
         set_options
-        
+        parse_options
       end
-      
+
       # Banner for help output
       def banner
         progname = @parser.program_name
@@ -33,7 +33,7 @@ See http://github.com/anlek/mongify for more details
 
 EOB
       end
-      
+
       # Sets the options for CLI
       # Also used for help output
       def set_options
@@ -45,48 +45,45 @@ EOB
         @parser.on("-v", "--version", "Show version") do
           @command_class = VersionCommand
         end
-        @parser.on('-c', '--config FILE', "Configuration File to use") do |file|
-          @config_file = file
-        end
       end
-      
+
       # Parses CLI passed attributes and figures out what command user is trying to run
       def parse
-        parse_options
-        
         if @command_class == HelpCommand
           HelpCommand.new(@parser)
         elsif @command_class == VersionCommand
           VersionCommand.new(@parser.program_name)
         else
-          raise ConfigurationFileNotFound, "You need to provide a configuration file location #{@config_file}" unless @config_file
+          raise ConfigurationFileNotFound, "You need to provide a configuration file location #{config_file}" if config_file.nil?
           #TODO: In the future, request sql_connection and nosql_connection from user input
-          config = Configuration.parse(@config_file)
-          
-          WorkerCommand.new(action, config, translation_file, @parser)
+          WorkerCommand.new(action, config_file, translation_file, @parser)
         end
       end
-      
+
       #######
       private
       #######
-      
+
       # Returns the translation_file or nil
       def translation_file(argv=@argv)
-        parse_options
-        return nil if argv.length < 2
-        argv[1]
+        argv[2] if argv.length >= 3 and File.exist?(argv[2]) and !File.directory?(argv[2])
       end
-      
+
       # Returns action (command) user is calling or ''
       def action(argv=@argv)
-        parse_options
         @argv.try(:[],0) || ''
       end
-       
-      # option parser, ensuring parse_options is only called once     
+
+      # Returns the config file
+      def config_file(argv=@argv)
+        p argv
+        p "#{argv.length >= 2} and #{File.exist?(argv[1])} and #{!File.directory?(argv[1])}" if argv.length > 1
+        @config_file ||= Configuration.parse(argv[1]) if argv.length >= 2 and File.exist?(argv[1]) and !File.directory?(argv[1])
+      end
+
+      # option parser, ensuring parse_options is only called once
       def parse_options
-        @parsed = true && @parser.parse!(@argv) unless @parsed
+        @parser.parse!(@argv)
       rescue OptionParser::InvalidOption => er
         raise Mongify::InvalidOption, er.message, er.backtrace
       end
