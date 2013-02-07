@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Mongify::CLI::Options do
-  before(:each) do
-    @config_file = File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), 'files', 'base_configuration.rb')
-  end
+  let(:config_file){File.join(Mongify.root, 'spec', 'files', 'base_configuration.rb')}
+  let(:translation_file){File.join(Mongify.root, 'spec', 'files', 'translation.rb')}
+
   it "should run help command when passed an -h" do
     @options = Mongify::CLI::Options.new(['-h'])
     @options.parse
@@ -31,12 +31,12 @@ describe Mongify::CLI::Options do
   # using check here just so that it doesn't have translate but still tests the args properly
   context "translation" do
     it "should return path" do
-      @options = Mongify::CLI::Options.new(['check', @config_file, 'some/folder/translation'])
-      @options.send(:translation_file).should == 'some/folder/translation'
+      @options = Mongify::CLI::Options.new(['check', config_file, translation_file])
+      @options.send(:translation_file).should == translation_file
     end
 
     it "should return nil if no path specified" do
-      @options = Mongify::CLI::Options.new(['check', @config_file])
+      @options = Mongify::CLI::Options.new(['check', config_file])
       @options.send(:translation_file).should be_nil
     end
   end
@@ -44,7 +44,7 @@ describe Mongify::CLI::Options do
 
   context "config_file" do
     it "should get config after action" do
-      @options = Mongify::CLI::Options.new(['check', @config_file])
+      @options = Mongify::CLI::Options.new(['check', config_file])
       @options.parse
       @options.instance_variable_get(:@config_file).should_not be_nil
     end
@@ -55,9 +55,9 @@ describe Mongify::CLI::Options do
     end
 
     it "should call Configuration.parse" do
-      Mongify::Configuration.should_receive(:parse)
-      @options = Mongify::CLI::Options.new(['check', @config_file])
-      @options.parse
+      Mongify::Configuration.should_receive(:parse).and_return(Mongify::Configuration.new)
+      @options = Mongify::CLI::Options.new(['check', config_file])
+      @options.parse 
     end
   end
 end

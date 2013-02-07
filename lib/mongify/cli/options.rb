@@ -54,7 +54,7 @@ EOB
         elsif @command_class == VersionCommand
           VersionCommand.new(@parser.program_name)
         else
-          raise ConfigurationFileNotFound, "You need to provide a configuration file location #{config_file}" if config_file.nil?
+          raise ConfigurationFileNotFound, "You need to provide a configuration file location '#{config_file}'" if config_file.nil?
           #TODO: In the future, request sql_connection and nosql_connection from user input
           WorkerCommand.new(action, config_file, translation_file, @parser)
         end
@@ -76,8 +76,6 @@ EOB
 
       # Returns the config file
       def config_file(argv=@argv)
-        p argv
-        p "#{argv.length >= 2} and #{File.exist?(argv[1])} and #{!File.directory?(argv[1])}" if argv.length > 1
         @config_file ||= Configuration.parse(argv[1]) if argv.length >= 2 and File.exist?(argv[1]) and !File.directory?(argv[1])
       end
 
