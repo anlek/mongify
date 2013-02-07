@@ -19,10 +19,10 @@ module Mongify
     #Progress bar version
     VERSION = "0.9.1"
 
-    def initialize (title, total, out = STDERR)
+    def initialize (title, total)
       @title = title
       @total = total
-      @out = out
+      @out = Mongify::Configuration.out_stream
       @terminal_width = 80
       @bar_mark = "o"
       @current = 0
@@ -156,6 +156,7 @@ module Mongify
 
     # Draws the bar
     def show
+      return unless @out
       arguments = @format_arguments.map {|method| 
         method = sprintf("fmt_%s", method)
         send(method)
@@ -196,6 +197,7 @@ module Mongify
     public
     # Clear's line
     def clear
+      return unless @out
       @out.print "\r"
       @out.print(" " * (get_width - 1))
       @out.print "\r"
