@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Mongify::CLI::Application do
   before(:each) do
     @application = Mongify::CLI::Application.new()
+    Mongify::Configuration.out_stream = nil
   end
 
   context "execute!" do

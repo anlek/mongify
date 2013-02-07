@@ -6,6 +6,7 @@ describe Mongify::Translation::Process do
     @sql_connection = DatabaseGenerator.sqlite_connection
     @no_sql_connection = DatabaseGenerator.mongo_connection
     @translation = Mongify::Translation.new
+    Mongify::Configuration.out_stream = nil
   end
   
   it "validates a sqlconnection" do
