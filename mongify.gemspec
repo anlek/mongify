@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.add_dependency('activesupport', ">=3.0.3")
   s.add_dependency('mysql2')
   s.add_dependency('mongo', ">= 1.1.5")
-  s.add_dependency('bson_ext', ">= 1.1.5")
+  s.add_dependency('bson_ext', ">= 1.1.5") unless RUBY_PLATFORM == 'java'
   s.add_dependency('highline', '>= 1.6.1')
 
   s.add_development_dependency('rspec', '>= 2.0')
