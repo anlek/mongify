@@ -30,7 +30,6 @@ module Mongify
       REQUIRED_FIELDS = %w{host adapter database}
       
       def initialize(options=nil)
-        @prefixed_db = false
         super(options)
       end
 
