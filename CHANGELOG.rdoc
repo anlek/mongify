@@ -1,4 +1,4 @@
-== 0.9 (Working Version)
+== 0.9 / 08 Feb 2013
 * Changed Mongify Syntax (thanks to tanema)
 * Improved error handling
 * Improved Test output
