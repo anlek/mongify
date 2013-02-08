@@ -1,3 +1,7 @@
+== 0.9 (Working Version)
+* Changed Mongify Syntax (thanks to tanema)
+* Improved error handling
+* Improved Test output
 == 0.3.1 / 21 Jan 2013
 * README examples updated
 * README typos fixed.
