@@ -7,13 +7,13 @@ describe Mongify::CLI::Options do
   it "should run help command when passed an -h" do
     @options = Mongify::CLI::Options.new(['-h'])
     @options.parse
-    @options.instance_variable_get(:@command_class).should == Mongify::CLI::HelpCommand
+    @options.instance_variable_get(:@command_class).should == Mongify::CLI::Command::Help
   end
 
   it "should run version command when passed an -h" do
     @options = Mongify::CLI::Options.new(['-v'])
     @options.parse
-    @options.instance_variable_get(:@command_class).should == Mongify::CLI::VersionCommand
+    @options.instance_variable_get(:@command_class).should == Mongify::CLI::Command::Version
   end
 
   context "action" do

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Mongify::CLI::VersionCommand do
+describe Mongify::CLI::Command::Version do
   before :each do
     @text = 'Piece of interesting text'
-    @cmd = Mongify::CLI::VersionCommand.new(@text)
+    @cmd = Mongify::CLI::Command::Version.new(@text)
     @view = mock('view').as_null_object
   end
 
@@ -12,7 +12,7 @@ describe Mongify::CLI::VersionCommand do
     @cmd.execute(@view)
   end
 
-  it 'displays the Reek version on the view' do
+  it 'displays Mongify version on the view' do
     @view.should_receive(:output).with(/#{Mongify::VERSION}/)
     @cmd.execute(@view)
   end

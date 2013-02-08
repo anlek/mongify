@@ -21,7 +21,7 @@ module Mongify
 Usage: #{progname} command database.config [database_translation.rb]
 
 Commands:
-#{Mongify::CLI::WorkerCommand.list_commands.join("\n")}
+#{Mongify::CLI::Command::Worker.list_commands.join("\n")}
 
 Examples:
 
@@ -40,21 +40,21 @@ EOB
         @parser.banner = banner
         @parser.separator "Common options:"
         @parser.on("-h", "--help", "Show this message") do
-          @command_class = HelpCommand
+          @command_class = Command::Help
         end
         @parser.on("-v", "--version", "Show version") do
-          @command_class = VersionCommand
+          @command_class = Command::Version
         end
       end
 
       # Parses CLI passed attributes and figures out what command user is trying to run
       def parse
-        if @command_class == HelpCommand
-          HelpCommand.new(@parser)
-        elsif @command_class == VersionCommand
-          VersionCommand.new(@parser.program_name)
+        if @command_class == Command::Help
+          Command::Help.new(@parser)
+        elsif @command_class == Command::Version
+          Command::Version.new(@parser.program_name)
         else
-          WorkerCommand.new(action, config_file, translation_file, @parser)
+          Command::Worker.new(action, config_file, translation_file, @parser)
         end
       end
 
