@@ -49,11 +49,6 @@ describe Mongify::CLI::Options do
       @options.instance_variable_get(:@config_file).should_not be_nil
     end
 
-    it "should be require" do
-      @options = Mongify::CLI::Options.new(['check'])
-      lambda {@options.parse}.should raise_error(Mongify::ConfigurationFileNotFound)
-    end
-
     it "should call Configuration.parse" do
       Mongify::Configuration.should_receive(:parse).and_return(Mongify::Configuration.new)
       @options = Mongify::CLI::Options.new(['check', config_file])
