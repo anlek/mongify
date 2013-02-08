@@ -95,7 +95,7 @@ module Mongify
       
       # Inserts into the collection a given row
       def insert_into(colleciton_name, row)
-        db[colleciton_name].insert(row, :safe => true)
+        db[colleciton_name].insert(row)
       end
       
       # Updates a collection item with a given ID with the given attributes

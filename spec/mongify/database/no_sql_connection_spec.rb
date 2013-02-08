@@ -77,7 +77,7 @@ describe Mongify::Database::NoSqlConnection do
     end
     context "insert_into" do
       it "should insert into a table using the mongo driver" do
-        @collection.should_receive(:insert).with({'first_name' => 'bob'}, anything)
+        @collection.should_receive(:insert).with({'first_name' => 'bob'})
         @mongodb_connection.insert_into('users', {'first_name' => 'bob'})
       end
     end
