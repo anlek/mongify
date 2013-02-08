@@ -5,6 +5,6 @@ Feature: Database Translation Output
   
   Scenario: Translation Output request
     Given a database exists
-    When I run mongify translation -c spec/files/base_configuration.rb
+    When I run mongify translation spec/files/base_configuration.rb
     Then it succeeds
     And it should print out the database schema

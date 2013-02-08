@@ -7,7 +7,7 @@ Then /^stdout equals "([^\"]*)"$/ do |report|
 end
 
 Then /^it reports:$/ do |report|
-  @last_stdout.should == report
+  @last_stdout.gsub(/\s+/, ' ').strip.should == report.gsub(/\s+/, ' ').strip
 end
 
 Then /^stderr reports:$/ do |report|

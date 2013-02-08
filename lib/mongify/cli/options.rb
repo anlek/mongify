@@ -18,7 +18,7 @@ module Mongify
       def banner
         progname = @parser.program_name
         return <<EOB
-Usage: #{progname} command [database_translation.rb] [-c database.config]
+Usage: #{progname} command database.config [database_translation.rb]
 
 Commands:
 #{Mongify::CLI::WorkerCommand.list_commands.join("\n")}
@@ -54,8 +54,6 @@ EOB
         elsif @command_class == VersionCommand
           VersionCommand.new(@parser.program_name)
         else
-          raise ConfigurationFileNotFound, "You need to provide a configuration file location '#{config_file}'" if config_file.nil?
-          #TODO: In the future, request sql_connection and nosql_connection from user input
           WorkerCommand.new(action, config_file, translation_file, @parser)
         end
       end
