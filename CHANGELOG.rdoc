@@ -2,6 +2,10 @@
 * Changed Mongify Syntax (thanks to tanema)
 * Improved error handling
 * Improved Test output
+* Refactored Commands
+* Updated Gem Requirements
+* Removed depricated calls (from Mongo insert statement)
+* Removed MySql2 dependency (ActiveRecord takes care of that)
 == 0.3.1 / 21 Jan 2013
 * README examples updated
 * README typos fixed.
