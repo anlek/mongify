@@ -47,7 +47,7 @@ module Mongify
         
         if command_options
           #FIXME: Should parse configuration file in this action, (when I know it's required)
-          raise ConfigurationFileNotFound, "Configuration file is required" if command_options[:required] && command_options[:required].include?(:configuration_file) && @config.nil?
+          raise ConfigurationFileNotFound, "Database Configuration file is missing or cannot be found" if command_options[:required] && command_options[:required].include?(:configuration_file) && @config.nil?
           if command_options[:required] && command_options[:required].include?(:translation_file)
             raise TranslationFileNotFound, "Translation file is required for command '#{current_command}'" unless @translation_file
             raise TranslationFileNotFound, "Unable to find Translation File at #{@translation_file}" unless File.exists?(@translation_file)
@@ -67,8 +67,7 @@ module Mongify
           @translation.process(@config.sql_connection, @config.no_sql_connection)
         else
           view.output("Unknown action #{@command}\n\n#{@parser}")
-          view.report_error
-          return
+          return view.report_error
         end
         view.report_success
       end

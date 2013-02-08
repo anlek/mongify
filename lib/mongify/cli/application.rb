@@ -25,7 +25,7 @@ module Mongify
       def execute!
         begin
           cmd = @options.parse
-          cmd.execute(self)
+          return cmd.execute(self)
         rescue MongifyError => error
           $stderr.puts "Error: #{error}"
           report_error
@@ -33,7 +33,6 @@ module Mongify
           report_error
           raise error
         end
-        return @status
       end
       
       # Sends output to the UI
