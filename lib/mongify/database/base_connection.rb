@@ -9,6 +9,8 @@ module Mongify
       REQUIRED_FIELDS = %w{host}
       # List of all the available fields to make up a connection
       AVAILABLE_FIELDS = %w{adapter host username password database socket port encoding}
+      # List of all fields that should be forced to a string
+      STRING_FIELDS = %w{adapter}
       
       def initialize(options=nil)
         if options
@@ -56,7 +58,8 @@ module Mongify
         super(method)
       end
       
-      # Building set and/or return functions for AVAILABLE_FIELDS
+      # Building set and/or return functions for AVAILABLE_FIELDS.
+      # STRING_FIELDS are forced into string.
       # Example:
       # 
       #   def host(value=nil)
@@ -67,9 +70,16 @@ module Mongify
       def method_missing(method, *args)
         method_name = method.to_s
         if AVAILABLE_FIELDS.include?(method_name.to_s)
+
+          if STRING_FIELDS.include?(method_name.to_s)
+            assignment = "@#{method_name} = value.to_s"
+          else
+            assignment = "@#{method_name} = value"
+          end
+
           class_eval <<-EOF
                           def #{method_name}(value=nil)
-                            @#{method_name} = value.to_s unless value.nil?
+                            #{assignment} unless value.nil?
                             @#{method_name}
                           end
                         EOF
