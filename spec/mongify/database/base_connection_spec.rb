@@ -47,6 +47,11 @@ describe Mongify::Database::BaseConnection do
     @base_connection.adapter.should == 'sqlite'
   end
 
+  it "should leave port argument as an integer" do
+    @base_connection.port 3333
+    @base_connection.port.should == 3333
+  end
+
   context "hash" do
     before(:each) do
       @adapter = 'baseDB'
