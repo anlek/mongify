@@ -54,7 +54,7 @@ namespace :test do
   namespace :mysql do
     desc "Setup a mysql database based on the spec/support/database.yml settings"
     task :setup do
-      require 'spec/support/config_reader'
+      require './spec/support/config_reader'
       require 'active_record'
       ::CONNECTION_CONFIG = ConfigReader.new('spec/support/database.yml')
       ActiveRecord::Base.establish_connection(CONNECTION_CONFIG.mysql)
