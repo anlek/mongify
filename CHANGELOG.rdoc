@@ -1,5 +1,6 @@
-== 0.9.1 / Dev version
+== 1.0.0 / 28 May 2013
 * Fixed issue with MySql when specifying port (thanks to sebastianmarr)
+* Added information Mongify-Mongoid
 == 0.9 / 08 Feb 2013
 * Changed Mongify Syntax (thanks to tanema)
 * Improved error handling

@@ -250,6 +250,10 @@ More documentation can be found at {Mongify::Database::Column}
 Mongify has been tested on Ruby 1.8.7-p330 and Ruby 1.9.2-p136
 If you have any issues, please feel free to report them here: {issue tracker}[https://github.com/anlek/mongify/issues]
 
+== Additional Tools
+
+  As of May 2013, we've released a add-on tool to Mongify called {Mongify-Mongoid}[https://github.com/anlek/mongify-mongoid] which lets you use the translation.rb file to generate Mongoid models for you. It will take care of the fields, relations (most of the way) and timestamps for you. This should save you some time re-typing all the models by hand. 
+  Check out the gem at: {http://rubygems.org/gems/mongify-mongoid}[http://rubygems.org/gems/mongify-mongoid]
 
 == TODO
 * Allow deeper embedding
@@ -291,7 +295,7 @@ Reach me at:
 
 == License
 
-Copyright (c) 2011 Andrew Kalek, Anlek Consulting
+Copyright (c) 2011 - 2013 Andrew Kalek, Anlek Consulting
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
