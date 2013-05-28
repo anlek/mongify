@@ -252,8 +252,8 @@ If you have any issues, please feel free to report them here: {issue tracker}[ht
 
 == Additional Tools
 
-  As of May 2013, we've released a add-on tool to Mongify called {Mongify-Mongoid}[https://github.com/anlek/mongify-mongoid] which lets you use the translation.rb file to generate Mongoid models for you. It will take care of the fields, relations (most of the way) and timestamps for you. This should save you some time re-typing all the models by hand. 
-  Check out the gem at: {http://rubygems.org/gems/mongify-mongoid}[http://rubygems.org/gems/mongify-mongoid]
+As of May 2013, we've released a add-on tool to Mongify called {Mongify-Mongoid}[https://github.com/anlek/mongify-mongoid] which lets you use the translation.rb file to generate Mongoid models for you. It will take care of the fields, relations (most of the way) and timestamps for you. This should save you some time re-typing all the models by hand. 
+Check out the gem at: {http://rubygems.org/gems/mongify-mongoid}[http://rubygems.org/gems/mongify-mongoid]
 
 == TODO
 * Allow deeper embedding
