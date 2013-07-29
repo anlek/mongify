@@ -185,6 +185,18 @@ describe Mongify::Database::Table do
         Mongify::Database::Table.new('comments', :embed_in => 'posts').embed_on.should == 'post_id'
       end
     end
+
+    context "primary_key" do
+      it "should return primary_key option" do
+        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id', :primary_key => 'unique_id').primary_key.should == 'unique_id'
+      end
+      it "should be nil when not defined" do
+        Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').primary_key.should be_nil
+      end
+      it "should be nil when not embedded table" do
+        Mongify::Database::Table.new('users').primary_key.should be_nil
+      end
+    end
   end
   
   context "before_save" do

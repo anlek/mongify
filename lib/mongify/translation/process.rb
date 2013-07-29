@@ -57,7 +57,8 @@ module Mongify
           rows = sql_connection.select_rows(t.sql_name)
           Mongify::Status.publish('copy_embedded', :size => rows.count, :name => "Embedding #{t.name}", :action => 'add')
           rows.each do |row|
-            target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => row[t.embed_on]})
+            primary_key = t.primary_key || :pre_mongified_id
+            target_row = no_sql_connection.find_one(t.embed_in, {primary_key => row[t.embed_on]})
             next unless target_row.present?
             # puts "target_row = #{target_row.inspect}", "---"
             row, parent_row = t.translate(row, target_row)

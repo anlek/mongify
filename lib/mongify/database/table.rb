@@ -160,6 +160,11 @@ module Mongify
         (@options['on'] || "#{@options['embed_in'].to_s.singularize}_id").to_s
       end
       
+      # Return the primary_ky
+      def primary_key
+        @options['primary_key'].to_s unless @options['primary_key'].nil?
+      end
+      
       # Used to save a block to be ran after the row has been processed but before it's saved to the no sql database
       def before_save(&block)
         @before_save_callback = block
