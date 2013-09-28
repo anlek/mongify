@@ -225,12 +225,22 @@ describe Mongify::Database::Table do
       end
     end
     it "should work" do
-      @table.translate({'preferences' => 'yes'}, {}).should == [{}, {'preferences' => 'yes'}]
+      @table.translate({'preferences' => 'yes'}, {}).should == [{}, {'preferences' => 'yes'}, {}]
     end
     it "should return blank hash if parent is unchanged" do
       @table.remove_before_save_filter!
-      @table.translate({'preferences' => "true"}, {}).should == [{'preferences' => "true"}, {}]
+      @table.translate({'preferences' => "true"}, {}).should == [{'preferences' => "true"}, {}, {}]
     end
+    it 'should return a hash containing the keys that have been deleted on the parent row' do
+      @parent_table.column('field_1')
+      @parent_table.column('field_2')
+      @table.before_save do |_, parent|
+        parent.delete('field_1')
+      end
+      @table.translate({'preferences' => 'true'},{'field_1' => 'a', 'field_2' => 'b'}).should ==
+          [{'preferences' => 'true'}, {'field_2' => 'b'}, {'field_1' => '1'}]
+    end
+
   end
   
   

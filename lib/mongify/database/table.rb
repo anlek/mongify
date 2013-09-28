@@ -180,8 +180,13 @@ module Mongify
         parentrow = Mongify::Database::DataRow.new(parent) unless parent.nil?
         datarow = Mongify::Database::DataRow.new(row)
         @before_save_callback.call(datarow, parentrow) unless @before_save_callback.nil?
-        if parentrow            
-          [datarow.to_hash, parentrow.to_hash]
+        if parentrow
+          parentrow_hash = parentrow.to_hash
+          unsets = parent.keys.inject({}) do |unset_keys, key|
+            unset_keys[key] = '1' unless parentrow_hash.has_key?(key)
+            unset_keys
+          end
+          [datarow.to_hash, parentrow_hash, unsets]
         else
           datarow.to_hash
         end

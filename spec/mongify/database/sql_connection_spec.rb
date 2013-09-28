@@ -56,7 +56,7 @@ describe Mongify::Database::SqlConnection do
 
     context "tables" do
       it "should be able to get a list" do
-        sqlite_connection.tables.should =~ ['comments', 'notes', 'posts', 'preferences', 'users']
+        sqlite_connection.tables.should =~ %w(comments notes posts preferences users teams coaches)
       end
     end
 

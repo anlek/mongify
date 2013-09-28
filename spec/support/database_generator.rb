@@ -59,6 +59,18 @@ class DatabaseGenerator
       t.text :body
       t.timestamps
     end
+
+    conn.create_table(:teams) do |t|
+      t.string :name
+      t.string :phone
+      t.timestamps
+    end
+
+    conn.create_table(:coaches) do |t|
+      t.integer :team_id
+      t.string :first_name, :last_name
+      t.timestamps
+    end
     
     if include_data
       
@@ -75,7 +87,7 @@ class DatabaseGenerator
       [ 
         {:title => 'First Post', :owner_id => 1, :body => 'First Post Body', :published_at => (Time.now - 2).to_s(:db)},
         {:title => 'Second Post', :owner_id => 1, :body => 'Second Post Body', :published_at => (Time.now - 1).to_s(:db)},
-        {:title => 'Third Post', :owner_id => 2, :body => 'Thrid Post Body', :published_at => (Time.now).to_s(:db)},
+        {:title => 'Third Post', :owner_id => 2, :body => 'Third Post Body', :published_at => (Time.now).to_s(:db)},
       ].each do |v|
         conn.insert("INSERT INTO posts (title, owner_id, body, published_at, created_at, updated_at) 
                     VALUES ('#{v[:title]}', #{v[:owner_id]}, '#{v[:body]}', '#{v[:published_at]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
@@ -85,7 +97,7 @@ class DatabaseGenerator
       [
         {:post_id => 1, :user_id => 1, :body => 'First Comment Body'},
         {:post_id => 2, :user_id => 1, :body => 'Second Comment Body'},
-        {:post_id => 2, :user_id => 2, :body => 'Thrid Comment Body'},
+        {:post_id => 2, :user_id => 2, :body => 'Third Comment Body'},
       ].each do |v|
         conn.insert("INSERT INTO comments (body, post_id, user_id, created_at, updated_at) 
                     VALUES ('#{v[:body]}', #{v[:post_id]}, #{v[:user_id]}, '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
@@ -110,6 +122,26 @@ class DatabaseGenerator
       ].each do |v|
           conn.insert("INSERT INTO notes (user_id, body, notable_id, notable_type, created_at, updated_at) 
                       VALUES (#{v[:user_id]}, '#{v[:body]}', #{v[:notable_id]}, '#{v[:notable_type]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+      end
+
+      #Teams
+      [
+        {:name => 'Athens Avengers', :phone => '+1122334455'},
+        {:name => 'Berlin Bashers', :phone => '+1234567890'},
+        {:name => 'Copenhagen Crushers', :phone => '+1112223334'}
+      ].each do |v|
+        conn.insert("INSERT INTO teams (name, phone, created_at, updated_at)
+                    VALUES ('#{v[:name]}', '#{v[:phone]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+      end
+
+      #Coaches
+      [
+        {:team_id => 1, :first_name => 'Alice', :last_name => 'Adams'},
+        {:team_id => 2, :first_name => 'Bob', :last_name => 'Brown'},
+        {:team_id => 3, :first_name => 'Carl', :last_name => 'Cooper'}
+      ].each do |v|
+        conn.insert("INSERT INTO coaches (team_id, first_name, last_name, created_at, updated_at)
+                    VALUES (#{v[:team_id]}, '#{v[:first_name]}', '#{v[:last_name]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
       end
       
     end
