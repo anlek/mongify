@@ -13,6 +13,7 @@ vendor/cache
 
 coverage.data
 
+tmp/*
 spec/tmp/*
 
 .idea/*
