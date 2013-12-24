@@ -1,3 +1,5 @@
+== 1.0.1 / 24 December 2013
+* Updated and locked down gems to prevent Mongify from breaking when rails gets updated.
 == 1.0.0 / 28 May 2013
 * Fixed issue with MySql when specifying port (thanks to sebastianmarr)
 * Added information Mongify-Mongoid
@@ -54,7 +56,7 @@
 * Added ability to convert BigDecimal to integer via an :at => 'integer, :scale => 2 settings.
 * Improved Progress Bar display, now it gives you a better feel for what's going on.
 * Added an index on pre_mongified_id to speedup lookup times (Making it 42 times faster on import of embedded tables)
-* Fixed bug in importing of polymorphic tables where associations are nil 
+* Fixed bug in importing of polymorphic tables where associations are nil
 * Fixed bug where pre_mongified_id would be a string and not an integer (causing no updates of ref_ids)
 == 0.1.2 / 14 Feb 2011
 * More Improvements to README and RDOC
@@ -116,7 +118,7 @@
 == 0.0.2 / 09 Jun 2010
 * Rewrote the whole CLI interface
 * Removed datamapper and added active_record
-* Improved tests to cover most of the code 
+* Improved tests to cover most of the code
 * Changed overall commands for Mongify
-== 0.0.1 / 22 Mar 2010 
+== 0.0.1 / 22 Mar 2010
 * Initial Setup
