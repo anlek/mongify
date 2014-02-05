@@ -51,6 +51,7 @@ module Mongify
         end
       end
       
+
       # Does a copy of the embedded tables
       def copy_embedded_tables
         self.embed_tables.each do |t|
@@ -60,16 +61,17 @@ module Mongify
             target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => row[t.embed_on]})
             next unless target_row.present?
             # puts "target_row = #{target_row.inspect}", "---"
-            row, parent_row = t.translate(row, target_row)
+            row, parent_row, unset_keys = t.translate(row, target_row)
             parent_row ||= {}
             parent_row.delete("_id")
             parent_row.delete(t.name.to_s)
+            unset_keys ||= {}
             #puts "parent_row = #{parent_row.inspect}", "---"
             row.delete(t.embed_on)
             row.merge!(fetch_reference_ids(t, row))
             row.delete('pre_mongified_id')
             save_function_call = t.embedded_as_object? ? '$set' : '$addToSet'
-            no_sql_connection.update(t.embed_in, target_row['_id'], append_parent_object({save_function_call => {t.name => row}}, parent_row))
+            no_sql_connection.update(t.embed_in, target_row['_id'], append_parent_object({save_function_call => {t.name => row}}, parent_row, unset_keys))
             Mongify::Status.publish('copy_embedded')
           end
           Mongify::Status.publish('copy_embedded', :action => 'finish')
@@ -154,9 +156,12 @@ module Mongify
       end
       
       # Used to append parent object values to an embedded update call
-      def append_parent_object(object, parent)
+      def append_parent_object(object, parent, unset_keys = {})
         return object if parent.blank?
         object["$set"] = object.has_key?('$set') ? object["$set"].merge(parent) : parent
+        unless unset_keys.empty?
+          object["$unset"] = object.has_key?('$unset') ? object["$unset"].merge(unset_keys) : unset_keys
+        end
         object
       end
       
