@@ -31,7 +31,4 @@ module Mongify
   
   # Raised when an invalid option is passed via CLI
   class InvalidOption < MongifyError; end
-
-  # Raised when mongify sync can't find the helper sync table (last_updates)
-  class SyncTableMissing < RuntimeError; end
 end
