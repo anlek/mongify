@@ -120,6 +120,11 @@ module Mongify
         @columns.reject{ |c| !c.referenced? } 
       end
       
+      # Returns the column of type :key
+      def key_column
+        @columns.find{ |c| c.type == :key } 
+      end
+
       # Returns a translated row
       # Takes in a hash of values
       def translate(row, parent=nil)
@@ -128,7 +133,11 @@ module Mongify
           c = find_column(key)
           new_row.merge!(c.translate(value)) if c.present?
         end
+        # don't allow deletion of pre_mongified_id, sync needs it!
+        pre_mongified_id = new_row['pre_mongified_id']
         run_before_save(new_row, parent)
+        new_row['pre_mongified_id'] = pre_mongified_id
+        new_row
       end
       
       
