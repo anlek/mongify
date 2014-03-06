@@ -114,6 +114,7 @@ Save the file as <tt>"translation_file.rb"</tt> and run the command:
   Commands:
     "check" or "ck"           >> Checks connection for sql and no_sql databases [configuration_file]
     "process" or "pr"         >> Takes a translation and process it to mongodb [configuration_file, translation_file]
+    "sync" or "sy"            >> Takes a translation and process it to mongodb, only syncs (insert/update) new or updated records based on the updated_at column [configuration_file, translation_file]
     "translation" or "tr"     >> Outputs a translation file from a sql connection [configuration_file]
 
   Examples:
@@ -122,6 +123,7 @@ Save the file as <tt>"translation_file.rb"</tt> and run the command:
     mongify tr database.config
     mongify check database.config
     mongify process database.config database_translation.rb
+    mongify sync database.config database_translation.rb
 
   Common options:
       -h, --help                       Show this message
@@ -292,6 +294,11 @@ Reach me at:
 * Twitter: {@anlek}[http://www.twitter.com/anlek]
 * Email: andrew.kalek@anlek[dot]com
 
+The sync functionality was made by Hossam Hammady from Qatar Computing Research Institute
+
+Reach me at:
+* Twitter: {@hammady}[http://www.twitter.com/hammady]
+* Email: hhammady@qf[dot]org[dot]qa
 
 == License
 
