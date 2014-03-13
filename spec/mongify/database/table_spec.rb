@@ -83,6 +83,13 @@ describe Mongify::Database::Table do
       @table.column 'dark'
       @table.find_column('blue').should be_nil
     end
+
+    it "should be able to find the key column" do
+      @table.column 'name'
+      col = @table.column 'id', :key, :as => :integer
+      @table.column 'address'
+      @table.key_column.should == col
+    end
   end
   
   context "add_column" do
@@ -209,6 +216,13 @@ describe Mongify::Database::Table do
         dr = Mongify::Database::DataRow.new(row)
         Mongify::Database::DataRow.should_receive(:new).and_return(dr)
         @table.send(:run_before_save, row)
+      end
+      it "should preserve the pre_mongified_id even if user deletes it" do
+        row = {'first_name' => 'Bob', 'pre_mongified_id' => 1}
+        @table.before_save do |row, _|
+          row.delete('pre_mongified_id')
+        end
+        @table.send(:run_before_save, row).should == row
       end
     end
     it "should work" do

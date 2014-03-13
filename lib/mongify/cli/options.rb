@@ -28,6 +28,7 @@ Examples:
 #{progname} check database.config
 #{progname} translation datbase.config > database_translation.rb
 #{progname} process database.config database_translation.rb
+#{progname} sync database.config database_translation.rb
 
 See http://github.com/anlek/mongify for more details
 

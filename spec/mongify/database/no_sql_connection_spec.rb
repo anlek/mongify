@@ -100,6 +100,14 @@ describe Mongify::Database::NoSqlConnection do
       end
     end
     
+    context "select_by_query" do
+      it "should return some records according to a query" do
+        query = {"dummy" => true}
+        @collection.should_receive(:find).with(query).and_return([])
+        @mongodb_connection.select_by_query('users', query)
+      end
+    end
+    
     context "update" do
       it "should update the record" do
         attributes = {'post_id' => 123}
@@ -108,6 +116,32 @@ describe Mongify::Database::NoSqlConnection do
       end
     end
     
+    context "upsert" do
+      it "should update the record if its pre_mongified_id exists" do
+        attributes = {'pre_mongified_id' => 1, 'post_id' => 123}
+        id = 10
+        duplicate = mock
+        duplicate.stub(:[]).with(:_id).and_return(id)
+        @mongodb_connection.stub(:find_one).with('users', {"pre_mongified_id" => 1}).and_return(duplicate)
+        @mongodb_connection.should_receive(:find_one).with('users', {"pre_mongified_id" => 1})
+        @mongodb_connection.should_receive(:update).with('users', id, attributes)
+        @mongodb_connection.upsert('users', attributes)
+      end
+
+      it "should insert a new record if no record having the same pre_mongified_id exists" do
+        attributes = {'pre_mongified_id' => 1, 'post_id' => 123}
+        @mongodb_connection.should_receive(:find_one).with('users', {"pre_mongified_id" => 1})
+        @mongodb_connection.should_receive(:insert_into).with('users', attributes)
+        @mongodb_connection.upsert('users', attributes)
+      end
+
+      it "should delegate the upsert to the save method of Mongo if no pre_mongified_id to match with the _id" do
+        attributes = {'post_id' => 123}
+        @collection.should_receive(:save).with(attributes)
+        @mongodb_connection.upsert('users', attributes)
+      end
+    end
+
     context "find_one" do
       it "should call find_one on collection" do
         query= {'pre_mongified_id' => 1}

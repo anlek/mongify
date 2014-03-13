@@ -120,6 +120,11 @@ module Mongify
         @columns.reject{ |c| !c.referenced? } 
       end
       
+      # Returns the column of type :key
+      def key_column
+        @columns.find{ |c| c.type == :key } 
+      end
+
       # Returns a translated row
       # Takes in a hash of values
       def translate(row, parent=nil)
@@ -179,11 +184,17 @@ module Mongify
       def run_before_save(row, parent=nil)
         parentrow = Mongify::Database::DataRow.new(parent) unless parent.nil?
         datarow = Mongify::Database::DataRow.new(row)
+
+        # don't allow deletion of pre_mongified_id, sync needs it!
+        pre_mongified_id = row['pre_mongified_id']
         @before_save_callback.call(datarow, parentrow) unless @before_save_callback.nil?
+        new_row = datarow.to_hash
+        new_row['pre_mongified_id'] = pre_mongified_id if pre_mongified_id
+
         if parentrow            
-          [datarow.to_hash, parentrow.to_hash]
+          [new_row, parentrow.to_hash]
         else
-          datarow.to_hash
+          new_row
         end
       end
       

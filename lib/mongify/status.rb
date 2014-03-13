@@ -2,7 +2,7 @@ module Mongify
   # This class is responsible for generating progress bars with status of mongify
   class Status
     # List of known notifications
-    NOTIFICATIONS = ['copy_data', 'copy_embedded', 'copy_polymorphic', 'update_references', 'remove_pre_mongified']
+    NOTIFICATIONS = ['copy_data', 'copy_embedded', 'copy_polymorphic', 'update_references', 'remove_pre_mongified', 'set_last_updated_at']
     
     class << self
       #List of all the progress bars.

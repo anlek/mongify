@@ -78,6 +78,21 @@ module Mongify
         self.connection.select_all("SELECT * FROM #{table_name}")
       end
 
+      # Returns an array with hash values of the records in a given table specified by a query
+      def select_by_query(query)
+        self.connection.select_all(query)
+      end
+
+      def count(table_name, where = nil)
+        q = "SELECT COUNT(*) FROM #{table_name}"
+        q = "#{q} WHERE #{where}" if where
+        self.connection.select_value(q).to_i
+      end
+
+      def execute(query)
+        self.connection.execute(query)
+      end
+
       #######
       private
       #######

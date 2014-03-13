@@ -12,7 +12,8 @@ module Mongify
         AVAILABLE_COMMANDS = {
                                   :check => {:commands => ['check', 'ck'], :description => "Checks connection for sql and no_sql databases", :required => [:configuration_file]},
                                   :translation => {:commands => ['translation', 'tr'], :description => "Outputs a translation file from a sql connection", :required => [:configuration_file]},
-                                  :process => {:commands => ['process', 'pr'], :description => "Takes a translation and process it to mongodb", :required => [:configuration_file, :translation_file]}
+                                  :process => {:commands => ['process', 'pr'], :description => "Takes a translation and process it to mongodb", :required => [:configuration_file, :translation_file]},
+                                  :sync => {:commands => ['sync', 'sy'], :description => "Takes a translation and process it to mongodb, only syncs (insert/update) new or updated records based on the updated_at column", :required => [:configuration_file, :translation_file]}
                                 }
         
         # Prints out a nice display of the list of commands
@@ -65,6 +66,9 @@ module Mongify
           when :process
             check_connections
             @translation.process(@config.sql_connection, @config.no_sql_connection)
+          when :sync
+            check_connections
+            @translation.sync(@config.sql_connection, @config.no_sql_connection)
           else
             view.output("Unknown action #{@command}\n\n#{@parser}")
             return view.report_error

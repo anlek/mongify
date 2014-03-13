@@ -92,6 +92,10 @@ module Mongify
       def select_rows(collection)
         db[collection].find
       end
+
+      def select_by_query(collection, query)
+        db[collection].find(query)
+      end
       
       # Inserts into the collection a given row
       def insert_into(colleciton_name, row)
@@ -101,6 +105,29 @@ module Mongify
       # Updates a collection item with a given ID with the given attributes
       def update(colleciton_name, id, attributes)
         db[colleciton_name].update({"_id" => id}, attributes)
+      end
+      
+      # Upserts into the collection a given row
+      def upsert(collection_name, row)
+        # We can't use the save method of the Mongo collection
+        # The reason is that it detects duplicates using _id
+        # but we should detect it using pre_mongified_id instead
+        # because in the case of sync, same rows are identified by their original sql ids
+        #
+        # db[collection_name].save(row)
+
+        if row.has_key?(:pre_mongified_id) || row.has_key?('pre_mongified_id')
+          id = row[:pre_mongified_id] || row['pre_mongified_id']
+          duplicate = find_one(collection_name, {"pre_mongified_id" => id})
+          if duplicate
+            update(collection_name, duplicate[:_id] || duplicate["_id"], row)
+          else
+            insert_into(collection_name, row)
+          end
+        else
+          # no pre_mongified_id, fallback to the upsert method of Mongo
+          db[collection_name].save(row)
+        end
       end
       
       # Finds one item from a collection with the given query

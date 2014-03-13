@@ -1,5 +1,6 @@
 require 'mongify/translation/printer'
 require 'mongify/translation/process'
+require 'mongify/translation/sync'
 module Mongify
   #
   # Actually runs the translation from sql to no sql
@@ -52,6 +53,7 @@ module Mongify
   class Translation
     include Printer
     include Process
+    include Sync
     class << self
       # Returns an instance of a translation object
       # Takes a location of a translation file
@@ -122,6 +124,6 @@ module Mongify
     def embed_tables
       tables.reject{|t| !t.embedded?}
     end
-    
+
   end
 end

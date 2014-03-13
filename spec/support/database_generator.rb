@@ -2,7 +2,7 @@
 class DatabaseGenerator
   # Returns a mysql connection (using the database.yml)
   def self.mysql_connection
-    @sql_connection ||= Mongify::Database::SqlConnection.new( :adapter => CONNECTION_CONFIG.mysql['adapter'], 
+    @sql_connection = Mongify::Database::SqlConnection.new( :adapter => CONNECTION_CONFIG.mysql['adapter'], 
                                                             :host => CONNECTION_CONFIG.mysql['host'], 
                                                             :port => CONNECTION_CONFIG.mysql['port'],
                                                             :username => CONNECTION_CONFIG.mysql['username'],
@@ -10,7 +10,18 @@ class DatabaseGenerator
                                                             :database => CONNECTION_CONFIG.mysql['database']
                                                           )
   end
-  
+
+  # Returns a postgresql connection (using the database.yml)  
+  def self.postgresql_connection
+    @sql_connection = Mongify::Database::SqlConnection.new( :adapter => CONNECTION_CONFIG.postgresql['adapter'], 
+                                                            :host => CONNECTION_CONFIG.postgresql['host'], 
+                                                            :port => CONNECTION_CONFIG.postgresql['port'],
+                                                            :username => CONNECTION_CONFIG.postgresql['username'],
+                                                            :password => CONNECTION_CONFIG.postgresql['password'],
+                                                            :database => CONNECTION_CONFIG.postgresql['database']
+                                                          )
+  end
+
   # Returns a sqlite connection (using the database.yml )
   def self.sqlite_connection
     @db_path = File.join(File.dirname(File.dirname(File.dirname(File.expand_path(__FILE__)))), CONNECTION_CONFIG.sqlite['database'])
