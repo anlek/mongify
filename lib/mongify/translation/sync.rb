@@ -12,11 +12,11 @@ module Mongify
 
       class SyncHelperMigrator < ActiveRecord::Migration
         def up
-          create_table :__mongify_sync_helper__, :id => false do |t|
+          create_table SYNC_HELPER_TABLE, :id => false do |t|
             t.string :table_name
             t.datetime :last_updated_at
           end
-          add_index :__mongify_sync_helper__, :table_name
+          add_index SYNC_HELPER_TABLE, :table_name
         end
       end
 
@@ -56,8 +56,8 @@ module Mongify
       # Does the straight copy (of tables)
       def sync_data
         self.copy_tables.each do |t|
-          q = "SELECT t.* FROM #{t.sql_name} t, #{SYNC_HELPER_TABLE} u
-            WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{t.sql_name}'"
+          q = "SELECT t.* FROM #{t.sql_name} t, #{SYNC_HELPER_TABLE} u " +
+            "WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{t.sql_name}'"
           rows = sql_connection.select_by_query(q)
           Mongify::Status.publish('copy_data', :size => rows.count, :name => "Syncing #{t.name}", :action => 'add')
           max_updated_at, max_updated_at_id = Time.new(1970), nil
@@ -84,7 +84,7 @@ module Mongify
           rows.each do |row|
             id = row["_id"]
             attributes = fetch_reference_ids(t, row)
-            setter = {"$unset" => {DRAFT_KEY => 1}}
+            setter = {"$unset" => {DRAFT_KEY => true}}
             setter["$set"] = attributes unless attributes.blank?
             no_sql_connection.update(t.name, id, setter)
             Mongify::Status.publish('update_references')

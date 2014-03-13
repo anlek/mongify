@@ -20,3 +20,10 @@ Dir['./spec/support/**/*.rb'].map {|f| require f}
 Mongify.root = File.dirname(File.dirname(__FILE__))
 
 ::DATABASE_PRINT = File.read(File.dirname(File.expand_path(__FILE__)) + '/support/database_output.txt')
+
+# redirect deprecation warnings of rspec to a file
+RSpec.configure do |rspec|
+  rspec.deprecation_stream = 'log/deprecations.log'
+end
+# mute the deprecation message from I18n
+I18n.enforce_available_locales = false

@@ -23,8 +23,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency('cucumber', '>= 0.10')
   s.add_development_dependency('mocha', '>= 0.9.8')
   s.add_development_dependency('yard', '>= 0.5.3')
-  s.add_development_dependency('sqlite3-ruby', '>= 1.3')
-  s.add_development_dependency('mysql2', '~> 0.2.7')
+  s.add_development_dependency('sqlite3', '>= 1.3')
+  s.add_development_dependency('pg', '>= 0.17')
+  s.add_development_dependency('mysql2', '~> 0.3.1')
   s.add_development_dependency('watchr', '>= 0.6')
   s.add_development_dependency('rake')
 

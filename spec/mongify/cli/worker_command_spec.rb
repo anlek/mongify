@@ -107,8 +107,37 @@ describe Mongify::CLI::Command::Worker do
     it "should call process on translation" do
       Mongify::Translation.should_receive(:parse).and_return(mock(:process => true))
       @command.execute(@view)
+    end    
+  end
+
+  context "sync command" do
+    before(:each) do
+      @command = Mongify::CLI::Command::Worker.new('sync', @config, 'spec/files/translation.rb')
+      Mongify::Translation.stub(:parse).and_return(mock(:sync => true))
+    end
+    it "should report success" do
+      @view.should_receive(:report_error).never
+      @view.should_receive(:report_success)
+      @command.execute(@view)
     end
     
+    it "should require config file" do
+      lambda { @command = Mongify::CLI::Command::Worker.new('sync').execute(@view) }.should raise_error(Mongify::ConfigurationFileNotFound)
+    end
     
+    it "should require transaction file" do
+      lambda { @command = Mongify::CLI::Command::Worker.new('sync', @config).execute(@view) }.should raise_error(Mongify::TranslationFileNotFound)
+    end
+    
+    it "should check_connection" do
+      @command.should_receive(:check_connections).and_return(true)
+      @command.execute(@view)
+    end
+    
+    it "should call sync on translation" do
+      Mongify::Translation.should_receive(:parse).and_return(mock(:sync => true))
+      @command.execute(@view)
+    end    
   end
+
 end

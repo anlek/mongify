@@ -24,3 +24,4 @@ spec/tmp/*
 spec/support/database.yml
 
 
+log/deprecations.log
