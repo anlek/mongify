@@ -7,7 +7,7 @@ describe Mongify::CLI::Application do
       Mongify::Configuration.out_stream = nil
       @application.execute!.should == 0
     end
-    
+
     it "should return a 1 on error" do
       @application = Mongify::CLI::Application.new(["door"])
       Mongify::Configuration.out_stream = nil

@@ -23,7 +23,7 @@ module MongifyWorld
     @last_exit_status = $?.exitstatus
     @last_stderr = IO.read(stderr_file.path)
   end
-   
+
   # Executes mongify command with arguments
   def mongify(args)
     run("ruby -Ilib -rubygems bin/mongify #{args}")

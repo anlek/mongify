@@ -88,7 +88,7 @@ describe Mongify::Database::SqlConnection do
       end
     end
   end
-  
+
   context "select_all" do
     it "should generate correct select statement" do
       @mock_conn = mock

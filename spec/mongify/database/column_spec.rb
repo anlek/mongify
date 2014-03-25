@@ -4,41 +4,41 @@ describe Mongify::Database::Column do
   before(:each) do
     @column = Mongify::Database::Column.new('first_name')
   end
-  
+
   it "should have name" do
     @column.name.should == 'first_name'
   end
   it "should have a sql_name" do
     @column.sql_name.should == 'first_name'
   end
-  
+
   it "should allow you to omit the type while giving options" do
     @column = Mongify::Database::Column.new('account_id', :references => 'accounts')
     @column.options.should == {'references' => 'accounts'}
   end
-  
+
   it "should get setup options" do
     @column = Mongify::Database::Column.new('account_id', :integer, :references => 'accounts')
     @column.options.should == {'references' => 'accounts'}
   end
-  
+
   it "should force type to string if nil" do
     @column = Mongify::Database::Column.new('first_name', nil)
     @column.type.should == :string
   end
-  
+
   context "auto_detect!" do
     it "should not auto detect automatically" do
       Mongify::Database::Column.should_receive(:auto_detect).never
       @column = Mongify::Database::Column.new('id', :integer)
       @column.should_not be_key
     end
-    
+
     it "should auto_detect when option is passed in" do
       @column = Mongify::Database::Column.new('id', :integer, :auto_detect => true)
       @column.should be_key
     end
-    
+
     context "id column" do
       before(:each) do
         @col = mock(:sql_name => 'id')
@@ -82,19 +82,19 @@ describe Mongify::Database::Column do
       end
     end
   end
-  
+
   context "key?" do
     it "should be true" do
       @column = Mongify::Database::Column.new('id', :key)
       @column.should be_a_key
     end
-    
+
     it "should be true" do
       @column = Mongify::Database::Column.new('first_name', :string)
       @column.should_not be_a_key
     end
   end
-  
+
   context "rename_to" do
     before(:each) do
       @column = Mongify::Database::Column.new('surname', :string, :rename_to => 'last_name')
@@ -108,12 +108,12 @@ describe Mongify::Database::Column do
     it "should translate to new name" do
       @column.translate('value').should == {'last_name' => 'value'}
     end
-    
+
     it "should rename this" do
       @column = Mongify::Database::Column.new("geoCode_longitude", :string, :rename_to => 'longitude')
       @column.translate(42.2222).should == {'longitude' => '42.2222'}
     end
-    
+
     it "should be renamed" do
       @column.should be_renamed
     end
@@ -122,7 +122,7 @@ describe Mongify::Database::Column do
       col.should_not be_renamed
     end
   end
-  
+
   context "options" do
     it "should allow to be set by name" do
       @column = Mongify::Database::Column.new('first_name')
@@ -134,8 +134,8 @@ describe Mongify::Database::Column do
       @column = Mongify::Database::Column.new('first_name')
       lambda { @column.unknown = "users" }.should raise_error(NoMethodError)
     end
-  end  
-  
+  end
+
   context "as" do
     subject {Mongify::Database::Column.new('total', :decimal)}
     it "should default to string" do
@@ -173,7 +173,7 @@ describe Mongify::Database::Column do
       subject.scale.should be_zero
     end
   end
-  
+
   context :to_print do
     before(:each) do
       @column = Mongify::Database::Column.new('first_name', :string)
@@ -195,14 +195,14 @@ describe Mongify::Database::Column do
       @column.to_print.should == %q{column "first_name", :key, :as => :integer}
     end
   end
-  
+
   context :referenced? do
     it "should be true" do
       @column = Mongify::Database::Column.new('user_id', :integer, :references => 'users')
       @column.should be_a_referenced
     end
   end
-  
+
   context :translate do
     it "should return a hash with the new translation" do
       @column = Mongify::Database::Column.new('first_name', :string)
@@ -213,7 +213,7 @@ describe Mongify::Database::Column do
       @column.should be_ignored
       @column.translate('bob').should == {}
     end
-    
+
     it "should return pre_mongified_id when type is a key" do
       @column = Mongify::Database::Column.new('id', :key)
       @column.translate(123123).should == {"pre_mongified_id" => 123123}
@@ -295,7 +295,7 @@ describe Mongify::Database::Column do
       it "should return a string value" do
         @column.send(:type_cast, 101.43).should be_a_kind_of String
       end
-      
+
       context :integer do
         before(:each) do
           @column = Mongify::Database::Column.new('price', :decimal, :as => :integer)
@@ -387,7 +387,7 @@ describe Mongify::Database::Column do
         @column.send(:type_cast, nil).should == result
         @column.send(:type_cast, "").should == result
       end
-      
+
     end
   end
 end

@@ -37,7 +37,7 @@ module Mongify
       #######
       private
       #######
-      
+
       def setup_sync_table
         # make sure table exists
         begin
@@ -46,7 +46,7 @@ module Mongify
           SyncHelperMigrator.new.up
         end
         # insert missing records for sync tables
-        self.copy_tables.each do |t|            
+        self.copy_tables.each do |t|
           if self.sql_connection.count(SYNC_HELPER_TABLE, "table_name = '#{t.sql_name}'") == 0
             self.sql_connection.execute("INSERT INTO #{SYNC_HELPER_TABLE} (table_name, last_updated_at) VALUES ('#{t.sql_name}', '1970-01-01')")
           end
@@ -75,7 +75,7 @@ module Mongify
           Mongify::Status.publish('copy_data', :action => 'finish')
         end
       end
-      
+
       # Updates the reference ids in the no sql database
       def sync_update_reference_ids
         self.copy_tables.each do |t|
@@ -92,7 +92,7 @@ module Mongify
           Mongify::Status.publish('update_references', :action => 'finish')
         end
       end
-      
+
       # Sets the last updated_at flag so that next sync doesn't unnecessarily copy old data
       def set_last_updated_at
         tables = self.copy_tables

@@ -8,7 +8,7 @@
 # You can redistribute it and/or modify it under the terms
 # of Ruby's license.
 #
-# This has been modified by 
+# This has been modified by
 #   Andrew Kalek
 #   Anlek Consulting
 #   http://anlek.com
@@ -48,8 +48,8 @@ module Mongify
     # Formatting for the actual bar
     def fmt_bar
       bar_width = do_percentage * @terminal_width / 100
-      sprintf("|%s%s|", 
-              @bar_mark * bar_width, 
+      sprintf("|%s%s|",
+              @bar_mark * bar_width,
               " " *  (@terminal_width - bar_width))
     end
 
@@ -65,9 +65,9 @@ module Mongify
 
     # Formatting for file transfer
     def fmt_stat_for_file_transfer
-      if @finished_p then 
+      if @finished_p then
         sprintf("%s %s %s", bytes, transfer_rate, elapsed)
-      else 
+      else
         sprintf("%s %s %s", bytes, transfer_rate, eta)
       end
     end
@@ -76,7 +76,7 @@ module Mongify
     def fmt_title
       @title[0,(@title_width - 1)] + ":"
     end
-    
+
     # Formatting for count (x/y)
     def fmt_count
       sprintf('%15s', "(#{@current}/#{@total})")
@@ -106,7 +106,7 @@ module Mongify
     def bytes
       convert_bytes(@current)
     end
-    
+
     # Gets formatting for time
     def format_time (t)
       t = t.to_i
@@ -126,19 +126,19 @@ module Mongify
         sprintf("ETA:  %s", format_time(eta))
       end
     end
-    
+
     # Returns elapsed time
     def elapsed
       elapsed = Time.now - @start_time
       sprintf("Time: %s", format_time(elapsed))
     end
-  
+
     # Returns end of line
     # @return [String] "\n" or "\r"
     def eol
       if @finished_p then "\n" else "\r" end
     end
-    
+
     # Calculates percentage
     # @return [Number] the percentage
     def do_percentage
@@ -148,7 +148,7 @@ module Mongify
         @current  * 100 / @total
       end
     end
-    
+
     # Gets the width of the terminal window
     def get_width
       UI.terminal_helper.output_cols
@@ -157,14 +157,14 @@ module Mongify
     # Draws the bar
     def show
       return unless @out
-      arguments = @format_arguments.map {|method| 
+      arguments = @format_arguments.map {|method|
         method = sprintf("fmt_%s", method)
         send(method)
       }
       line = sprintf(@format, *arguments)
 
       width = get_width
-      if line.length == width - 1 
+      if line.length == width - 1
         @out.print(line + eol)
         @out.flush
       elsif line.length >= width
@@ -188,7 +188,7 @@ module Mongify
       end
 
       # Use "!=" instead of ">" to support negative changes
-      if cur_percentage != prev_percentage || 
+      if cur_percentage != prev_percentage ||
           Time.now - @previous_time >= 1 || @finished_p
         show
       end
@@ -209,7 +209,7 @@ module Mongify
       @finished_p = true
       show
     end
-    
+
     # Returns if the bar is finished
     def finished?
       @finished_p

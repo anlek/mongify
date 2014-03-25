@@ -4,7 +4,7 @@ describe Mongify::Database::Table do
   before(:each) do
     @table = Mongify::Database::Table.new('users')
   end
-  
+
   it "should have name" do
     @table.name.should == "users"
   end
@@ -15,17 +15,17 @@ describe Mongify::Database::Table do
     @table.name = 'accounts'
     @table.name.should == 'accounts'
   end
-  
+
   it "should be ingored" do
     table = Mongify::Database::Table.new('users', :ignore => true)
     table.should be_ignored
   end
-  
+
   it "should get setup options" do
     @table = Mongify::Database::Table.new('users', :embed_in => 'accounts', :as => 'users')
     @table.options.should == {'embed_in' => 'accounts', 'as' => 'users'}
   end
-  
+
   context "rename_to" do
     before(:each) do
       @table = Mongify::Database::Table.new('users', :rename_to => 'people')
@@ -38,47 +38,47 @@ describe Mongify::Database::Table do
       @table.sql_name.should == "users"
     end
   end
-  
+
   context "column_index (find_column)" do
     it "should add column index on column creation" do
       @table.should_receive(:add_and_index_column)
       @table.column('first_name', :string)
     end
   end
-  
+
   context "column" do
     it "should add to count" do
       lambda { @table.column 'name' }.should change{@table.columns.count}.by(1)
     end
-    
+
     it "should work without a type" do
       col = @table.column 'name'
       col.type.should == :string
     end
-    
+
     it "should work without a type with options" do
       col = @table.column 'name', :rename_to => 'first_name'
       col.type.should == :string
       col.should be_renamed
     end
-    
+
     it "should be able to find" do
       @table.column 'another'
       col = @table.column 'dark'
       @table.find_column('dark').should == col
     end
-    
+
     it "should be able to find (case sensitive)" do
       col = @table.column 'geoCode'
       @table.column 'filler'
       @table.find_column('geoCode').should == col
     end
-    
+
     it "should be searchable with sql_name only" do
       col = @table.column 'surname', :string, :rename_to => 'last_name'
       @table.find_column('surname').should == col
     end
-    
+
     it "should return nil if not found" do
       @table.column 'dark'
       @table.find_column('blue').should be_nil
@@ -91,7 +91,7 @@ describe Mongify::Database::Table do
       @table.key_column.should == col
     end
   end
-  
+
   context "add_column" do
     it "should require Mongify::Database::Column" do
       lambda { @table.add_column("Not a column") }.should raise_error(Mongify::DatabaseColumnExpected)
@@ -99,17 +99,17 @@ describe Mongify::Database::Table do
     it "shold except Mongify::Database::Column as a parameter" do
       lambda { @table.add_column(Mongify::Database::Column.new('test')) }.should_not raise_error(Mongify::DatabaseColumnExpected)
     end
-    
+
     it "should add to the column count" do
       lambda { @table.add_column(Mongify::Database::Column.new('test')) }.should change{@table.columns.count}.by(1)
     end
-    
+
     it "should be indexed" do
       col = Mongify::Database::Column.new('test')
       @table.add_column(col)
       @table.find_column('test').should == col
     end
-    
+
     context "on initialization" do
       before(:each) do
         @columns = [Mongify::Database::Column.new('test1'), Mongify::Database::Column.new('test2')]
@@ -126,7 +126,7 @@ describe Mongify::Database::Table do
       end
     end
   end
-  
+
   context "reference_colums" do
     before(:each) do
       @col1 = Mongify::Database::Column.new('user_id', :integer, :references => 'users')
@@ -140,7 +140,7 @@ describe Mongify::Database::Table do
       @table.reference_columns.should =~ [@col1, @col2]
     end
   end
-  
+
   context "dealing with embedding," do
     context "embed_on" do
       it "should return embed_on option" do
@@ -180,7 +180,7 @@ describe Mongify::Database::Table do
         Mongify::Database::Table.new('users').should_not be_embedded
       end
     end
-    
+
     context "embed_on" do
       it "should be post_id" do
         Mongify::Database::Table.new('comments', :embed_in => 'posts', :on => 'post_id').embed_on.should == 'post_id'
@@ -193,7 +193,7 @@ describe Mongify::Database::Table do
       end
     end
   end
-  
+
   context "before_save" do
     before(:each) do
       @table = Mongify::Database::Table.new('users')
@@ -256,9 +256,9 @@ describe Mongify::Database::Table do
     end
 
   end
-  
-  
-  
+
+
+
   context "polymorphic" do
     before(:each) do
       @table = Mongify::Database::Table.new('comments', :polymorphic => :commentable)
@@ -272,7 +272,7 @@ describe Mongify::Database::Table do
     it "should return 'commentable'" do
       @table.polymorphic_as.should == 'commentable'
     end
-    
+
     context "embed" do
       before(:each) do
         @table = Mongify::Database::Table.new('comments', :polymorphic => :commentable, :embed_in => true)
@@ -280,10 +280,10 @@ describe Mongify::Database::Table do
       it "should be embedded" do
         @table.should be_embedded
       end
-      
+
     end
   end
-  
+
   context "translate" do
     before(:each) do
       @column1 = mock(:translate => {'first_name' => 'Timmy'}, :name => 'first_name')
@@ -300,7 +300,7 @@ describe Mongify::Database::Table do
       @column2.should_receive(:translate).with('Zuza').and_return({'last_name' => 'Zuza'})
       @table.translate({'first_name' => 'Timmy', 'last_name' => 'Zuza'})
     end
-    
+
     it "should not return any value if column doesn't exist in the translation" do
       @table.translate({'age' => 18}).should == {}
     end

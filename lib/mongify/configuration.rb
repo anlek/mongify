@@ -6,7 +6,7 @@ module Mongify
   class Configuration
     class << self
       attr_accessor :in_stream, :out_stream
-      
+
       # Parses a external configuration file and evaluates it and returns a instence of a configuration class
       def parse(file_name)
         raise Mongify::ConfigurationFileNotFound, "File #{file_name} is missing" unless File.exists?(file_name)
@@ -16,7 +16,7 @@ module Mongify
       end
 
     end #self
-    
+
     # Returns a no_sql_connection which is bound to a mongodb adapter
     # or builds a new no_sql_connection if block is given
     def mongodb_connection(options={}, &block)
@@ -25,7 +25,7 @@ module Mongify
       options['adapter'] ||= 'mongodb'
       @mongodb_connection = no_sql_connection(options, &block)
     end
-    
+
     # Returns a sql_connection
     # If a block is given, it will be executed on the connection
     # For more information, see {Mongify::Database::SqlConnection}
@@ -34,7 +34,7 @@ module Mongify
       @sql_connection.instance_exec(&block) if block_given?
       @sql_connection
     end
-    
+
     # Returns a sql_connection
     # If a block is given, it will be executed on the connection
     # For more information, see {Mongify::Database::NoSqlConnection}
@@ -43,6 +43,6 @@ module Mongify
       @no_sql_connection.instance_exec(&block) if block_given?
       @no_sql_connection
     end
-    
+
   end
 end

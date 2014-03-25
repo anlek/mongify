@@ -6,7 +6,7 @@ describe Mongify::Database::NoSqlConnection do
     @database = 'mongify_test'
     @mongodb_connection = Mongify::Database::NoSqlConnection.new
   end
-  
+
   context "valid?" do
     it "should be true" do
       Mongify::Database::NoSqlConnection.new(:host => 'localhost', :database => 'blue').should be_valid
@@ -14,60 +14,60 @@ describe Mongify::Database::NoSqlConnection do
     it "should be false without any params" do
       Mongify::Database::NoSqlConnection.new().should_not be_valid
     end
-    
+
     it "should be false without database" do
       Mongify::Database::NoSqlConnection.new(:host => 'localhost').should_not be_valid
     end
-    
+
     it "should be false without host" do
       Mongify::Database::NoSqlConnection.new(:database => 'blue').should_not be_valid
     end
   end
-  
+
   it "should rename mongo to mongodb for adapter" do
     Mongify::Database::NoSqlConnection.new(:host => 'localhost', :database => 'blue', :adapter => 'mongo').adapter.should == 'mongodb'
   end
-  
+
   context "connection string" do
     before(:each) do
       @mongodb_connection.host @host
       @mongodb_connection.database @database
     end
-    
+
     context "without username or password" do
       it "should render correctly" do
         @mongodb_connection.connection_string.should == "mongodb://#{@host}"
       end
-      
+
       it "should include port" do
         @mongodb_connection.port 10101
         @mongodb_connection.connection_string.should == "mongodb://#{@host}:10101"
       end
     end
   end
-  
+
   context "connection" do
     before(:each) do
       @mock_connection = mock(:connected? => true)
       Mongo::Connection.stub(:new).and_return(@mock_connection)
     end
-    
+
     it "should only create a connection once" do
       Mongo::Connection.should_receive(:new).once
       @mongodb_connection.connection
       @mongodb_connection.connection
     end
-    
+
     it "should add_auth if username && password is present" do
       @mock_connection.should_receive(:add_auth)
       @mongodb_connection.username "bob"
       @mongodb_connection.password "secret"
       @mongodb_connection.connection
     end
-    
+
   end
-  
-  
+
+
   context "database action:" do
     before(:each) do
        @collection = mock
@@ -81,7 +81,7 @@ describe Mongify::Database::NoSqlConnection do
         @mongodb_connection.insert_into('users', {'first_name' => 'bob'})
       end
     end
-    
+
     context "get_id_using_pre_mongified_id" do
       it "should return new id" do
         @collection.should_receive(:find_one).with({"pre_mongified_id"=>1}).and_return({'_id' => '123'})
@@ -92,14 +92,14 @@ describe Mongify::Database::NoSqlConnection do
         @mongodb_connection.get_id_using_pre_mongified_id('users', 1).should == nil
       end
     end
-    
+
     context "select_rows" do
       it "should return all records" do
         @collection.should_receive(:find).with().and_return([])
         @mongodb_connection.select_rows('users')
       end
     end
-    
+
     context "select_by_query" do
       it "should return some records according to a query" do
         query = {"dummy" => true}
@@ -107,7 +107,7 @@ describe Mongify::Database::NoSqlConnection do
         @mongodb_connection.select_by_query('users', query)
       end
     end
-    
+
     context "update" do
       it "should update the record" do
         attributes = {'post_id' => 123}
@@ -115,7 +115,7 @@ describe Mongify::Database::NoSqlConnection do
         @mongodb_connection.update('users', 1, attributes)
       end
     end
-    
+
     context "upsert" do
       it "should update the record if its pre_mongified_id exists" do
         attributes = {'pre_mongified_id' => 1, 'post_id' => 123}
@@ -149,12 +149,12 @@ describe Mongify::Database::NoSqlConnection do
         @mongodb_connection.find_one('users', query)
       end
     end
-    
+
     it "should create index for pre_mongified_id" do
       @collection.should_receive(:create_index).with([["pre_mongified_id", Mongo::ASCENDING]]).and_return(true)
       @mongodb_connection.create_pre_mongified_id_index('users')
     end
-    
+
     context "remove_pre_mongified_ids" do
       before(:each) do
         @collection.stub(:index_information).and_return('pre_mongified_id_1' => 'something')
@@ -171,7 +171,7 @@ describe Mongify::Database::NoSqlConnection do
       end
     end
   end
-  
+
   context "force" do
     before(:each) do
       @mock_connection = mock(:connected? => true, :drop_database => true)
@@ -185,12 +185,12 @@ describe Mongify::Database::NoSqlConnection do
     it "should be false" do
       Mongify::Database::NoSqlConnection.new(:host => 'localhost', :database => 'blue', :force => false).should_not be_forced
     end
-    
+
     it "should drop database" do
       @mongodb_connection.connection.should_receive(:drop_database).with('blue').and_return(true)
       @mongodb_connection.send(:drop_database)
     end
-    
+
     context "ask permission" do
       it "should ask to drop database" do
         Mongify::UI.should_receive(:ask).and_return(false)
@@ -199,7 +199,7 @@ describe Mongify::Database::NoSqlConnection do
       it "should not drop database if permission is declined" do
         Mongify::UI.should_receive(:ask).and_return(false)
         @mongodb_connection.should_receive(:drop_database).never
-        @mongodb_connection.send(:ask_to_drop_database)        
+        @mongodb_connection.send(:ask_to_drop_database)
       end
       it "should drop database if permission is granted" do
         Mongify::UI.should_receive(:ask).and_return(true)
@@ -209,21 +209,21 @@ describe Mongify::Database::NoSqlConnection do
     end
   end
 
-  
+
   describe "working connection" do
     before(:each) do
       @mongodb_connection = DatabaseGenerator.mongo_connection
     end
-    
+
     it "should work" do
       @mongodb_connection.should be_valid
       @mongodb_connection.should have_connection
     end
-    
+
     it "should return a db" do
       @mongodb_connection.db.should be_a Mongify::Database::NoSqlConnection::DB
     end
   end
-  
+
 end
 

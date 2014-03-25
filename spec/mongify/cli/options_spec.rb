@@ -52,7 +52,7 @@ describe Mongify::CLI::Options do
     it "should call Configuration.parse" do
       Mongify::Configuration.should_receive(:parse).and_return(Mongify::Configuration.new)
       @options = Mongify::CLI::Options.new(['check', config_file])
-      @options.parse 
+      @options.parse
     end
   end
 end

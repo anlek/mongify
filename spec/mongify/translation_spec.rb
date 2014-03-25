@@ -5,7 +5,7 @@ describe Mongify::Translation do
     @file_path = File.expand_path(File.dirname(__FILE__) + '/../files/translation.rb')
     @translation = Mongify::Translation.parse(@file_path)
   end
-  
+
   context "self.load" do
     it "should require connection" do
       lambda {Mongify::Translation.load}.should raise_error(ArgumentError)
@@ -33,13 +33,13 @@ describe Mongify::Translation do
       end
     end
   end
-  
+
   context "parsed content" do
     context "tables" do
       it "should have 4 tables" do
         @translation.should have(4).tables
       end
-      
+
       it "should setup 'comments'" do
         table = @translation.tables.find{|t| t.name == 'comments'}
         table.should_not be_nil
@@ -47,23 +47,23 @@ describe Mongify::Translation do
       end
     end
   end
-  
+
   context "find" do
     before(:each) do
       @user_table = mock(:name => 'users')
       @translation.stub(:all_tables).and_return([mock(:name => 'comments'),
-                                                 @user_table, 
+                                                 @user_table,
                                                  mock(:name => 'posts')])
     end
     it "should work" do
-      
+
       @translation.find('users').should == @user_table
     end
     it "should return nil if nothing is found" do
       @translation.find('apples').should be_nil
     end
   end
-  
+
   context "tables reference" do
     before(:each) do
       @copy_table = mock(:name => 'users', :ignored? => false, :embedded? => false, :polymorphic? => false)
@@ -93,7 +93,7 @@ describe Mongify::Translation do
       @translation.polymorphic_tables.should == [@polymorphic_table]
     end
   end
-  
+
   context "add_table" do
     before(:each) do
       @table = Mongify::Database::Table.new("users")

@@ -8,15 +8,15 @@ describe Mongify::Translation::Sync do
     @translation = Mongify::Translation.new
     Mongify::Configuration.out_stream = nil
   end
-  
+
   it "validates a sqlconnection" do
     lambda { @translation.sync('bad param', 'bad param2') }.should raise_error(Mongify::SqlConnectionRequired)
   end
-  
+
   it "should require a NoSqlConnection" do
     lambda { @translation.sync(@sql_connection, 'bad param2') }.should raise_error(Mongify::NoSqlConnectionRequired)
   end
-  
+
   describe "sync" do
     before(:each) do
       @translation.stub(:setup_sync_table)
@@ -51,23 +51,23 @@ describe Mongify::Translation::Sync do
       @translation.sync(@sql_connection, @no_sql_connection)
     end
   end
-  
+
   context "syncing actions" do
     before(:each) do
       @sql_connection = mock(:select_rows => [{'first_name'=> 'Timmy', 'last_name' => 'Zuza', 'preference_id' => 1}])
       @translation.stub(:sql_connection).and_return(@sql_connection)
-  
+
       @no_sql_connection = mock()
       @translation.stub(:no_sql_connection).and_return(@no_sql_connection)
-      
+
       @table = mock(:translate => {'first_name'=> 'Timmy', 'last_name' => 'Zuza', 'preference_id' => 1},
-                    :name => 'users', 
-                    :embedded? => false, 
+                    :name => 'users',
+                    :embedded? => false,
                     :sql_name => 'users')
-                    
+
       @translation.stub(:tables).and_return([@table])
     end
-    
+
     context "SyncHelperMigrator" do
       it "should create a table with index in the up dir" do
         migrator = Mongify::Translation::Sync::SyncHelperMigrator.new
@@ -89,7 +89,7 @@ describe Mongify::Translation::Sync do
         @query = "SELECT count(*) FROM #{@helper}"
         @sql_connection.stub(:execute).with(@query).and_return(5)
         @sql_connection.should_receive(:execute).with(@query)
-        @translation.stub(:copy_tables).and_return([mock(:sql_name => 'table1')]) 
+        @translation.stub(:copy_tables).and_return([mock(:sql_name => 'table1')])
       end
 
       it "should create sync helper table if it doesn't exist" do
@@ -97,7 +97,7 @@ describe Mongify::Translation::Sync do
         migrator = mock(:up)
         Mongify::Translation::Sync::SyncHelperMigrator.stub(:new).and_return(migrator)
         migrator.should_receive(:up)
-        @translation.stub(:copy_tables).and_return([]) 
+        @translation.stub(:copy_tables).and_return([])
         @translation.send(:setup_sync_table)
       end
 
@@ -119,7 +119,7 @@ describe Mongify::Translation::Sync do
 
     context "set_last_updated_at" do
       it "should update last_updated_at timestamp for each table that generated sync data" do
-        @translation.stub(:copy_tables).and_return([mock(:sql_name => 'table1')]) 
+        @translation.stub(:copy_tables).and_return([mock(:sql_name => 'table1')])
         @translation.max_updated_at = {'table1' => {'max_updated_at_id' => 1, 'key_column' => 'id'}}
         helper = Mongify::Translation::Sync::SYNC_HELPER_TABLE
         query = "UPDATE #{helper} SET last_updated_at = (SELECT updated_at FROM table1 WHERE id = '1') WHERE table_name = 'table1'"
@@ -128,14 +128,14 @@ describe Mongify::Translation::Sync do
         @translation.send(:set_last_updated_at)
       end
       it "should not update last_updated_at timestamp for each table that did not generate any sync data" do
-        @translation.stub(:copy_tables).and_return([mock(:sql_name => 'table1')]) 
+        @translation.stub(:copy_tables).and_return([mock(:sql_name => 'table1')])
         @translation.max_updated_at = {}
         @translation.send(:set_last_updated_at)
         @translation.max_updated_at = {'table1' => {'key_column' => 'id'}}
         @translation.send(:set_last_updated_at)
       end
     end
-    
+
     context "sync_data" do
       it "should upsert rows that match the new/updated query, mark them as drafts and compute the max updated at" do
         helper = Mongify::Translation::Sync::SYNC_HELPER_TABLE
@@ -163,7 +163,7 @@ describe Mongify::Translation::Sync do
 
       end
     end
-    
+
     context "sync_update_reference_ids" do
       it "should delete the draft key" do
         t = mock(:name => 'table1')

@@ -13,7 +13,7 @@ module Mongify
   #     column "created_at", :datetime
   #     column "updated_at", :datetime
   #   end
-  #   
+  #
   #   table "posts" do
   #     column "id", :key
   #     column "title", :string
@@ -23,7 +23,7 @@ module Mongify
   #     column "created_at", :datetime
   #     column "updated_at", :datetime
   #   end
-  #   
+  #
   #   table "comments", :embed_in => :posts, :on => :post_id do
   #     column "id", :key
   #     column "body", :text
@@ -32,13 +32,13 @@ module Mongify
   #     column "created_at", :datetime
   #     column "updated_at", :datetime
   #   end
-  #   
+  #
   #   table "preferences", :embed_in => :users, :as => :object do
   #     column "id", :key
   #     column "user_id", :integer, :references => "users"
   #     column "notify_by_email", :boolean
   #   end
-  #   
+  #
   #   table "notes", :embed_in => true, :polymorphic => 'notable' do
   #     column "id", :key
   #     column "user_id", :integer, :references => "users"
@@ -48,8 +48,8 @@ module Mongify
   #     column "created_at", :datetime
   #     column "updated_at", :datetime
   #   end
-  # 
-  
+  #
+
   class Translation
     include Printer
     include Process
@@ -62,7 +62,7 @@ module Mongify
         translation.instance_eval(File.read(file_name))
         translation
       end
-      
+
       #Returns an instence of a translation object with a given sql connection layout loaded
       def load(connection)
         raise Mongify::SqlConnectionRequired, "Can only read from Mongify::Database::SqlConnection" unless connection.is_a?(Mongify::Database::SqlConnection)
@@ -78,48 +78,48 @@ module Mongify
         translation
       end
     end
-    
+
     def initialize
       @all_tables = []
     end
-    
+
     # finds table by name
     def find(name)
       all_tables.find{ |t| t.name == name }
     end
-    
+
     # Creates a {Mongify::Database::Table} from the given input and adds it to the list of tables
     def table(table_name, options={}, &block)
       table = Mongify::Database::Table.new(table_name, options, &block)
       add_table(table)
     end
-    
+
     # Adds a {Mongify::Database::Table} to the list of tables
     def add_table(table)
       @all_tables << table
       table
     end
-    
+
     # Returns an array of all tables in the translation
     def all_tables
       @all_tables
     end
-    
+
     # Returns an array of all tables that have not been ingored
     def tables
       all_tables.reject{ |t| t.ignored? || t.polymorphic? }
     end
-    
+
     # Returns an array of all tables that have not been ignored and are just straight copy tables
     def copy_tables
       tables.reject{|t| t.embedded?}
     end
-    
+
     # Returns an array of all tables that have a polymorphic relationship
     def polymorphic_tables
       all_tables.reject{ |t| t.ignored? || !t.polymorphic? }
     end
-    
+
     # Returns an array of all tables that have not been ignored and are to be embedded
     def embed_tables
       tables.reject{|t| !t.embedded?}
