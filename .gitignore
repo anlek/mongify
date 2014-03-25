@@ -20,6 +20,8 @@ spec/tmp/*
 .bundle/*
 
 .rvmrc
+.ruby-gemset
+.ruby-version
 
 spec/support/database.yml
 

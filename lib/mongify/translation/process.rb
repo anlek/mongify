@@ -22,7 +22,7 @@ module Mongify
       #######
       private
       #######
-      
+
       # Does the straight copy (of tables)
       def copy_data
         self.copy_tables.each do |t|
@@ -35,7 +35,7 @@ module Mongify
           Mongify::Status.publish('copy_data', :action => 'finish')
         end
       end
-      
+
       # Updates the reference ids in the no sql database
       def update_reference_ids
         self.copy_tables.each do |t|
@@ -50,7 +50,7 @@ module Mongify
           Mongify::Status.publish('update_references', :action => 'finish')
         end
       end
-      
+
     end
   end
 end

@@ -150,20 +150,26 @@ describe Mongify::Translation::Process do
       end
       
       context "parent modification" do
+        it 'should unset fields deleted in the parent row' do
+          @embed_table = mock(:translate => [{}, {'email' => 'true'}, {'field_1' => '1'}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true)
+          @translation.stub(:tables).and_return([@target_table, @embed_table])
+          @no_sql_connection.should_receive(:update).with("posts", 500, {"$set"=>{"preferences"=>{}, "email"=>"true"}, "$unset"=>{'field_1' => '1'}})
+          @translation.send(:copy_embedded_tables)
+        end
         it "should work with embedded objects" do
-          @embed_table = mock(:translate => [{}, {'email' => 'true'}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true)
+          @embed_table = mock(:translate => [{}, {'email' => 'true'}, {}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true)
           @translation.stub(:tables).and_return([@target_table, @embed_table])
           @no_sql_connection.should_receive(:update).with("posts", 500, {"$set"=>{"preferences"=>{}, "email"=>"true"}})
           @translation.send(:copy_embedded_tables)
         end
         it "should work with embedded arrays" do
-          @embed_table = mock(:translate => [{}, {'email' => 'true'}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false)
+          @embed_table = mock(:translate => [{}, {'email' => 'true'}, {}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false)
           @translation.stub(:tables).and_return([@target_table, @embed_table])
           @no_sql_connection.should_receive(:update).with("posts", 500, {"$addToSet"=>{"preferences"=>{}}, "$set" => {"email"=>"true"}})
           @translation.send(:copy_embedded_tables)
         end
         it "should not set embedded attribute in parent" do
-          @embed_table = mock(:translate => [{'first_name' => 'joe'}, {'email' => 'true', 'comments' => [{'first_name' => 'bob'}]}], :name => 'comments', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false)
+          @embed_table = mock(:translate => [{'first_name' => 'joe'}, {'email' => 'true', 'comments' => [{'first_name' => 'bob'}]}, {}], :name => 'comments', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false)
           @translation.stub(:tables).and_return([@target_table, @embed_table])
           @no_sql_connection.should_receive(:update).with("posts", 500, {"$addToSet" => {"comments" => {"first_name" => "joe"}}, "$set" => {"email" => "true"}})
           @translation.send(:copy_embedded_tables)
@@ -187,6 +193,15 @@ describe Mongify::Translation::Process do
         @parent = {}
         @obj = {"$setAppend" => {"existing" => "true"}}
         @translation.send(:append_parent_object, @obj, @parent).should == {"$setAppend" => {"existing" => "true"}}
+      end
+      it "should not unset values if no unset_key is given" do
+        @obj = {"$setAppend" => {"existing" => "true"}}
+        @translation.send(:append_parent_object, @obj, @parent, {}).should == {"$set" => {"preference" => "email"}, "$setAppend" => {"existing" => "true"}}
+      end
+      it "should unset values if unset_keys are given" do
+        @obj = {"$set" => {"existing" => "true"}}
+        @translation.send(:append_parent_object, @obj, @parent, {'field_1' => '1'}).should ==
+            {"$set" => {"existing" => "true", "preference" => "email"}, '$unset' => {'field_1' => '1'}}
       end
     end
     

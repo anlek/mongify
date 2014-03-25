@@ -23,3 +23,12 @@ Feature: Processing a translation
   And there should be 3 users in mongodb
   And the first user's notify_by_email attribute should be true
   And the third user's notify_by_email attribute should be false
+
+  Scenario: Processing while deleting fields from embedding parent
+  Given a database exists
+  And a blank mongodb
+  When I run mongify process spec/files/base_configuration.rb spec/files/deleting_fields_from_embedding_parent_translation.rb
+  Then it succeeds
+  And there should be 3 teams in mongodb
+  And the first team's phone attribute should not be present
+  And the third team's coach's phone attribute should be +1112223334

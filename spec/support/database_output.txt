@@ -43,3 +43,20 @@ table "notes" do
 	column "updated_at", :datetime
 end
 
+table "teams" do
+	column "id", :key, :as => :integer
+	column "name", :string
+	column "phone", :string
+	column "created_at", :datetime
+	column "updated_at", :datetime
+end
+
+table "coaches" do
+	column "id", :key, :as => :integer
+	column "team_id", :integer, :references => "teams"
+	column "first_name", :string
+	column "last_name", :string
+	column "created_at", :datetime
+	column "updated_at", :datetime
+end
+
