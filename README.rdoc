@@ -274,7 +274,8 @@ You just need bundler >= 1.0.8
   gem install bundler
   bundle install
   copy over spec/support/database.example to spec/support/database.yml and fill in required info
-  rake test:mysql:setup
+  rake test:setup:mysql
+  rake test:setup:postgresql
   rake test
 
 == Special Thanks
