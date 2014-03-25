@@ -187,8 +187,9 @@ Table Options are as follow:
   end
 
   table "preferences", :embed_in => "users" do              # As of version 0.2, embedded tables with a before_save will take an
-    before_save do |pref_row, user_row|                     # extra argument which is the parent row of the embedded table.
+    before_save do |pref_row, user_row, unset_user_row|                     # extra argument which is the parent row of the embedded table.
       user_row.email_me = pref_row.delete('email_me')       # This gives you the ability to move things from an embedded table row
+      unset_user_row['last_name'] if pref_row['one_name']   # This will actually delete the last name for the parent row
     end                                                     # to the parent row.
   end
 
