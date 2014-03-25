@@ -24,6 +24,7 @@ Feature: Mongify can be controlled using command-line options
       Commands:
       "check" or "ck"           >> Checks connection for sql and no_sql databases [configuration_file]
       "process" or "pr"         >> Takes a translation and process it to mongodb [configuration_file, translation_file]
+      "sync" or "sy"            >> Takes a translation and process it to mongodb, only syncs (insert/update) new or updated records based on the updated_at column [configuration_file, translation_file]
       "translation" or "tr"     >> Outputs a translation file from a sql connection [configuration_file]
 
       Examples:
@@ -31,6 +32,7 @@ Feature: Mongify can be controlled using command-line options
       mongify check database.config
       mongify translation datbase.config > database_translation.rb
       mongify process database.config database_translation.rb
+      mongify sync database.config database_translation.rb
 
       See http://github.com/anlek/mongify for more details
 
