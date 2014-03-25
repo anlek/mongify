@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('mysql2', '~> 0.3.1')
   s.add_development_dependency('watchr', '>= 0.6')
   s.add_development_dependency('rake')
+  s.add_development_dependency('pry-plus')
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
