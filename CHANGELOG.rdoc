@@ -1,7 +1,8 @@
-== 1.1 / Working Version
+== 1.1 / 24 March 2014
 * Sync feature add (thanks to {hammady}[https://github.com/hammady])
 * Parent unset in before_save (tanks to {nessche}[https://github.com/nessche])
 * Added batch_size (recommended by {mosheka}[https://github.com/mosheka])
+* bugs and performance improvments
 == 1.0.1 / 24 December 2013
 * Updated and locked down gems to prevent Mongify from breaking when rails gets updated.
 == 1.0.0 / 28 May 2013
