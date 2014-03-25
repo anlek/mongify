@@ -84,7 +84,7 @@ describe Mongify::Translation::Process do
 
   context "processing actions" do
     before(:each) do
-      @sql_connection = mock(:select_rows => [{'first_name'=> 'Timmy', 'last_name' => 'Zuza', 'preference_id' => 1}])
+      @sql_connection.stub(:select_paged_rows).and_return([{'first_name'=> 'Timmy', 'last_name' => 'Zuza', 'preference_id' => 1}])
       @translation.stub(:sql_connection).and_return(@sql_connection)
 
       @no_sql_connection = mock()
@@ -100,18 +100,19 @@ describe Mongify::Translation::Process do
 
     context "copy_data" do
       it "should call translate on the tables" do
-        @no_sql_connection.should_receive(:insert_into).with("users", {"last_name"=>"Zuza", "preference_id"=>1, "first_name"=>"Timmy"}).and_return(true)
+        @no_sql_connection.should_receive(:insert_into).with("users", [{"last_name"=>"Zuza", "preference_id"=>1, "first_name"=>"Timmy"}]).and_return(true)
         @translation.send(:copy_data)
       end
       it "should allow rename of table" do
         @table.stub(:name).and_return('people')
-        @no_sql_connection.should_receive(:insert_into).with("people", {"last_name"=>"Zuza", "preference_id"=>1, "first_name"=>"Timmy"}).and_return(true)
+        @no_sql_connection.should_receive(:insert_into).with("people", [{"last_name"=>"Zuza", "preference_id"=>1, "first_name"=>"Timmy"}]).and_return(true)
         @translation.send(:copy_data)
       end
     end
 
     context "copy_embed_tables" do
       before(:each) do
+        @sql_connection.stub(:select_rows).and_return([{'first_name'=> 'Timmy', 'last_name' => 'Zuza', 'preference_id' => 1}])
         @target_table = mock(:name => 'posts', :embedded? => false, :sql_name => 'posts')
         @embed_table = mock(:translate => {}, :name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false, :sql_name => 'comments')
         @no_sql_connection.stub(:find_one).and_return({'_id' => 500})

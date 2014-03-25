@@ -34,13 +34,12 @@ module Mongify
       def initialize(options={})
         super options
         @options = options
-        adapter 'mongodb' if adapter.nil?
+        adapter 'mongodb' if adapter.nil? || adapter.downcase == "mongo"
       end
 
       # Sets and/or returns a adapter
       # It takes care of renaming adapter('mongo') to 'mongodb'
       def adapter(name=nil)
-        name = 'mongodb' if name && name.to_s.downcase == 'mongo'
         super(name)
       end
 

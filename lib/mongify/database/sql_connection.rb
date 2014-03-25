@@ -30,7 +30,7 @@ module Mongify
       # List of required fields to bulid a valid sql connection
       REQUIRED_FIELDS = %w{host adapter database}
 
-      def initialize(options=nil)
+      def initialize(options={})
         options['batch_size'] ||= 10000
         super(options)
       end
@@ -81,11 +81,15 @@ module Mongify
 
         row_count = count(table_name);
         pages = (row_count.to_f/batch_size).ceil
-        (1..pages).each do |idx|
-          rows = self.connection.select_all("SELECT * FROM #{table_name} LIMIT #{batch_size} OFFSET #{(idx -1) * batch_size}")
-          yield rows, idx, pages
+        (1..pages).each do |page|
+          rows = select_paged_rows(table_name, batch_size, page)
+          yield rows, page, pages
         end
 
+      end
+
+      def select_paged_rows(table_name, batch_size, page)
+        connection.select_all("SELECT * FROM #{table_name} LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}")
       end
 
       # Returns an array with hash values of the records in a given table specified by a query
