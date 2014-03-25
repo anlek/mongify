@@ -254,9 +254,7 @@ More documentation can be found at {Mongify::Database::Column}
 
 == Notes
 
-Mongify has been tested on Ruby 1.8.7-p330 and Ruby 1.9.2-p136
-
-Mongify currently DOES NOT work on Ruby 2.x
+Mongify has been tested on Ruby 1.8.7-p330, 1.9.2-p136, 1.9.3-p327, 2.0.0-p353, 2.1.1
 
 If you have any issues, please feel free to report them here: {issue tracker}[https://github.com/anlek/mongify/issues]
 
