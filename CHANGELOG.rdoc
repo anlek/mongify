@@ -1,3 +1,5 @@
+== 1.1 / Working Version
+* Sync feature add (thanks to {hammady}[https://github.com/hammady])
 == 1.0.1 / 24 December 2013
 * Updated and locked down gems to prevent Mongify from breaking when rails gets updated.
 == 1.0.0 / 28 May 2013

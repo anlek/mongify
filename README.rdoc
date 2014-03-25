@@ -250,7 +250,14 @@ More documentation can be found at {Mongify::Database::Column}
 == Notes
 
 Mongify has been tested on Ruby 1.8.7-p330 and Ruby 1.9.2-p136
+
+Mongify currently DOES NOT work on Ruby 2.x
+
 If you have any issues, please feel free to report them here: {issue tracker}[https://github.com/anlek/mongify/issues]
+
+== Sync Note
+
+If you want to continually sync your sql database with MongoDB using Mongify, you MUST run the sync feature from the start. Using the process command will not permit future syncing. The sync feature leaves the `pre_mongify_id` in your documents as well as it creates it's own collection called `__mongify_sync_helper__` to keep dates and times of your last sync.
 
 == Additional Tools
 
