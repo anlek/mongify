@@ -34,24 +34,25 @@ module Mongify
       # Does a copy of the embedded tables
       def copy_embedded_tables
         self.embed_tables.each do |t|
-          rows = sql_connection.select_rows(t.sql_name)
-          Mongify::Status.publish('copy_embedded', :size => rows.count, :name => "Embedding #{t.name}", :action => 'add')
-          rows.each do |row|
-            target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => row[t.embed_on]})
-            next unless target_row.present?
-            row, parent_row, unset_keys = t.translate(row, target_row)
-            parent_row ||= {}
-            parent_row.delete("_id")
-            parent_row.delete(t.name.to_s)
-            unset_keys ||= {}
-            row.delete(t.embed_on)
-            row.merge!(fetch_reference_ids(t, row))
-            row.delete('pre_mongified_id')
-            save_function_call = t.embedded_as_object? ? '$set' : '$addToSet'
-            no_sql_connection.update(t.embed_in, target_row['_id'], append_parent_object({save_function_call => {t.name => row}}, parent_row, unset_keys))
-            Mongify::Status.publish('copy_embedded')
+          sql_connection.select_rows(t.sql_name) do |rows, page, total_pages|
+            Mongify::Status.publish('copy_embedded', :size => rows.count, :name => "Embedding #{t.name} (#{page}/#{total_pages})", :action => 'add')
+            rows.each do |row|
+              target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => row[t.embed_on]})
+              next unless target_row.present?
+              row, parent_row, unset_keys = t.translate(row, target_row)
+              parent_row ||= {}
+              parent_row.delete("_id")
+              parent_row.delete(t.name.to_s)
+              unset_keys ||= {}
+              row.delete(t.embed_on)
+              row.merge!(fetch_reference_ids(t, row))
+              row.delete('pre_mongified_id')
+              save_function_call = t.embedded_as_object? ? '$set' : '$addToSet'
+              no_sql_connection.update(t.embed_in, target_row['_id'], append_parent_object({save_function_call => {t.name => row}}, parent_row, unset_keys))
+              Mongify::Status.publish('copy_embedded')
+            end
+            Mongify::Status.publish('copy_embedded', :action => 'finish')
           end
-          Mongify::Status.publish('copy_embedded', :action => 'finish')
         end
       end
 
@@ -59,34 +60,34 @@ module Mongify
       def copy_polymorphic_tables
         self.polymorphic_tables.each do |t|
           polymorphic_id_col, polymorphic_type_col = "#{t.polymorphic_as}_id", "#{t.polymorphic_as}_type"
-          rows = sql_connection.select_rows(t.sql_name)
-          Mongify::Status.publish('copy_polymorphic', :size => rows.count, :name => "Polymorphicizing #{t.name}", :action => 'add')
-          rows.each do |row|
+          sql_connection.select_rows(t.sql_name) do |rows, page, total_pages|
+            Mongify::Status.publish('copy_polymorphic', :size => rows.count, :name => "Polymorphicizing #{t.name}", :action => 'add')
+            rows.each do |row|
 
-            #If no data is in the column, skip importing
+              #If no data is in the column, skip importing
+              if (row[polymorphic_type_col])
+                table_name = row[polymorphic_type_col].tableize
+                new_id = no_sql_connection.get_id_using_pre_mongified_id(table_name, row[polymorphic_id_col])
+              end
 
-            if (row[polymorphic_type_col])
-              table_name = row[polymorphic_type_col].tableize
-              new_id = no_sql_connection.get_id_using_pre_mongified_id(table_name, row[polymorphic_id_col])
+              row = t.translate(row)
+              row[polymorphic_id_col] = new_id if new_id
+              row.merge!(fetch_reference_ids(t, row))
+              row.delete('pre_mongified_id')
+
+              if t.embedded? && table_name
+                row.delete(polymorphic_id_col)
+                row.delete(polymorphic_type_col)
+                save_function_call = t.embedded_as_object? ? '$set' : '$addToSet'
+                no_sql_connection.update(table_name, new_id, {save_function_call => {t.name => row}})
+              else
+                no_sql_connection.insert_into(t.name, row)
+              end
+
+              Mongify::Status.publish('copy_polymorphic')
             end
-
-            row = t.translate(row)
-            row[polymorphic_id_col] = new_id if new_id
-            row.merge!(fetch_reference_ids(t, row))
-            row.delete('pre_mongified_id')
-
-            if t.embedded? && table_name
-              row.delete(polymorphic_id_col)
-              row.delete(polymorphic_type_col)
-              save_function_call = t.embedded_as_object? ? '$set' : '$addToSet'
-              no_sql_connection.update(table_name, new_id, {save_function_call => {t.name => row}})
-            else
-              no_sql_connection.insert_into(t.name, row)
-            end
-
-            Mongify::Status.publish('copy_polymorphic')
+            Mongify::Status.publish('copy_polymorphic', :action => 'finish')
           end
-          Mongify::Status.publish('copy_polymorphic', :action => 'finish')
         end
       end
 

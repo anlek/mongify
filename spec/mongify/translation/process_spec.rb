@@ -112,7 +112,7 @@ describe Mongify::Translation::Process do
 
     context "copy_embed_tables" do
       before(:each) do
-        @sql_connection.stub(:select_rows).and_return([{'first_name'=> 'Timmy', 'last_name' => 'Zuza', 'preference_id' => 1}])
+        @sql_connection.stub(:select_paged_rows).and_return([{'first_name'=> 'Timmy', 'last_name' => 'Zuza', 'preference_id' => 1}])
         @target_table = mock(:name => 'posts', :embedded? => false, :sql_name => 'posts')
         @embed_table = mock(:translate => {}, :name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false, :sql_name => 'comments')
         @no_sql_connection.stub(:find_one).and_return({'_id' => 500})
@@ -231,7 +231,7 @@ describe Mongify::Translation::Process do
                           :sql_name => 'user_accounts')
         @translation.stub(:find).with('user_accounts').and_return([@ref_table])
 
-        @sql_connection.stub(:select_rows).with('comments').and_return([{'commentable_id' => 1, 'commentable_type' => 'UserAccount', 'data' => 'good'}])
+        @sql_connection.stub(:select_paged_rows).with('comments', anything, anything).and_return([{'commentable_id' => 1, 'commentable_type' => 'UserAccount', 'data' => 'good'}])
         @no_sql_connection.stub(:get_id_using_pre_mongified_id).with('user_accounts', 1).and_return(500)
       end
       context "embedded" do
@@ -253,7 +253,7 @@ describe Mongify::Translation::Process do
         end
       end
       context "not embedded" do
-        it "should work" do
+        before(:each) do
           @table = mock(:translate => {'data' => 123, 'commentable_type' => 'UserAccount', 'commentable_id' => 1},
                           :name => 'comments',
                           :embedded? => false,
@@ -265,23 +265,15 @@ describe Mongify::Translation::Process do
                           :reference_columns => [])
 
           @translation.stub(:all_tables).and_return([@table])
+        end
+        it "should work" do
           @no_sql_connection.should_receive(:get_id_using_pre_mongified_id).with('user_accounts', 1).and_return(500)
           @no_sql_connection.should_receive(:insert_into).with('comments', {'data' => 123, 'commentable_type' => 'UserAccount', 'commentable_id' => 500})
           @translation.send(:copy_polymorphic_tables)
         end
         it "should copy even if there is no polymorphic data" do
-          @table = mock(:translate => {'data' => 123, 'commentable_type' => nil, 'commentable_id' => nil},
-                          :name => 'comments',
-                          :embedded? => false,
-                          :polymorphic_as => 'commentable',
-                          :polymorphic? => true,
-                          :ignored? => false,
-                          :embedded_as_object? => false,
-                          :sql_name => 'comments',
-                          :reference_columns => [])
-
-          @translation.stub(:all_tables).and_return([@table])
-          @sql_connection.should_receive(:select_rows).with('comments').and_return([{'commentable_id' => nil, 'commentable_type' => nil, 'data' => 'good'}])
+          @sql_connection.should_receive(:select_paged_rows).with('comments', anything, anything).and_return([{'commentable_id' => nil, 'commentable_type' => nil, 'data' => 'good'}])
+          @table.stub(:translate => {'data' => 123, 'commentable_type' => nil, 'commentable_id' => nil})
           @no_sql_connection.should_receive(:insert_into).with('comments', {'data' => 123, 'commentable_type' => nil, 'commentable_id' => nil})
           @no_sql_connection.should_receive(:get_id_using_pre_mongified_id).never
           @translation.send(:copy_polymorphic_tables)
