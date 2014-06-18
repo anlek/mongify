@@ -37,7 +37,8 @@ module Mongify
           sql_connection.select_rows(t.sql_name) do |rows, page, total_pages|
             Mongify::Status.publish('copy_embedded', :size => rows.count, :name => "Embedding #{t.name} (#{page}/#{total_pages})", :action => 'add')
             rows.each do |row|
-              target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => row[t.embed_on]})
+              target_row_id = t.find_column(t.embed_on).try(:type_cast, row[t.embed_on]) || row[t.embed_on]
+              target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => target_row_id})
               next unless target_row.present?
               row, parent_row, unset_keys = t.translate(row, target_row)
               parent_row ||= {}

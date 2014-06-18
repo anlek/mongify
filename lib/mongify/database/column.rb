@@ -226,9 +226,6 @@ module Mongify
       def scale=(value)
         options['scale'] = value.to_i
       end
-      #######
-      private
-      #######
 
       # Casts the value to a given type
       def type_cast(value)
@@ -256,7 +253,9 @@ module Mongify
         end
       end
 
-
+      #######
+      private
+      #######
 
       # runs auto detect (see {Mongify::Database::Column.auto_detect})
       def run_auto_detect!
