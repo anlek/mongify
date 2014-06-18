@@ -30,7 +30,7 @@ module Mongify
       @finished_p = false
       @start_time = Time.now
       @previous_time = @start_time
-      @title_width = 35
+      @title_width = 37
       @format = "%-#{@title_width}s %s %3d%% %s %s"
       @format_arguments = [:title, :count, :percentage, :bar, :stat]
       clear
@@ -79,7 +79,7 @@ module Mongify
 
     # Formatting for count (x/y)
     def fmt_count
-      sprintf('%15s', "(#{@current}/#{@total})")
+      sprintf('%13s', "(#{@current}/#{@total})")
     end
 
     # Converts bytes to kb, mb or gb
