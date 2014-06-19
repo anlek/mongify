@@ -37,8 +37,7 @@ module Mongify
           sql_connection.select_rows(t.sql_name) do |rows, page, total_pages|
             Mongify::Status.publish('copy_embedded', :size => rows.count, :name => "Embedding #{t.name} (#{page}/#{total_pages})", :action => 'add')
             rows.each do |row|
-              target_row_id = t.find_column(t.embed_on).try(:type_cast, row[t.embed_on]) || row[t.embed_on]
-              target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => target_row_id})
+              target_row = no_sql_connection.find_one(t.embed_in, {:pre_mongified_id => get_type_casted_value(t, t.embed_on, row)})
               next unless target_row.present?
               row, parent_row, unset_keys = t.translate(row, target_row)
               parent_row ||= {}
@@ -68,7 +67,7 @@ module Mongify
               #If no data is in the column, skip importing
               if (row[polymorphic_type_col])
                 table_name = row[polymorphic_type_col].tableize
-                new_id = no_sql_connection.get_id_using_pre_mongified_id(table_name, row[polymorphic_id_col])
+                new_id = no_sql_connection.get_id_using_pre_mongified_id(table_name, get_type_casted_value(t, polymorphic_id_col, row))
               end
 
               row = t.translate(row)
@@ -127,6 +126,10 @@ module Mongify
           object["$unset"] = object.has_key?('$unset') ? object["$unset"].merge(unset_keys) : unset_keys
         end
         object
+      end
+
+      def get_type_casted_value table, column, row
+        table.find_column(column).try(:type_cast, row[column]) || row[column]
       end
 
     end

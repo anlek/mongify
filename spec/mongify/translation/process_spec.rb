@@ -244,7 +244,8 @@ describe Mongify::Translation::Process do
                           :ignored? => false,
                           :embedded_as_object? => false,
                           :sql_name => 'comments',
-                          :reference_columns => [])
+                          :reference_columns => [],
+                          :find_column => nil)
 
             @translation.stub(:all_tables).and_return([@table])
 
@@ -262,7 +263,8 @@ describe Mongify::Translation::Process do
                           :ignored? => false,
                           :embedded_as_object? => false,
                           :sql_name => 'comments',
-                          :reference_columns => [])
+                          :reference_columns => [],
+                          :find_column => nil)
 
           @translation.stub(:all_tables).and_return([@table])
         end
