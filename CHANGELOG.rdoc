@@ -1,4 +1,4 @@
-== 1.2 / Development
+== 1.2 / 16 June 2014
 * Added batching to embedded and polymorphic tables.
 * Tweaked progress bar display.
 * Fixed issue with embedding
