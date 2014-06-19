@@ -1,5 +1,8 @@
-== 1.1.1 / Development
-* Added batching to embedded and polymorphic tables
+== 1.2 / Development
+* Added batching to embedded and polymorphic tables.
+* Tweaked progress bar display.
+* Fixed issue with embedding
+* Updated mongo drivers to version 1.10.2
 == 1.1 / 24 March 2014
 * Sync feature add (thanks to {hammady}[https://github.com/hammady])
 * Parent unset in before_save (tanks to {nessche}[https://github.com/nessche])
