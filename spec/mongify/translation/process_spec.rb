@@ -63,7 +63,7 @@ describe Mongify::Translation::Process do
     it "should get correct information" do
       @no_sql_connection = mock()
       @translation.stub(:no_sql_connection).and_return(@no_sql_connection)
-      @table = mock(:translate => {}, :name => 'users', :embedded? => false)
+      @table = mock(:translate => {}, :name => 'users', :embedded? => false, :find_column => nil)
       @column = mock(:name => 'user_id', :references => 'users')
       @table.stub(:reference_columns).and_return([@column])
       @no_sql_connection.should_receive(:get_id_using_pre_mongified_id).with('users', 1).once.and_return(500)
@@ -114,7 +114,7 @@ describe Mongify::Translation::Process do
       before(:each) do
         @sql_connection.stub(:select_paged_rows).and_return([{'first_name'=> 'Timmy', 'last_name' => 'Zuza', 'preference_id' => 1}])
         @target_table = mock(:name => 'posts', :embedded? => false, :sql_name => 'posts')
-        @embed_table = mock(:translate => {}, :name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false, :sql_name => 'comments')
+        @embed_table = mock(:translate => {}, :name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false, :sql_name => 'comments', :find_column => nil)
         @no_sql_connection.stub(:find_one).and_return({'_id' => 500})
         @translation.stub(:tables).and_return([@target_table, @embed_table])
         @translation.stub(:fetch_reference_ids).and_return({})
@@ -126,25 +126,25 @@ describe Mongify::Translation::Process do
         @translation.send(:copy_embedded_tables)
       end
       it "should remove the pre_mongified_id before embedding" do
-        @embed_table = mock(:translate => {'first_name' => 'bob', 'pre_mongified_id' => 1}, :name => 'comments', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false)
+        @embed_table = mock(:translate => {'first_name' => 'bob', 'pre_mongified_id' => 1}, :name => 'comments', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false, :find_column => nil)
         @translation.stub(:tables).and_return([@target_table, @embed_table])
         @no_sql_connection.should_receive(:update).with("posts", 500, {"$addToSet"=>{"comments"=>{'first_name' => 'bob'}}})
         @translation.send(:copy_embedded_tables)
       end
       it "should remove the parent_id from the embedding row" do
-        @embed_table = mock(:translate => {'first_name' => 'bob', 'post_id' => 1}, :name => 'comments', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false)
+        @embed_table = mock(:translate => {'first_name' => 'bob', 'post_id' => 1}, :name => 'comments', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false, :find_column => nil)
         @translation.stub(:tables).and_return([@target_table, @embed_table])
         @no_sql_connection.should_receive(:update).with("posts", 500, {"$addToSet"=>{"comments"=>{'first_name' => 'bob'}}})
         @translation.send(:copy_embedded_tables)
       end
       it "should call $addToSet on update of an embed_as_object table" do
-        @embed_table = mock(:translate => {'first_name' => 'bob', 'post_id' => 1}, :name => 'comments', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true)
+        @embed_table = mock(:translate => {'first_name' => 'bob', 'post_id' => 1}, :name => 'comments', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true, :find_column => nil)
         @translation.stub(:tables).and_return([@target_table, @embed_table])
         @no_sql_connection.should_receive(:update).with("posts", 500, {"$set"=>{"comments"=>{'first_name' => 'bob'}}})
         @translation.send(:copy_embedded_tables)
       end
       it "should allow rename of table" do
-        @embed_table = mock(:translate => {'first_name' => 'bob', 'post_id' => 1}, :name => 'notes', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true)
+        @embed_table = mock(:translate => {'first_name' => 'bob', 'post_id' => 1}, :name => 'notes', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true, :find_column => nil)
         @translation.stub(:tables).and_return([@target_table, @embed_table])
         @no_sql_connection.should_receive(:update).with("posts", 500, {"$set"=>{"notes"=>{'first_name' => 'bob'}}})
         @translation.send(:copy_embedded_tables)
@@ -152,25 +152,25 @@ describe Mongify::Translation::Process do
 
       context "parent modification" do
         it 'should unset fields deleted in the parent row' do
-          @embed_table = mock(:translate => [{}, {'email' => 'true'}, {'field_1' => '1'}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true)
+          @embed_table = mock(:translate => [{}, {'email' => 'true'}, {'field_1' => '1'}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true, :find_column => nil)
           @translation.stub(:tables).and_return([@target_table, @embed_table])
           @no_sql_connection.should_receive(:update).with("posts", 500, {"$set"=>{"preferences"=>{}, "email"=>"true"}, "$unset"=>{'field_1' => '1'}})
           @translation.send(:copy_embedded_tables)
         end
         it "should work with embedded objects" do
-          @embed_table = mock(:translate => [{}, {'email' => 'true'}, {}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true)
+          @embed_table = mock(:translate => [{}, {'email' => 'true'}, {}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => true, :find_column => nil)
           @translation.stub(:tables).and_return([@target_table, @embed_table])
           @no_sql_connection.should_receive(:update).with("posts", 500, {"$set"=>{"preferences"=>{}, "email"=>"true"}})
           @translation.send(:copy_embedded_tables)
         end
         it "should work with embedded arrays" do
-          @embed_table = mock(:translate => [{}, {'email' => 'true'}, {}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false)
+          @embed_table = mock(:translate => [{}, {'email' => 'true'}, {}], :name => 'preferences', :sql_name => 'preferences', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false, :find_column => nil)
           @translation.stub(:tables).and_return([@target_table, @embed_table])
           @no_sql_connection.should_receive(:update).with("posts", 500, {"$addToSet"=>{"preferences"=>{}}, "$set" => {"email"=>"true"}})
           @translation.send(:copy_embedded_tables)
         end
         it "should not set embedded attribute in parent" do
-          @embed_table = mock(:translate => [{'first_name' => 'joe'}, {'email' => 'true', 'comments' => [{'first_name' => 'bob'}]}, {}], :name => 'comments', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false)
+          @embed_table = mock(:translate => [{'first_name' => 'joe'}, {'email' => 'true', 'comments' => [{'first_name' => 'bob'}]}, {}], :name => 'comments', :sql_name => 'comments', :embedded? => true, :embed_on => 'post_id', :embed_in => 'posts', :embedded_as_object? => false, :find_column => nil)
           @translation.stub(:tables).and_return([@target_table, @embed_table])
           @no_sql_connection.should_receive(:update).with("posts", 500, {"$addToSet" => {"comments" => {"first_name" => "joe"}}, "$set" => {"email" => "true"}})
           @translation.send(:copy_embedded_tables)
