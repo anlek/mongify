@@ -1,3 +1,6 @@
+== 1.2.2 / 9 July 2014
+* Locked in BSON and rspec gem to versions that will work with Mongify
+* Updated gems
 == 1.2.1 / 16 June 2014
 * Fixed polymorphic associations not getting set properly
 == 1.2 / 16 June 2014
