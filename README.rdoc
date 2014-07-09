@@ -38,7 +38,7 @@ Building a config file is as simple as this:
   end
 
 You can check your configuration by running
-  mongify check database.config
+  mongify check -c database.config
 
 ==== Options
 Currently the only supported option is for the mongodb_connection.
@@ -54,9 +54,9 @@ Currently the only supported option is for the mongodb_connection.
 
 ==== Generating a translation
 If your database is large and complex, it might be a bit too much work to write the translation file by hand. Mongify's translate command can help with this:
-  mongify translation database.config
+  mongify translation -c database.config
 Or pipe it right into a file by running
-  mongify translation database.config > translation_file.rb
+  mongify translation -c database.config > translation_file.rb
 
 ==== Creating a translation
 Creating a translation is pretty straightforward. It looks something like this:
@@ -106,29 +106,29 @@ Creating a translation is pretty straightforward. It looks something like this:
 
 Save the file as <tt>"translation_file.rb"</tt> and run the command:
 
-  mongify process database.config translation_file.rb
+  mongify process translation_file.rb -c database.config
 
 === Commands
 
-  Usage: mongify command database_config [database_translation.rb]
+  Usage: mongify command [database_translation.rb] [-c database.config]
 
   Commands:
-    "check" or "ck"           >> Checks connection for sql and no_sql databases [configuration_file]
-    "process" or "pr"         >> Takes a translation and process it to mongodb [configuration_file, translation_file]
-    "sync" or "sy"            >> Takes a translation and process it to mongodb, only syncs (insert/update) new or updated records based on the updated_at column [configuration_file, translation_file]
-    "translation" or "tr"     >> Outputs a translation file from a sql connection [configuration_file]
+  "check" or "ck"           >> Checks connection for sql and no_sql databases [configuration_file]
+  "process" or "pr"         >> Takes a translation and process it to mongodb [configuration_file, translation_file]
+  "translation" or "tr"     >> Outputs a translation file from a sql connection [configuration_file]
 
   Examples:
 
-    mongify translation datbase.config
-    mongify tr database.config
-    mongify check database.config
-    mongify process database.config database_translation.rb
-    mongify sync database.config database_translation.rb
+  mongify check -c database.config
+  mongify translation -c datbase.config > database_translation.rb
+  mongify process database_translation.rb -c database.config
+
+  See http://github.com/anlek/mongify for more details
 
   Common options:
       -h, --help                       Show this message
       -v, --version                    Show version
+      -c, --config FILE                Configuration File to use
 
 == Translation Layout and Options
 
