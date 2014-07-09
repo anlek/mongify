@@ -15,11 +15,12 @@ Gem::Specification.new do |s|
   s.add_dependency('activerecord', "~> 3.2")
   s.add_dependency('activesupport', "~> 3.2")
   s.add_dependency('mongo', "~> 1.10.2")
+  s.add_dependency('bson', "~> 1.10.2")
   s.add_dependency('bson_ext', "~> 1.10.2") unless RUBY_PLATFORM == 'java'
   s.add_dependency('highline', '>= 1.6.1')
 
 
-  s.add_development_dependency('rspec', '>= 2.0')
+  s.add_development_dependency('rspec', '~> 2.0')
   s.add_development_dependency('cucumber', '>= 0.10')
   s.add_development_dependency('mocha', '>= 0.9.8')
   s.add_development_dependency('yard', '>= 0.5.3')
