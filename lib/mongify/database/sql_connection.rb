@@ -90,8 +90,15 @@ module Mongify
 
       def select_paged_rows(table_name, batch_size, page)
         if adapter == "sqlserver"
-          start_row = (page - 1) * batch_size
-          return connection.select_all("SELECT *,ROW_NUMBER() OVER(ORDER BY SomeFields) AS [RowNum] FROM #{table_name} WHERE RowNum BETWEEN #{start_row} and #{start_row + batch_size} ")
+          offset = (page - 1) * batch_size
+          return connection.select_all(
+            "SELECT * FROM
+                        (
+                            SELECT TOP #{offset+batch_size} *, ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS rnum
+                            FROM table
+                        ) #{table_nane}
+                        WHERE rnum > #{offset}"
+          )
         end
         connection.select_all("SELECT * FROM #{table_name} LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}")
       end
