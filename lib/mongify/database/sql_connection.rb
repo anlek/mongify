@@ -95,7 +95,7 @@ module Mongify
             "SELECT * FROM
                         (
                             SELECT TOP #{offset+batch_size} *, ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS rnum
-                            FROM table
+                            FROM #{table_name}
                         ) #{table_name}
                         WHERE rnum > #{offset}"
           )
