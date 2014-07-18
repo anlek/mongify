@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mongify (1.2.2)
+    mongify (1.2.3)
       activerecord (~> 3.2)
       activesupport (~> 3.2)
       bson (~> 1.10.2)
