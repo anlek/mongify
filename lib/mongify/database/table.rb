@@ -76,8 +76,7 @@ module Mongify
 
       # Returns the no_sql collection name
       def name
-        @name ||= @options['rename_to']
-        @name ||= self.sql_name
+        @name = @options['rename_to'] || self.sql_name
       end
 
       # Returns true if table is ignored
