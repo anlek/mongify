@@ -9,12 +9,12 @@ module Mongify
 
       # See if a given key is included
       def include?(key)
-        @hash.has_key?(key)
+        @hash.has_key?(key.to_s)
       end
 
       # Deletes a given key from the object
       def delete(key)
-        @hash.delete(key)
+        @hash.delete(key.to_s)
       end
 
       # Returns a list of available keys
