@@ -1,3 +1,7 @@
+== 1.2.3 / 17 July 2014
+* Fixed MS Sql batching issue
+* Fixed row.delete requiring you to send in a string (vs symbol)
+* Small tweak on table.name (making sure rename_to value gets returns first)
 == 1.2.2 / 9 July 2014
 * Locked in BSON and rspec gem to versions that will work with Mongify
 * Updated gems
