@@ -12,8 +12,8 @@ module Mongify
         prepare_connections(sql_connection, no_sql_connection)
         setup_db_index
         copy_data
-        copy_embedded_tables
         update_reference_ids
+        copy_embedded_tables
         copy_polymorphic_tables
         remove_pre_mongified_ids
         nil
