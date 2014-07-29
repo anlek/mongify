@@ -1,6 +1,7 @@
 #
 # Mongify's core functionality
 #
+require 'active_support'
 require 'active_support/core_ext'
 require 'active_record'
 require 'highline'
