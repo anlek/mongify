@@ -1,4 +1,4 @@
-== 1.2.4 / In development
+== 1.2.4 / 29 July 2014
 * Fixed bug with ActiveSupport::Autoload (thanks [altieres](https://github.com/anlek/mongify/pull/46))
 * Moved the order of reference updating to be second (after copying tables), this way embed tables can use new references
 * Small tweak on table.name (making sure rename_to value gets returns first) - It wasn't commited in version 1.2.3
