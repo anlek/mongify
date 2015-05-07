@@ -29,6 +29,7 @@ module Mongify
 
       # List of required fields to bulid a valid sql connection
       REQUIRED_FIELDS = %w{host adapter database}
+      SYNC_HELPER_TABLE = "__mongify_sync_helper__"
 
       def initialize(options={})
         options['batch_size'] ||= 10000
@@ -76,7 +77,7 @@ module Mongify
       end
 
       # Returns an array with hash values of all the records in a given table
-      def select_rows(table_name, sync_helper_table, &block)
+      def select_rows(table_name, is_sync, &block)
         return self.connection.select_all("SELECT * FROM #{table_name}") unless block_given?
 
         row_count = count(table_name);
@@ -104,7 +105,7 @@ module Mongify
 
         # TODO: need to pass in SYNC_HELPER_TABLE
         q = "SELECT t.* FROM #{table_name} t, LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}"
-        if sync_helper_table
+        if is_sync
             q = "SELECT t.* FROM #{table_name} t," +
                 "#{SYNC_HELPER_TABLE} u WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{table_name} '" +
                 "LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}"

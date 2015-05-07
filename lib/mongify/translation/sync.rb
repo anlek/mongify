@@ -56,7 +56,7 @@ module Mongify
       # Does the straight copy (of tables)
       def sync_data
         self.copy_tables.each do |t|
-          sql_connection.select_rows(t.sql_name, SYNC_HELPER_TABLE) do |rows, page, total_pages|
+          sql_connection.select_rows(t.sql_name, true) do |rows, page, total_pages|
             Mongify::Status.publish('copy_data', :size => rows.count, :name => "Syncing #{t.name} (#{page}/#{total_pages})", :action => 'add')
             max_updated_at, max_updated_at_id = Time.new(1970), nil
             rows.each do |row|
