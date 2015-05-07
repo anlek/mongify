@@ -91,6 +91,8 @@ module Mongify
       def select_paged_rows(table_name, batch_size, page)
         if adapter == "sqlserver"
           offset = (page - 1) * batch_size
+
+          # TODO: sync support for sql server
           return connection.select_all(
             "SELECT * FROM
                         (
@@ -100,22 +102,16 @@ module Mongify
                         WHERE rnum > #{offset}"
           )
         end
-        connection.select_all("SELECT * FROM #{table_name} LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}")
-      end
 
-      def select_sync_rows(table_name)
-          row_count = count(table_name);
-          pages = (row_count.to_f/batch_size).ceil
+        # TODO: need to pass in SYNC_HELPER_TABLE
+        q = "SELECT t.* FROM #{table_name} t, LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}"
+        if sync_helper_table
+            q = "SELECT t.* FROM #{table_name} t," +
+                "#{SYNC_HELPER_TABLE} u WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{table_name},'" +
+                "LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}"
+        end
 
-          (1..pages).each do |page|
-             rows = select_sync_paged_rows(table_name, batch_size, page)
-          end
-      end
-
-      def select_sync_paged_rows(table_name, batch_size, page)
-         q = "SELECT t.* FROM #{t.sql_name} t, #{SYNC_HELPER_TABLE} u " +
-             "WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{t.sql_name}'"
-         connection.select_all()
+        connection.select_all(q)
       end
 
       # Returns an array with hash values of the records in a given table specified by a query
