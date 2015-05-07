@@ -106,7 +106,7 @@ module Mongify
         q = "SELECT t.* FROM #{table_name} t, LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}"
         if sync_helper_table
             q = "SELECT t.* FROM #{table_name} t," +
-                "#{SYNC_HELPER_TABLE} u WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{table_name},'" +
+                "#{SYNC_HELPER_TABLE} u WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{table_name} '" +
                 "LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}"
         end
 
