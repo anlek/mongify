@@ -29,6 +29,7 @@ module Mongify
 
       # List of required fields to bulid a valid sql connection
       REQUIRED_FIELDS = %w{host adapter database}
+      SYNC_HELPER_TABLE = "__mongify_sync_helper__"
 
       def initialize(options={})
         options['batch_size'] ||= 10000
@@ -76,21 +77,22 @@ module Mongify
       end
 
       # Returns an array with hash values of all the records in a given table
-      def select_rows(table_name, &block)
+      def select_rows(table_name, is_sync, &block)
         return self.connection.select_all("SELECT * FROM #{table_name}") unless block_given?
 
         row_count = count(table_name);
         pages = (row_count.to_f/batch_size).ceil
         (1..pages).each do |page|
-          rows = select_paged_rows(table_name, batch_size, page)
+          rows = select_paged_rows(table_name, batch_size, page, is_sync)
           yield rows, page, pages
         end
-
       end
 
-      def select_paged_rows(table_name, batch_size, page)
+      def select_paged_rows(table_name, batch_size, page, is_sync)
         if adapter == "sqlserver"
           offset = (page - 1) * batch_size
+
+          # TODO: sync support for sql server
           return connection.select_all(
             "SELECT * FROM
                         (
@@ -100,7 +102,16 @@ module Mongify
                         WHERE rnum > #{offset}"
           )
         end
-        connection.select_all("SELECT * FROM #{table_name} LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}")
+
+        # TODO: need to pass in SYNC_HELPER_TABLE
+        q = "SELECT t.* FROM #{table_name} t, LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}"
+        if is_sync
+            q = "SELECT t.* FROM #{table_name} t," +
+                "#{SYNC_HELPER_TABLE} u WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{table_name} '" +
+                "LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}"
+        end
+
+        connection.select_all(q)
       end
 
       # Returns an array with hash values of the records in a given table specified by a query
