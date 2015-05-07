@@ -76,19 +76,18 @@ module Mongify
       end
 
       # Returns an array with hash values of all the records in a given table
-      def select_rows(table_name, &block)
+      def select_rows(table_name, sync_helper_table, &block)
         return self.connection.select_all("SELECT * FROM #{table_name}") unless block_given?
 
         row_count = count(table_name);
         pages = (row_count.to_f/batch_size).ceil
         (1..pages).each do |page|
-          rows = select_paged_rows(table_name, batch_size, page)
+          rows = select_paged_rows(table_name, batch_size, page, sync_helper_table)
           yield rows, page, pages
         end
-
       end
 
-      def select_paged_rows(table_name, batch_size, page)
+      def select_paged_rows(table_name, batch_size, page, sync_helper_table)
         if adapter == "sqlserver"
           offset = (page - 1) * batch_size
 

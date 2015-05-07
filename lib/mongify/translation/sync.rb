@@ -56,23 +56,22 @@ module Mongify
       # Does the straight copy (of tables)
       def sync_data
         self.copy_tables.each do |t|
-          q = "SELECT t.* FROM #{t.sql_name} t, #{SYNC_HELPER_TABLE} u " +
-            "WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{t.sql_name}'"
-          rows = sql_connection.select_by_query(q)
-          Mongify::Status.publish('copy_data', :size => rows.count, :name => "Syncing #{t.name}", :action => 'add')
-          max_updated_at, max_updated_at_id = Time.new(1970), nil
-          rows.each do |row|
-            row_hash = t.translate(row)
-            updated_at = Time.parse(row['updated_at'])
-            if updated_at > max_updated_at
-              max_updated_at = updated_at
-              max_updated_at_id = row_hash['pre_mongified_id']
+          sql_connection.select_rows(t.sql_name, SYNC_HELPER_TABLE) do |rows, page, total_pages|
+            Mongify::Status.publish('copy_data', :size => rows.count, :name => "Syncing #{t.name} (#{page}/#{total_pages})", :action => 'add')
+            max_updated_at, max_updated_at_id = Time.new(1970), nil
+            rows.each do |row|
+              row_hash = t.translate(row)
+              updated_at = Time.parse(row['updated_at'])
+              if updated_at > max_updated_at
+                max_updated_at = updated_at
+                max_updated_at_id = row_hash['pre_mongified_id']
+              end
+              no_sql_connection.upsert(t.name, row_hash.merge({DRAFT_KEY => true}))
+              Mongify::Status.publish('copy_data')
             end
-            no_sql_connection.upsert(t.name, row_hash.merge({DRAFT_KEY => true}))
-            Mongify::Status.publish('copy_data')
+            (self.max_updated_at ||= {})[t.sql_name] = {'max_updated_at_id' => max_updated_at_id, 'key_column' => t.key_column.name}
+            Mongify::Status.publish('copy_data', :action => 'finish')
           end
-          (self.max_updated_at ||= {})[t.sql_name] = {'max_updated_at_id' => max_updated_at_id, 'key_column' => t.key_column.name}
-          Mongify::Status.publish('copy_data', :action => 'finish')
         end
       end
 
