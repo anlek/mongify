@@ -83,12 +83,12 @@ module Mongify
         row_count = count(table_name);
         pages = (row_count.to_f/batch_size).ceil
         (1..pages).each do |page|
-          rows = select_paged_rows(table_name, batch_size, page, sync_helper_table)
+          rows = select_paged_rows(table_name, batch_size, page, is_sync)
           yield rows, page, pages
         end
       end
 
-      def select_paged_rows(table_name, batch_size, page, sync_helper_table)
+      def select_paged_rows(table_name, batch_size, page, is_sync)
         if adapter == "sqlserver"
           offset = (page - 1) * batch_size
 
