@@ -103,6 +103,21 @@ module Mongify
         connection.select_all("SELECT * FROM #{table_name} LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}")
       end
 
+      def select_sync_rows(table_name)
+          row_count = count(table_name);
+          pages = (row_count.to_f/batch_size).ceil
+
+          (1..pages).each do |page|
+             rows = select_sync_paged_rows(table_name, batch_size, page)
+          end
+      end
+
+      def select_sync_paged_rows(table_name, batch_size, page)
+         q = "SELECT t.* FROM #{t.sql_name} t, #{SYNC_HELPER_TABLE} u " +
+             "WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{t.sql_name}'"
+         connection.select_all()
+      end
+
       # Returns an array with hash values of the records in a given table specified by a query
       def select_by_query(query)
         self.connection.select_all(query)
