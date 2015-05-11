@@ -26,7 +26,7 @@ module Mongify
       # Does the straight copy (of tables)
       def copy_data
         self.copy_tables.each do |t|
-          sql_connection.select_rows(t.sql_name) do |rows, page, total_pages|
+          sql_connection.select_rows(t.sql_name, true) do |rows, page, total_pages|
             Mongify::Status.publish('copy_data', :size => rows.count, :name => "Copying #{t.name} (#{page}/#{total_pages})", :action => 'add')
             insert_rows = []
             rows.each do |row|
