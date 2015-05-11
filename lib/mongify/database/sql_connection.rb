@@ -103,12 +103,15 @@ module Mongify
           )
         end
 
-        # TODO: need to pass in SYNC_HELPER_TABLE
-        q = "SELECT t.* FROM #{table_name} t, LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}"
+        q_select = "SELECT t.* FROM #{table_name} t"
+
+        # TODO: How to handle orderby for tables that dont have an id to order by.
+        q_batch = "ORDER BY id LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}"
+        q_sync = "#{SYNC_HELPER_TABLE} u WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{table_name} '"
+
+        q = q_select + ', ' + q_batch
         if is_sync
-            q = "SELECT t.* FROM #{table_name} t," +
-                "#{SYNC_HELPER_TABLE} u WHERE t.updated_at > u.last_updated_at AND u.table_name = '#{table_name} '" +
-                "LIMIT #{batch_size} OFFSET #{(page - 1) * batch_size}"
+            q = q_select + ', ' + q_sync + ' ' + q_batch
         end
 
         connection.select_all(q)
