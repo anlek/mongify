@@ -13,6 +13,10 @@ Learn more about MongoDB at: http://www.mongodb.org
 
   gem install mongify
 
+=== NOTICE
+
+  You might have to install active record database gems (you'll know if you get an error message while running mongify command)
+
 == Usage
 
 === Creating a configuration file
@@ -33,10 +37,10 @@ Building a config file is as simple as this:
     host      "localhost"
     database  "my_database"
   end
-  
+
 You can check your configuration by running
   mongify check -c datbase.config
-  
+
 ==== Options
 Currently the only option that is support it is for the mongodb_connection.
 
@@ -84,13 +88,13 @@ Creating a translation is pretty straight forward. It looks something like this:
     column "created_at", :datetime
     column "updated_at", :datetime
   end
-  
+
   table "preferences", :embed_in => :users, :as => :object do
     column "id", :key
     column "user_id", :integer, :references => "users"
     column "notify_by_email", :boolean
   end
-  
+
   table "notes", :embed_in => true, :polymorphic => 'notable' do
     column "id", :key
     column "user_id", :integer, :references => "users"
@@ -100,11 +104,11 @@ Creating a translation is pretty straight forward. It looks something like this:
     column "created_at", :datetime
     column "updated_at", :datetime
   end
-  
+
 Save the file as <tt>"translation_file.rb"</tt> and run the command:
 
   mongify process translation_file.rb -c database.config
-  
+
 === Commands
 
   Usage: mongify command [database_translation.rb] [-c database.config]
@@ -145,17 +149,17 @@ Table Options are as follow:
   table "table_name"                                        # Does a straight copy of the table
   table "table_name", :embed_in => 'users'                  # Embeds table_name into users, assuming a user_id is present in table_name.
                                                             # This will also assume you want the table embedded as an array.
-                                                            
+
   table "table_name",                                       # Embeds table_name into users, linking it via a owner_id
         :embed_in => 'users',                               # This will also assume you want the table embedded as an array.
-        :on => 'owner_id'                                   
-                                                            
+        :on => 'owner_id'
+
   table "table_name",                                       # Embeds table_name into users as a one to one relationship
         :embed_in => 'users',                               # This also assumes you have a user_id present in table_name
         :on => 'owner_id',                                  # You can also specify both :on and :as options when embedding
-        :as => 'object'                                     # NOTE: If you rename the owner_id column, make sure you 
+        :as => 'object'                                     # NOTE: If you rename the owner_id column, make sure you
                                                             # update the :on to the new column name
-                                                            
+
 
   table "table_name", :rename_to => 'my_table'              # This will allow you to rename the table as it's getting process
                                                             # Just remember that columns that use :reference need to
@@ -163,14 +167,14 @@ Table Options are as follow:
 
   table "table_name", :ignore => true                       # This will ignore the whole table (like it doesn't exist)
                                                             # This option is good for tables like: schema_migrations
-                                                            
+
   table "table_name",                                       # This allows you to specify the table as being polymorphic
         :polymorphic => 'notable',                          # and provide the name of the polymorphic relationship.
         :embed_in => true                                   # Setting embed_in => true allows the relationship to be
                                                             # embedded directly into the parent class.
                                                             # If you do not embed it, the polymorphic table will be copied in to
                                                             # MongoDB and the notable_id will be updated to the new BSON::ObjectID
-                                                            
+
   table "table_name" do                                     # A table can take a before_save block that will be called just
     before_save do |row|                                    # before the row is saved to the no sql database.
       row.admin = row.delete('permission').to_i > 50        # This gives you the ability to do very powerful things like:
@@ -189,7 +193,7 @@ Structure for defining a column is as follows:
 
 ==== Notes
 Leaving a column out when defining a table will result in a copy of the information (as a string).
-  
+
 ==== Types
 
 Before we cover the options, you need to know what types of columns are supported:
@@ -213,20 +217,20 @@ Before we cover the options, you need to know what types of columns are supporte
                                                       # NOTE: if you rename the table 'posts', you should set the :references to the new name
 
   column "name", :string, :ignore => true             # Ignoring a column will make the column NOT copy over to the new database
-  
-  column "surname", 
-         :string, 
-         :rename_to => 'last_name'                    # Rename_to allows you to rename the column                                                      
-  
+
+  column "surname",
+         :string,
+         :rename_to => 'last_name'                    # Rename_to allows you to rename the column
+
   <em>For decimal columns you can specify a few options:</em>
   column "total",                                     # This is a default conversion setting.
          :decimal,
-         :as => 'string'                              
-         
+         :as => 'string'
+
   column "total",                                     # You can specify to convert your decimal to integer
           :decimal,                                   # specifying scale will define how many decimal places to keep
           :as => 'integer',                           # Example: :scale => 2 will convert 123.4567 to 12346 before saving
-          :scale => 2                                 
+          :scale => 2
 
 More documentation can be found at {Mongify::Database::Column}
 
