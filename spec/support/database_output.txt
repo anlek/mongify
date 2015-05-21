@@ -1,5 +1,5 @@
 table "users" do
-	column "id", :key
+	column "id", :key, :as => :integer
 	column "first_name", :string
 	column "last_name", :string
 	column "created_at", :datetime
@@ -7,7 +7,7 @@ table "users" do
 end
 
 table "posts" do
-	column "id", :key
+	column "id", :key, :as => :integer
 	column "title", :string
 	column "owner_id", :integer, :references => "owners"
 	column "body", :text
@@ -17,7 +17,7 @@ table "posts" do
 end
 
 table "comments" do
-	column "id", :key
+	column "id", :key, :as => :integer
 	column "body", :text
 	column "post_id", :integer, :references => "posts"
 	column "user_id", :integer, :references => "users"
@@ -26,7 +26,7 @@ table "comments" do
 end
 
 table "preferences" do
-	column "id", :key
+	column "id", :key, :as => :string
 	column "user_id", :integer, :references => "users"
 	column "notify_by_email", :boolean
 	column "created_at", :datetime
@@ -34,11 +34,28 @@ table "preferences" do
 end
 
 table "notes" do
-	column "id", :key
+	column "id", :key, :as => :integer
 	column "user_id", :integer, :references => "users"
 	column "notable_id", :integer, :references => "notables"
 	column "notable_type", :string
 	column "body", :text
+	column "created_at", :datetime
+	column "updated_at", :datetime
+end
+
+table "teams" do
+	column "id", :key, :as => :integer
+	column "name", :string
+	column "phone", :string
+	column "created_at", :datetime
+	column "updated_at", :datetime
+end
+
+table "coaches" do
+	column "id", :key, :as => :integer
+	column "team_id", :integer, :references => "teams"
+	column "first_name", :string
+	column "last_name", :string
 	column "created_at", :datetime
 	column "updated_at", :datetime
 end

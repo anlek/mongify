@@ -8,7 +8,7 @@
 # You can redistribute it and/or modify it under the terms
 # of Ruby's license.
 #
-# This has been modified by 
+# This has been modified by
 #   Andrew Kalek
 #   Anlek Consulting
 #   http://anlek.com
@@ -19,10 +19,10 @@ module Mongify
     #Progress bar version
     VERSION = "0.9.1"
 
-    def initialize (title, total, out = STDERR)
+    def initialize (title, total)
       @title = title
       @total = total
-      @out = out
+      @out = Mongify::Configuration.out_stream
       @terminal_width = 80
       @bar_mark = "o"
       @current = 0
@@ -30,7 +30,7 @@ module Mongify
       @finished_p = false
       @start_time = Time.now
       @previous_time = @start_time
-      @title_width = 35
+      @title_width = 37
       @format = "%-#{@title_width}s %s %3d%% %s %s"
       @format_arguments = [:title, :count, :percentage, :bar, :stat]
       clear
@@ -48,8 +48,8 @@ module Mongify
     # Formatting for the actual bar
     def fmt_bar
       bar_width = do_percentage * @terminal_width / 100
-      sprintf("|%s%s|", 
-              @bar_mark * bar_width, 
+      sprintf("|%s%s|",
+              @bar_mark * bar_width,
               " " *  (@terminal_width - bar_width))
     end
 
@@ -65,9 +65,9 @@ module Mongify
 
     # Formatting for file transfer
     def fmt_stat_for_file_transfer
-      if @finished_p then 
+      if @finished_p then
         sprintf("%s %s %s", bytes, transfer_rate, elapsed)
-      else 
+      else
         sprintf("%s %s %s", bytes, transfer_rate, eta)
       end
     end
@@ -76,10 +76,10 @@ module Mongify
     def fmt_title
       @title[0,(@title_width - 1)] + ":"
     end
-    
+
     # Formatting for count (x/y)
     def fmt_count
-      sprintf('%15s', "(#{@current}/#{@total})")
+      sprintf('%13s', "(#{@current}/#{@total})")
     end
 
     # Converts bytes to kb, mb or gb
@@ -106,7 +106,7 @@ module Mongify
     def bytes
       convert_bytes(@current)
     end
-    
+
     # Gets formatting for time
     def format_time (t)
       t = t.to_i
@@ -126,19 +126,19 @@ module Mongify
         sprintf("ETA:  %s", format_time(eta))
       end
     end
-    
+
     # Returns elapsed time
     def elapsed
       elapsed = Time.now - @start_time
       sprintf("Time: %s", format_time(elapsed))
     end
-  
+
     # Returns end of line
     # @return [String] "\n" or "\r"
     def eol
       if @finished_p then "\n" else "\r" end
     end
-    
+
     # Calculates percentage
     # @return [Number] the percentage
     def do_percentage
@@ -148,7 +148,7 @@ module Mongify
         @current  * 100 / @total
       end
     end
-    
+
     # Gets the width of the terminal window
     def get_width
       UI.terminal_helper.output_cols
@@ -156,14 +156,15 @@ module Mongify
 
     # Draws the bar
     def show
-      arguments = @format_arguments.map {|method| 
+      return unless @out
+      arguments = @format_arguments.map {|method|
         method = sprintf("fmt_%s", method)
         send(method)
       }
       line = sprintf(@format, *arguments)
 
       width = get_width
-      if line.length == width - 1 
+      if line.length == width - 1
         @out.print(line + eol)
         @out.flush
       elsif line.length >= width
@@ -187,7 +188,7 @@ module Mongify
       end
 
       # Use "!=" instead of ">" to support negative changes
-      if cur_percentage != prev_percentage || 
+      if cur_percentage != prev_percentage ||
           Time.now - @previous_time >= 1 || @finished_p
         show
       end
@@ -196,6 +197,7 @@ module Mongify
     public
     # Clear's line
     def clear
+      return unless @out
       @out.print "\r"
       @out.print(" " * (get_width - 1))
       @out.print "\r"
@@ -207,7 +209,7 @@ module Mongify
       @finished_p = true
       show
     end
-    
+
     # Returns if the bar is finished
     def finished?
       @finished_p

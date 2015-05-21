@@ -13,11 +13,11 @@ describe Mongify::Translation do
       @table2.column('id', :key)
       @translation.add_table(@table2)
     end
-    
+
     subject{@translation}
 
     it "should output correctly" do
-      subject.print.should == <<-EOF 
+      subject.print.should == <<-EOF
 table "users" do
 \tcolumn "first_name", :string
 \tcolumn "age", :integer

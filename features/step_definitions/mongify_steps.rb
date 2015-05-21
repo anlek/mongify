@@ -7,7 +7,7 @@ Then /^stdout equals "([^\"]*)"$/ do |report|
 end
 
 Then /^it reports:$/ do |report|
-  @last_stdout.should == report
+  @last_stdout.gsub(/\s+/, ' ').strip.should == report.gsub(/\s+/, ' ').strip
 end
 
 Then /^stderr reports:$/ do |report|
@@ -28,7 +28,7 @@ Then /^the exit status indicates an error$/ do
 end
 
 Then /^it reports the error ['"](.*)['"]$/ do |string|
-  @last_stderr.chomp.should == string
+  @last_stderr.chomp.should =~ /#{string}/
 end
 
 

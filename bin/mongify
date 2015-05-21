@@ -11,4 +11,9 @@ require 'mongify/cli'
 
 Mongify.root = Dir.pwd
 
-exit Mongify::CLI::Application.new(ARGV).execute!
+begin
+  exit Mongify::CLI::Application.new(ARGV).execute!
+rescue Mongify::MongifyError => error
+  $stderr.puts "Error: #{error}"
+  exit Mongify::CLI::Application.execution_error_status
+end

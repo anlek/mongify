@@ -8,8 +8,10 @@ module Mongify
       # List of required fields to make a valid base connection
       REQUIRED_FIELDS = %w{host}
       # List of all the available fields to make up a connection
-      AVAILABLE_FIELDS = %w{adapter host username password database socket port encoding}
-      
+      AVAILABLE_FIELDS = %w{adapter host username password database socket port encoding batch_size}
+      # List of all fields that should be forced to a string
+      STRING_FIELDS = %w{adapter}
+
       def initialize(options=nil)
         if options
           options.stringify_keys!
@@ -18,7 +20,7 @@ module Mongify
           end
         end
       end
-      
+
       # Returns all settings as a hash, this is used mainly in building ActiveRecord::Base.establish_connection
       def to_hash
         hash = {}
@@ -33,7 +35,7 @@ module Mongify
       def valid?
         #TODO: Improve this to create an errors array with detailed errors (or maybe just use activemodel)
         REQUIRED_FIELDS.each do |require_field|
-          return false unless instance_variables.include?("@#{require_field}") and
+          return false unless instance_variables.map(&:to_s).include?("@#{require_field}") and
                               !instance_variable_get("@#{require_field}").to_s.empty?
         end
         true
@@ -51,14 +53,15 @@ module Mongify
 
 
       # Returns true if we are trying to respond_to AVAILABLE_FIELDS functions
-      def respond_to?(method, *args) 
+      def respond_to?(method, *args)
         return true if AVAILABLE_FIELDS.include?(method.to_s)
         super(method)
       end
-      
-      # Building set and/or return functions for AVAILABLE_FIELDS
+
+      # Building set and/or return functions for AVAILABLE_FIELDS.
+      # STRING_FIELDS are forced into string.
       # Example:
-      # 
+      #
       #   def host(value=nil)
       #     @host = value.to_s unless value.nil?
       #     @host
@@ -67,9 +70,16 @@ module Mongify
       def method_missing(method, *args)
         method_name = method.to_s
         if AVAILABLE_FIELDS.include?(method_name.to_s)
+
+          if STRING_FIELDS.include?(method_name.to_s)
+            assignment = "@#{method_name} = value.to_s"
+          else
+            assignment = "@#{method_name} = value"
+          end
+
           class_eval <<-EOF
                           def #{method_name}(value=nil)
-                            @#{method_name} = value.to_s unless value.nil?
+                            #{assignment} unless value.nil?
                             @#{method_name}
                           end
                         EOF

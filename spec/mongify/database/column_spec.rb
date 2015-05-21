@@ -4,54 +4,63 @@ describe Mongify::Database::Column do
   before(:each) do
     @column = Mongify::Database::Column.new('first_name')
   end
-  
+
   it "should have name" do
     @column.name.should == 'first_name'
   end
   it "should have a sql_name" do
     @column.sql_name.should == 'first_name'
   end
-  
+
   it "should allow you to omit the type while giving options" do
     @column = Mongify::Database::Column.new('account_id', :references => 'accounts')
     @column.options.should == {'references' => 'accounts'}
   end
-  
+
   it "should get setup options" do
     @column = Mongify::Database::Column.new('account_id', :integer, :references => 'accounts')
     @column.options.should == {'references' => 'accounts'}
   end
-  
+
   it "should force type to string if nil" do
     @column = Mongify::Database::Column.new('first_name', nil)
     @column.type.should == :string
   end
-  
+
   context "auto_detect!" do
     it "should not auto detect automatically" do
       Mongify::Database::Column.should_receive(:auto_detect).never
       @column = Mongify::Database::Column.new('id', :integer)
       @column.should_not be_key
     end
-    
+
     it "should auto_detect when option is passed in" do
       @column = Mongify::Database::Column.new('id', :integer, :auto_detect => true)
       @column.should be_key
     end
-    
+
     context "id column" do
       before(:each) do
-        @col = mock(:sql_name => 'id', :type => :integer)
+        @col = mock(:sql_name => 'id')
       end
       it "should detect column with type :integer as a :key column" do
+        @col.stub(:type).and_return(:integer)
         @col.should_receive('type=').with(:key)
+        @col.should_receive('as=').with(:integer)
         Mongify::Database::Column.auto_detect(@col)
       end
-      it "should not detect column with type other then :integer as a :key column" do
-        @col.stub(:type).and_return(:string)
-        @col.should_receive('type=').never
-        Mongify::Database::Column.auto_detect(@col)
+      it "should detected as a :key even if type is :string" do
+        @column = Mongify::Database::Column.new('id', :string, :auto_detect => true)
+        @column.should be_key
+        @column.as.should == :string
       end
+
+      it "should detect as a :key with as == integer " do
+        @column = Mongify::Database::Column.new('id', :integer, :auto_detect => true)
+        @column.should be_key
+        @column.as.should == :integer
+      end
+
     end
     context "references" do
       before(:each) do
@@ -66,26 +75,26 @@ describe Mongify::Database::Column do
         @col.should_receive('references=').never
         Mongify::Database::Column.auto_detect(@col)
       end
-      it "should not detect column referneces if column type is not :integer" do
+      it "should detect column references even if column type is not :integer" do
         @col.stub(:type).and_return(:string)
-        @col.should_receive('references=').never
+        @col.should_receive('references=').once
         Mongify::Database::Column.auto_detect(@col)
       end
     end
   end
-  
+
   context "key?" do
     it "should be true" do
       @column = Mongify::Database::Column.new('id', :key)
       @column.should be_a_key
     end
-    
+
     it "should be true" do
       @column = Mongify::Database::Column.new('first_name', :string)
       @column.should_not be_a_key
     end
   end
-  
+
   context "rename_to" do
     before(:each) do
       @column = Mongify::Database::Column.new('surname', :string, :rename_to => 'last_name')
@@ -99,7 +108,12 @@ describe Mongify::Database::Column do
     it "should translate to new name" do
       @column.translate('value').should == {'last_name' => 'value'}
     end
-    
+
+    it "should rename this" do
+      @column = Mongify::Database::Column.new("geoCode_longitude", :string, :rename_to => 'longitude')
+      @column.translate(42.2222).should == {'longitude' => '42.2222'}
+    end
+
     it "should be renamed" do
       @column.should be_renamed
     end
@@ -108,7 +122,7 @@ describe Mongify::Database::Column do
       col.should_not be_renamed
     end
   end
-  
+
   context "options" do
     it "should allow to be set by name" do
       @column = Mongify::Database::Column.new('first_name')
@@ -120,22 +134,31 @@ describe Mongify::Database::Column do
       @column = Mongify::Database::Column.new('first_name')
       lambda { @column.unknown = "users" }.should raise_error(NoMethodError)
     end
-  end  
-  
+  end
+
   context "as" do
     subject {Mongify::Database::Column.new('total', :decimal)}
     it "should default to string" do
-      subject.as.should == 'string'
+      subject.as.should == :string
     end
     it "should allow it to be set to integer" do
-      subject.as = 'integer'
+      subject.as = :integer
       subject.should be_as_integer
     end
     it "should not allow other values" do
       subject.as = "zuza"
-      subject.as.should == 'string'
+      subject.as.should == :string
+    end
+    it "should not allow other values even as sym" do
+      subject.as = :zuza
+      subject.as.should == :string
+    end
+    it "should convert to symble" do
+      subject.as = 'integer'
+      subject.as.should == :integer
     end
   end
+
   context "scale" do
     subject {Mongify::Database::Column.new('total', :decimal, :as => 'integer')}
     it "should be defaulted to 0" do
@@ -150,7 +173,7 @@ describe Mongify::Database::Column do
       subject.scale.should be_zero
     end
   end
-  
+
   context :to_print do
     before(:each) do
       @column = Mongify::Database::Column.new('first_name', :string)
@@ -165,15 +188,21 @@ describe Mongify::Database::Column do
       @column = Mongify::Database::Column.new('user_id', :integer, :auto_detect => true)
       @column.to_print.should == %Q[column "user_id", :integer, :references => "users"]
     end
+
+    it "should print :key with :as" do
+      @column.as = :integer
+      @column.type = :key
+      @column.to_print.should == %q{column "first_name", :key, :as => :integer}
+    end
   end
-  
+
   context :referenced? do
     it "should be true" do
       @column = Mongify::Database::Column.new('user_id', :integer, :references => 'users')
       @column.should be_a_referenced
     end
   end
-  
+
   context :translate do
     it "should return a hash with the new translation" do
       @column = Mongify::Database::Column.new('first_name', :string)
@@ -184,14 +213,23 @@ describe Mongify::Database::Column do
       @column.should be_ignored
       @column.translate('bob').should == {}
     end
-    
+
     it "should return pre_mongified_id when type is a key" do
       @column = Mongify::Database::Column.new('id', :key)
       @column.translate(123123).should == {"pre_mongified_id" => 123123}
     end
-    it "should return an integer for pre_mongified_id" do
+    it "should return an integer for pre_mongified_id (by default)" do
       @column = Mongify::Database::Column.new('id', :key)
-      @column.translate('123123').should == {"pre_mongified_id" => 123123}
+      result = @column.translate('123123')
+      result.should == {"pre_mongified_id" => 123123}
+      result['pre_mongified_id'].should be_a_kind_of Integer
+
+    end
+    it "should return a string for pre_mongified_id when :as => :string is provided" do
+      @column = Mongify::Database::Column.new('id', :key, :as => :string)
+      result = @column.translate('p123')
+      result.should == {"pre_mongified_id" => 'p123'}
+      result['pre_mongified_id'].should be_a_kind_of String
     end
   end
   context :type_cast do
@@ -257,10 +295,10 @@ describe Mongify::Database::Column do
       it "should return a string value" do
         @column.send(:type_cast, 101.43).should be_a_kind_of String
       end
-      
-      context "as integer" do
+
+      context :integer do
         before(:each) do
-          @column = Mongify::Database::Column.new('price', :decimal, :as => 'integer')
+          @column = Mongify::Database::Column.new('price', :decimal, :as => :integer)
           @value = 101.123455
         end
         it "should be as_integer" do
@@ -322,6 +360,12 @@ describe Mongify::Database::Column do
         @column.send(:type_cast, "Something of a body").should == "Something of a body"
       end
     end
+    context :string do
+      it "should return a string" do
+        @column = Mongify::Database::Column.new('body', :string)
+        @column.send(:type_cast, 42.222).should == "42.222"
+      end
+    end
     context :boolean do
       before(:each) do
         @column = Mongify::Database::Column.new('email_me', :boolean)
@@ -343,7 +387,7 @@ describe Mongify::Database::Column do
         @column.send(:type_cast, nil).should == result
         @column.send(:type_cast, "").should == result
       end
-      
+
     end
   end
 end

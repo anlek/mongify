@@ -2,8 +2,8 @@ module Mongify
   # This class is responsible for generating progress bars with status of mongify
   class Status
     # List of known notifications
-    NOTIFICATIONS = ['copy_data', 'copy_embedded', 'copy_polymorphic', 'update_references', 'remove_pre_mongified']
-    
+    NOTIFICATIONS = ['copy_data', 'copy_embedded', 'copy_polymorphic', 'update_references', 'remove_pre_mongified', 'set_last_updated_at']
+
     class << self
       #List of all the progress bars.
       def bars
@@ -13,14 +13,14 @@ module Mongify
       def add_bar(name, bar)
         self.bars[name] = bar
       end
-      
+
       # Registers the ActiveSupport::Notifications for Mongify
       def register
         ActiveSupport::Notifications.subscribe(/^mongify\./) do |*args|
           event = ActiveSupport::Notifications::Event.new(*args)
-          
+
           action_name = event.name.split('.', 2)[1]
-          
+
           if Status::NOTIFICATIONS.include?(action_name)
             case event.payload[:action]
             when 'add'
@@ -37,12 +37,12 @@ module Mongify
             UI.warn("Unknown Notification Event #{action_name}")
           end
         end
-        
+
         # Unregisters from {ActiveSupport::Notifications}
         def unregister
           ActiveSupport::Notifications.unsubscribe(/^mongify\./)
         end
-        
+
         # Publish an notification event
         # This will publish the event as an mongify.[name]
         # @param [String] name Name of the notification
@@ -55,5 +55,5 @@ module Mongify
         end
       end
     end
-  end 
+  end
 end

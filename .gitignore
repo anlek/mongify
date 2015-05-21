@@ -7,9 +7,13 @@ vendor/gems/gems
 vendor/gems/specifications
 vendor/gems/doc
 vendor/gems/environment.rb
+vendor/ruby
+#not sure if this is the right way of doing this
+vendor/cache
 
 coverage.data
 
+tmp/*
 spec/tmp/*
 tmp
 log
@@ -18,6 +22,10 @@ vendor
 .idea/*
 .bundle/*
 
+.ruby-gemset
 .ruby-version
 
 spec/support/database.yml
+
+
+log/deprecations.log

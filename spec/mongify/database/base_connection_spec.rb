@@ -42,9 +42,14 @@ describe Mongify::Database::BaseConnection do
     @base_connection.respond_to?(:host).should be_true
   end
 
-  it "should force adaptor to a string" do
+  it "should force adapter to a string" do
     @base_connection.adapter :sqlite
     @base_connection.adapter.should == 'sqlite'
+  end
+
+  it "should leave port argument as an integer" do
+    @base_connection.port 3333
+    @base_connection.port.should == 3333
   end
 
   context "hash" do

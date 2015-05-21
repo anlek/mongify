@@ -1,4 +1,4 @@
 module Mongify
   # Mongify's Current Version Number
-  VERSION = "0.1.4"
+  VERSION = "1.2.4"
 end

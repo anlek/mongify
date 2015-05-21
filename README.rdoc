@@ -1,5 +1,7 @@
 = Mongify
 
+http://mongify.com
+
 A data translator from sql database to mongoDB.
 
 Supports MySQL, PostgreSQL, SQLite, Oracle, SQLServer, and DB2 (Basically anything ActiveRecord has built-in).
@@ -21,46 +23,48 @@ Learn more about MongoDB at: http://www.mongodb.org
 
 === Creating a configuration file
 
-In order for Mongify to do it's job, it needs to know where your databases are located.
+In order for Mongify to do its job, it needs to know where your databases are located.
 
 Building a config file is as simple as this:
 
   sql_connection do
-    adaptor   "mysql"
-    host      "localhost"
-    username  "root"
-    password  "passw0rd"
-    database  "my_database"
+    adapter     "mysql"
+    host        "localhost"
+    username    "root"
+    password    "passw0rd"
+    database    "my_database"
+    batch_size  10000           # This is defaulted to 10000 but in case you want to make that smaller (on lower RAM machines)
   end
 
   mongodb_connection do
-    host      "localhost"
-    database  "my_database"
+    host        "localhost"
+    database    "my_database"
   end
 
 You can check your configuration by running
-  mongify check -c datbase.config
+
+  mongify check database.config
 
 ==== Options
-Currently the only option that is support it is for the mongodb_connection.
+Currently the only supported option is for the mongodb_connection.
 
   mongodb_connection :force => true do                # Forcing a mongodb_connection will drop the database before processing
     # ...
   end
 
-<em>You can omit the mongodb connection till you're ready to process your translation</em>
+<em>You can omit the mongodb connection until you're ready to process your translation</em>
 
 
-=== Generating or create a translation
+=== Generating or creating a translation
 
 ==== Generating a translation
-If you're database is large and complex, it might be a bit too much to hand write the translation file, Mongify can help by running the translate command:
-  mongify translation -c database.config
+If your database is large and complex, it might be a bit too much work to write the translation file by hand. Mongify's translate command can help with this:
+  mongify translation database.config
 Or pipe it right into a file by running
-  mongify translation -c database.config > translation_file.rb
+  mongify translation database.config > translation_file.rb
 
 ==== Creating a translation
-Creating a translation is pretty straight forward. It looks something like this:
+Creating a translation is pretty straightforward. It looks something like this:
 
   table "users" do
     column "id", :key
@@ -83,14 +87,14 @@ Creating a translation is pretty straight forward. It looks something like this:
   table "comments", :embed_in => :posts, :on => :post_id do
     column "id", :key
     column "body", :text
-    column "post_id", :integer, :referneces => :posts
+    column "post_id", :integer, :references => :posts
     column "user_id", :integer, :references => :users
     column "created_at", :datetime
     column "updated_at", :datetime
   end
 
   table "preferences", :embed_in => :users, :as => :object do
-    column "id", :key
+    column "id", :key, :as => :string
     column "user_id", :integer, :references => "users"
     column "notify_by_email", :boolean
   end
@@ -107,32 +111,33 @@ Creating a translation is pretty straight forward. It looks something like this:
 
 Save the file as <tt>"translation_file.rb"</tt> and run the command:
 
-  mongify process translation_file.rb -c database.config
+  mongify process database.config translation_file.rb
 
 === Commands
 
-  Usage: mongify command [database_translation.rb] [-c database.config]
+  Usage: mongify command database_config [database_translation.rb]
 
   Commands:
     "check" or "ck"           >> Checks connection for sql and no_sql databases [configuration_file]
     "process" or "pr"         >> Takes a translation and process it to mongodb [configuration_file, translation_file]
+    "sync" or "sy"            >> Takes a translation and process it to mongodb, only syncs (insert/update) new or updated records based on the updated_at column [configuration_file, translation_file]
     "translation" or "tr"     >> Outputs a translation file from a sql connection [configuration_file]
 
   Examples:
 
-    mongify translation -c datbase.config
-    mongify tr -c database.config
-    mongify check -c database.config
-    mongify process database_translation.rb -c database.config
+    mongify translation datbase.config
+    mongify tr database.config
+    mongify check database.config
+    mongify process database.config database_translation.rb
+    mongify sync database.config database_translation.rb
 
   Common options:
       -h, --help                       Show this message
       -v, --version                    Show version
-      -c, --config FILE                Configuration File to use
 
 == Translation Layout and Options
 
-When dealing with a translation, there is a few options you can set
+When dealing with a translation, there are a few options you can set
 
 === Table
 
@@ -181,6 +186,22 @@ Table Options are as follow:
     end                                                     # Moving records around, renaming records, changing values in row based on
   end                                                       # some values! Checkout Mongify::Database::DataRow to learn more
 
+  table "users" do                                          # Here is how to set new ID using the old id
+    before_save do |row|
+      row._id = row.delete('pre_mongified_id')
+    end
+  end
+
+  table "preferences", :embed_in => "users" do              # As of version 0.2, embedded tables with a before_save will take an
+    before_save do |pref_row, user_row, unset_user_row|                     # extra argument which is the parent row of the embedded table.
+      user_row.email_me = pref_row.delete('email_me')       # This gives you the ability to move things from an embedded table row
+                                                            # to the parent row.
+      if pref_row['one_name']
+        unset_user_row['last_name'] = true                  # This will delete/unset the last name for the parent row
+      end
+    end
+  end
+
 More documentation can be found at {Mongify::Database::Table}
 
 === Columns
@@ -192,12 +213,14 @@ Structure for defining a column is as follows:
 <em>Columns with no type given will be set to <tt>:string</tt></em>
 
 ==== Notes
-Leaving a column out when defining a table will result in a copy of the information (as a string).
+
+<em>as of version 0.2:</em>
+Leaving a column out when defining a table will result in the column being *ignored*
 
 ==== Types
 
 Before we cover the options, you need to know what types of columns are supported:
-  :key                  # Columns that are primary keys need to be marked as :key type
+  :key                  # Columns that are primary keys need to be marked as :key type. You can provide an :as if your :key is not an integer column
   :integer              # Will be converted to a integer
   :float                # Will be converted to a float
   :decimal              # Will be converted to a string (due to MongoDB Ruby Drivers not supporting BigDecimal, read details in Mongify::Database::Column under Decimal Storage)
@@ -212,7 +235,7 @@ Before we cover the options, you need to know what types of columns are supporte
 
 ==== Options
 
-  column "post_id", :integer, :referneces => :posts   # Referenced columns need to be marked as such, this will mean that they will be updated
+  column "post_id", :integer, :references => :posts   # Referenced columns need to be marked as such, this will mean that they will be updated
                                                       # with the new BSON::ObjectID.
                                                       # NOTE: if you rename the table 'posts', you should set the :references to the new name
 
@@ -236,15 +259,23 @@ More documentation can be found at {Mongify::Database::Column}
 
 == Notes
 
-I have currently only tested this in Ruby 1.8.7-p330
+Mongify has been tested on Ruby 1.8.7-p330, 1.9.2-p136, 1.9.3-p327, 2.0.0-p353, 2.1.1
 
-More testing will be done once the basic functionality is done
+If you have any issues, please feel free to report them here: {issue tracker}[https://github.com/anlek/mongify/issues]
 
+== Sync Note
+
+If you want to continually sync your sql database with MongoDB using Mongify, you MUST run the sync feature from the start. Using the process command will not permit future syncing. The sync feature leaves the `pre_mongify_id` in your documents as well as it creates it's own collection called `__mongify_sync_helper__` to keep dates and times of your last sync.
+
+== Additional Tools
+
+As of May 2013, we've released an add-on tool to Mongify called {Mongify-Mongoid}[https://github.com/anlek/mongify-mongoid] which lets you use the translation.rb file to generate Mongoid models. It generates the model fields, relations (most of the way) and timestamps. This should save you some time from having to re-type all the models by hand.
+Check out the gem at: {http://rubygems.org/gems/mongify-mongoid}[http://rubygems.org/gems/mongify-mongoid]
 
 == TODO
 * Allow deeper embedding
-* Test in Ruby 1.9
 * Test in different databases
+* Give an ability to mark source DB rows as imported (allowing Mongify to run as a on going converter)
 
 == Known Issues
 * Can't do anything to an embedded table
@@ -253,12 +284,14 @@ More testing will be done once the basic functionality is done
 
 === Requirements
 
-You just need bundler 1.0.8
+You just need bundler >= 1.0.8
 
   gem install bundler
   bundle install
   copy over spec/support/database.example to spec/support/database.yml and fill in required info
-  rake test:mysql:setup
+  rake test:setup:mysql
+  rake test:setup:postgresql
+  rake test
 
 == Special Thanks
 
@@ -266,18 +299,26 @@ Just want to thank my wife (Alessia) who not only puts up with me working on my 
 
 I would also like to thank Mon_Ouie on the Ruby IRC channel for helping me figure out how to setup the internal configuration file reading.
 
+Another thanks goes out to eimermusic for his feedback on the gem, and a few bugs that he helps flush out.
+And to Pranas Kiziela who committed some bug and typo fixes that make Mongify even better!
+
 == About
 
-This gem was made by Andrew Kalek
+This gem was made by Andrew Kalek from Anlek Consulting
 
 Reach me at:
 * Twitter: {@anlek}[http://www.twitter.com/anlek]
 * Email: andrew.kalek@anlek[dot]com
 
+The sync functionality was made by Hossam Hammady from Qatar Computing Research Institute
+
+Reach me at:
+* Twitter: {@hammady}[http://www.twitter.com/hammady]
+* Email: hhammady@qf[dot]org[dot]qa
 
 == License
 
-Copyright (c) 2011 Andrew Kalek, Anlek Consulting
+Copyright (c) 2011 - 2013 Andrew Kalek, Anlek Consulting
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
