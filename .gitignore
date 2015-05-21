@@ -11,10 +11,13 @@ vendor/gems/environment.rb
 coverage.data
 
 spec/tmp/*
+tmp
+log
+vendor
 
 .idea/*
 .bundle/*
 
-.rvmrc
+.ruby-version
 
 spec/support/database.yml
