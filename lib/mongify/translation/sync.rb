@@ -63,7 +63,8 @@ module Mongify
           max_updated_at, max_updated_at_id = Time.new(1970), nil
           rows.each do |row|
             row_hash = t.translate(row)
-            updated_at = Time.parse(row['updated_at'])
+            updated_at = row['updated_at']
+            updated_at = Time.parse(updated_at) if updated_at.instance_of?(String)
             if updated_at > max_updated_at
               max_updated_at = updated_at
               max_updated_at_id = row_hash['pre_mongified_id']
@@ -71,6 +72,7 @@ module Mongify
             no_sql_connection.upsert(t.name, row_hash.merge({DRAFT_KEY => true}))
             Mongify::Status.publish('copy_data')
           end
+          raise "Table #{t.sql_name} must have a primary key denoted by :key in the translation file" if t.key_column.nil?
           (self.max_updated_at ||= {})[t.sql_name] = {'max_updated_at_id' => max_updated_at_id, 'key_column' => t.key_column.name}
           Mongify::Status.publish('copy_data', :action => 'finish')
         end
