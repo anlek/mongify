@@ -10,6 +10,15 @@ mysql:
   host: localhost
   port: 3306
 
+postgresql:
+  adapter: postgresql
+  database: mongify_test
+  encoding: unicode
+  username: root
+  password: passw0rd
+  host: localhost
+  port: 5432
+
 mongo:
   adapter: mongo
   database: mongify_test
