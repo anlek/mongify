@@ -14,8 +14,8 @@ describe Mongify::CLI::Command::Worker do
 
     @translation_file = 'spec/files/translation.rb'
 
-    Mongify::Translation.stub(:load).and_return(stub(:print => 'worked'))
-    @view = mock('view').as_null_object
+    Mongify::Translation.stub(:load).and_return(double(:print => 'worked'))
+    @view = double('view').as_null_object
   end
 
   context "list_commands" do
@@ -62,7 +62,7 @@ describe Mongify::CLI::Command::Worker do
   context "translation command" do
     before(:each) do
       @command = Mongify::CLI::Command::Worker.new('translation', @config)
-      Mongify::Translation.stub(:load).with(@sql_connection).and_return(stub(:print => 'worked'))
+      Mongify::Translation.stub(:load).with(@sql_connection).and_return(double(:print => 'worked'))
     end
 
     it "should require configuration file" do
@@ -75,7 +75,7 @@ describe Mongify::CLI::Command::Worker do
     end
 
     it "should call load on Translation" do
-      Mongify::Translation.should_receive(:load).with(@sql_connection).and_return(stub(:print => 'worked'))
+      Mongify::Translation.should_receive(:load).with(@sql_connection).and_return(double(:print => 'worked'))
       @command.execute(@view)
     end
   end
@@ -83,7 +83,7 @@ describe Mongify::CLI::Command::Worker do
   context "process command" do
     before(:each) do
       @command = Mongify::CLI::Command::Worker.new('process', @config, 'spec/files/translation.rb')
-      Mongify::Translation.stub(:parse).and_return(mock(:process => true))
+      Mongify::Translation.stub(:parse).and_return(double(:process => true))
     end
     it "should report success" do
       @view.should_receive(:report_error).never
@@ -105,7 +105,7 @@ describe Mongify::CLI::Command::Worker do
     end
 
     it "should call process on translation" do
-      Mongify::Translation.should_receive(:parse).and_return(mock(:process => true))
+      Mongify::Translation.should_receive(:parse).and_return(double(:process => true))
       @command.execute(@view)
     end
   end
@@ -113,7 +113,7 @@ describe Mongify::CLI::Command::Worker do
   context "sync command" do
     before(:each) do
       @command = Mongify::CLI::Command::Worker.new('sync', @config, 'spec/files/translation.rb')
-      Mongify::Translation.stub(:parse).and_return(mock(:sync => true))
+      Mongify::Translation.stub(:parse).and_return(double(:sync => true))
     end
     it "should report success" do
       @view.should_receive(:report_error).never
@@ -135,7 +135,7 @@ describe Mongify::CLI::Command::Worker do
     end
 
     it "should call sync on translation" do
-      Mongify::Translation.should_receive(:parse).and_return(mock(:sync => true))
+      Mongify::Translation.should_receive(:parse).and_return(double(:sync => true))
       @command.execute(@view)
     end
   end

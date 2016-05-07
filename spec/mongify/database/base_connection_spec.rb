@@ -39,7 +39,7 @@ describe Mongify::Database::BaseConnection do
   end
 
   it "should respond to available settings" do
-    @base_connection.respond_to?(:host).should be_true
+    @base_connection.respond_to?(:host).should be_truthy
   end
 
   it "should force adapter to a string" do

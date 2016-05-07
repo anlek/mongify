@@ -7,7 +7,7 @@ describe Mongify::Status do
   end
   context "publish" do
     before(:each) do
-      @bar = stub(:title= => '')
+      @bar = double(:title= => '')
       Mongify::Status.bars.stub(:[]).and_return(@bar)
     end
     it "should create a new progress bar" do

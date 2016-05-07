@@ -19,7 +19,7 @@ describe Mongify::Translation do
         @connection.stub(:has_connection?).and_return(true)
         @connection.stub(:valid?).and_return(true)
         @connection.stub(:tables).and_return(['users'])
-        col = mock(:name => 'first_name', :type => 'string', :default => nil)
+        col = double(:name => 'first_name', :type => 'string', :default => nil)
         @connection.stub(:columns_for).with('users').and_return([col])
       end
       it "should return a translation" do
@@ -50,10 +50,10 @@ describe Mongify::Translation do
 
   context "find" do
     before(:each) do
-      @user_table = mock(:name => 'users')
-      @translation.stub(:all_tables).and_return([mock(:name => 'comments'),
+      @user_table = double(:name => 'users')
+      @translation.stub(:all_tables).and_return([double(:name => 'comments'),
                                                  @user_table,
-                                                 mock(:name => 'posts')])
+                                                 double(:name => 'posts')])
     end
     it "should work" do
 
@@ -66,10 +66,10 @@ describe Mongify::Translation do
 
   context "tables reference" do
     before(:each) do
-      @copy_table = mock(:name => 'users', :ignored? => false, :embedded? => false, :polymorphic? => false)
-      @embed_table = mock(:name => 'comments', :ignored? => false, :embedded? => true, :polymorphic? => false)
-      @ignored_table = mock(:name => 'apples', :ignored? => true, :embedded? => false, :polymorphic? => false)
-      @polymorphic_table = mock(:name => 'comments', :ignored? => false, :embedded? => false, :polymorphic? => true)
+      @copy_table = double(:name => 'users', :ignored? => false, :embedded? => false, :polymorphic? => false)
+      @embed_table = double(:name => 'comments', :ignored? => false, :embedded? => true, :polymorphic? => false)
+      @ignored_table = double(:name => 'apples', :ignored? => true, :embedded? => false, :polymorphic? => false)
+      @polymorphic_table = double(:name => 'comments', :ignored? => false, :embedded? => false, :polymorphic? => true)
       @translation = Mongify::Translation.new()
       @all_tables = [@copy_table, @embed_table, @ignored_table, @polymorphic_table]
       @translation.stub(:all_tables).and_return(@all_tables)

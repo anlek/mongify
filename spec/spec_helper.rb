@@ -12,6 +12,7 @@ rescue LoadError
 end
 
 require 'rspec/core'
+require 'rspec/collection_matchers'
 
 Dir['./spec/support/**/*.rb'].map {|f| require f}
 

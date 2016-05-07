@@ -40,17 +40,17 @@ describe Mongify::UI do
 
   it "should ask for yes/no and return true when yes" do
     @ui.should_receive(:request).with('foo? [yn] ').and_return('y')
-    @ui.ask("foo?").should be_true
+    @ui.ask("foo?").should be_truthy
   end
 
   it "should ask for yes/no and return false when no" do
     @ui.stub(:request).and_return('n')
-    @ui.ask("foo?").should be_false
+    @ui.ask("foo?").should be_falsey
   end
 
   it "should ask for yes/no and return false for any input" do
     @ui.stub(:request).and_return('aklhasdf')
-    @ui.ask("foo?").should be_false
+    @ui.ask("foo?").should be_falsey
   end
 
   it "should add WARNING to a warn message" do

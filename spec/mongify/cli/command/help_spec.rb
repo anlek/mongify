@@ -3,7 +3,7 @@ describe Mongify::CLI::Command::Help do
   before :each do
     @text = 'Piece of interesting text'
     @cmd = Mongify::CLI::Command::Help.new(@text)
-    @view = mock('view').as_null_object
+    @view = double('view').as_null_object
   end
 
   it 'displays the correct text on the view' do

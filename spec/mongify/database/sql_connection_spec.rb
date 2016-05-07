@@ -91,7 +91,7 @@ describe Mongify::Database::SqlConnection do
 
   context "select_all" do
     it "should generate correct select statement" do
-      @mock_conn = mock
+      @mock_conn = double
       @mock_conn.should_receive(:select_all).with('SELECT * FROM users')
       sqlite_connection.stub(:connection).and_return(@mock_conn)
       sqlite_connection.select_rows('users')
@@ -101,7 +101,7 @@ describe Mongify::Database::SqlConnection do
   context "select_by_query" do
     it "should select rows based on a query" do
       query = "SELECT * FROM users WHERE true"
-      @mock_conn = mock
+      @mock_conn = double
       @mock_conn.should_receive(:select_all).with(query)
       sqlite_connection.stub(:connection).and_return(@mock_conn)
       sqlite_connection.select_by_query(query)
@@ -111,7 +111,7 @@ describe Mongify::Database::SqlConnection do
   context "count" do
     it "should get count of all rows in a table" do
       query = "SELECT COUNT(*) FROM users"
-      @mock_conn = mock
+      @mock_conn = double
       @mock_conn.should_receive(:select_value).with(query)
       sqlite_connection.stub(:connection).and_return(@mock_conn)
       sqlite_connection.count('users')
@@ -119,7 +119,7 @@ describe Mongify::Database::SqlConnection do
 
     it "should get count of rows in a table filtered by a query" do
       query = "SELECT COUNT(*) FROM users WHERE true"
-      @mock_conn = mock
+      @mock_conn = double
       @mock_conn.should_receive(:select_value).with(query)
       sqlite_connection.stub(:connection).and_return(@mock_conn)
       sqlite_connection.count('users', 'true')
@@ -129,7 +129,7 @@ describe Mongify::Database::SqlConnection do
   context "execute" do
     it "should execute an arbitrary query" do
       query = "CREATE TABLE x(int y);"
-      @mock_conn = mock
+      @mock_conn = double
       @mock_conn.should_receive(:execute).with(query)
       sqlite_connection.stub(:connection).and_return(@mock_conn)
       sqlite_connection.execute(query)

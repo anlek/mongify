@@ -41,7 +41,7 @@ describe Mongify::Database::Column do
 
     context "id column" do
       before(:each) do
-        @col = mock(:sql_name => 'id')
+        @col = double(:sql_name => 'id')
       end
       it "should detect column with type :integer as a :key column" do
         @col.stub(:type).and_return(:integer)
@@ -64,7 +64,7 @@ describe Mongify::Database::Column do
     end
     context "references" do
       before(:each) do
-        @col = mock(:sql_name => 'post_id', :type => :integer, :referenced? => false)
+        @col = double(:sql_name => 'post_id', :type => :integer, :referenced? => false)
       end
       it "should detect column references" do
         @col.should_receive('references=').with('posts')

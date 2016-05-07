@@ -48,7 +48,7 @@ describe Mongify::Database::NoSqlConnection do
 
   context "connection" do
     before(:each) do
-      @mock_connection = mock(:connected? => true)
+      @mock_connection = double(:connected? => true)
       Mongo::Connection.stub(:new).and_return(@mock_connection)
     end
 
@@ -70,8 +70,8 @@ describe Mongify::Database::NoSqlConnection do
 
   context "database action:" do
     before(:each) do
-       @collection = mock
-       @db = mock
+       @collection = double
+       @db = double
        @db.stub(:[]).with('users').and_return(@collection)
        @mongodb_connection.stub(:db).and_return(@db)
     end
@@ -95,7 +95,7 @@ describe Mongify::Database::NoSqlConnection do
 
     context "select_rows" do
       it "should return all records" do
-        @collection.should_receive(:find).with().and_return([])
+        @collection.should_receive(:find).with(no_args).and_return([])
         @mongodb_connection.select_rows('users')
       end
     end
@@ -120,7 +120,7 @@ describe Mongify::Database::NoSqlConnection do
       it "should update the record if its pre_mongified_id exists" do
         attributes = {'pre_mongified_id' => 1, 'post_id' => 123}
         id = 10
-        duplicate = mock
+        duplicate = double
         duplicate.stub(:[]).with(:_id).and_return(id)
         @mongodb_connection.stub(:find_one).with('users', {"pre_mongified_id" => 1}).and_return(duplicate)
         @mongodb_connection.should_receive(:find_one).with('users', {"pre_mongified_id" => 1})
@@ -174,7 +174,7 @@ describe Mongify::Database::NoSqlConnection do
 
   context "force" do
     before(:each) do
-      @mock_connection = mock(:connected? => true, :drop_database => true)
+      @mock_connection = double(:connected? => true, :drop_database => true)
       Mongo::Connection.stub(:new).and_return(@mock_connection)
       @mongodb_connection = Mongify::Database::NoSqlConnection.new(:host => 'localhost', :database => 'blue', :force => true)
       Mongify::UI.stub(:ask).and_return(true)

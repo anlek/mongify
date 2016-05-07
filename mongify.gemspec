@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
 
 
   s.add_development_dependency('rspec', '~> 2.0')
+  s.add_development_dependency('rspec-collection_matchers', '~> 1.0')
   s.add_development_dependency('cucumber', '>= 0.10')
   s.add_development_dependency('mocha', '>= 0.9.8')
   s.add_development_dependency('yard', '>= 0.8')

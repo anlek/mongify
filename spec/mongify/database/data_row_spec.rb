@@ -65,10 +65,10 @@ describe Mongify::Database::DataRow do
 
   context "respond_to" do
     it "should be true for first_name" do
-      @datarow.respond_to?('first_name').should be_true
+      @datarow.respond_to?('first_name').should be_truthy
     end
     it "should be true for first_name=" do
-      @datarow.respond_to?('first_name=').should be_true
+      @datarow.respond_to?('first_name=').should be_truthy
     end
   end
 
@@ -78,7 +78,7 @@ describe Mongify::Database::DataRow do
     end
     it "should read attributes like delete" do
       @datarow.delete=true
-      @datarow.read_attribute('delete').should be_true
+      @datarow.read_attribute('delete').should be_truthy
     end
     it "should read non existing attributes" do
       @datarow.read_attributes('monkey').should be_nil

@@ -94,14 +94,14 @@ describe Mongify::Database::Table do
 
   context "add_column" do
     it "should require Mongify::Database::Column" do
-      lambda { @table.add_column("Not a column") }.should raise_error(Mongify::DatabaseColumnExpected)
+      expect { @table.add_column("Not a column") }.to raise_error(Mongify::DatabaseColumnExpected)
     end
     it "shold except Mongify::Database::Column as a parameter" do
-      lambda { @table.add_column(Mongify::Database::Column.new('test')) }.should_not raise_error(Mongify::DatabaseColumnExpected)
+      expect { @table.add_column(Mongify::Database::Column.new('test')) }.to_not raise_error
     end
 
     it "should add to the column count" do
-      lambda { @table.add_column(Mongify::Database::Column.new('test')) }.should change{@table.columns.count}.by(1)
+      expect { @table.add_column(Mongify::Database::Column.new('test')) }.to change{@table.columns.count}.by(1)
     end
 
     it "should be indexed" do
@@ -286,8 +286,8 @@ describe Mongify::Database::Table do
 
   context "translate" do
     before(:each) do
-      @column1 = mock(:translate => {'first_name' => 'Timmy'}, :name => 'first_name')
-      @column2 = mock(:translate => {'last_name' => 'Zuza'}, :name => 'last_name')
+      @column1 = double(:translate => {'first_name' => 'Timmy'}, :name => 'first_name')
+      @column2 = double(:translate => {'last_name' => 'Zuza'}, :name => 'last_name')
       @table.stub(:find_column).with(anything).and_return(nil)
       @table.stub(:find_column).with('first_name').and_return(@column1)
       @table.stub(:find_column).with('last_name').and_return(@column2)
