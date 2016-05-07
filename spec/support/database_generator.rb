@@ -38,7 +38,7 @@ class DatabaseGenerator
     #SETUP TABLES
     conn.create_table(:users) do |t|
       t.string :first_name, :last_name
-      t.timestamps
+      t.timestamps null: false
     end
 
     conn.create_table(:posts) do |t|
@@ -46,21 +46,21 @@ class DatabaseGenerator
       t.integer :owner_id
       t.text :body
       t.datetime :published_at
-      t.timestamps
+      t.timestamps null: false
     end
 
     conn.create_table(:comments) do |t|
       t.text :body
       t.integer :post_id
       t.integer :user_id
-      t.timestamps
+      t.timestamps null: false
     end
 
     conn.create_table(:preferences, :id => false) do |t|
       t.string :id
       t.integer :user_id
       t.boolean :notify_by_email
-      t.timestamps
+      t.timestamps null: false
     end
 
     conn.create_table(:notes) do |t|
@@ -68,19 +68,19 @@ class DatabaseGenerator
       t.integer :notable_id
       t.string :notable_type
       t.text :body
-      t.timestamps
+      t.timestamps null: false
     end
 
     conn.create_table(:teams) do |t|
       t.string :name
       t.string :phone
-      t.timestamps
+      t.timestamps null: false
     end
 
     conn.create_table(:coaches) do |t|
       t.integer :team_id
       t.string :first_name, :last_name
-      t.timestamps
+      t.timestamps null: false
     end
 
     if include_data
