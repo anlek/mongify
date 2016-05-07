@@ -13,7 +13,6 @@ desc 'clobber generated files'
 task :clobber do
   rm_rf "pkg"
   rm_rf "tmp"
-  rm "Gemfile.lock" if File.exist?("Gemfile.lock")
 end
 
 if RUBY_VERSION.to_f == 1.8
