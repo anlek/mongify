@@ -237,18 +237,18 @@ module Mongify
           when :integer   then value.to_i
           when :float     then value.to_f
           when :decimal
-            value = ActiveRecord::ConnectionAdapters::Column.value_to_decimal(value)
+            value = ActiveRecord::Type::Decimal.new.type_cast_from_database(value)
             if as_integer?
               (value * (10 ** self.scale)).round.to_i
             else
               value.to_s
             end
-          when :datetime  then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
-          when :timestamp then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
-          when :time      then ActiveRecord::ConnectionAdapters::Column.string_to_dummy_time(value)
-          when :date      then ActiveRecord::ConnectionAdapters::Column.string_to_time(value)
-          when :binary    then ActiveRecord::ConnectionAdapters::Column.binary_to_string(value)
-          when :boolean   then ActiveRecord::ConnectionAdapters::Column.value_to_boolean(value)
+          when :datetime  then ActiveRecord::Type::DateTime.new.type_cast_from_database(value)
+          when :timestamp then ActiveRecord::Type::DateTime.new.type_cast_from_database(value)
+          when :time      then ActiveRecord::Type::Time.new.type_cast_from_database(value)
+          when :date      then ActiveRecord::Type::DateTime.new.type_cast_from_database(value)
+          when :binary    then ActiveRecord::Type::Binary.new.type_cast_from_database(value)
+          when :boolean   then ActiveRecord::Type::Boolean.new.type_cast_from_database(value)
           else value.to_s
         end
       end
@@ -261,8 +261,6 @@ module Mongify
       def run_auto_detect!
         self.class.auto_detect(self) if auto_detect?
       end
-
-
     end
   end
 end

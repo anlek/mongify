@@ -242,7 +242,7 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('created_at', :datetime)
       end
       it "should return a datetime format" do
-        @column.send(:type_cast, '2011-01-14 21:23:39').should == Time.local(2011, 01, 14, 21, 23,39)
+        @column.send(:type_cast, '2011-01-14 21:23:39').should == Time.utc(2011, 01, 14, 21, 23,39)
       end
       it "should return nil if input is nil" do
         @column.send(:type_cast, nil).should == nil
@@ -326,7 +326,7 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('created_at', :timestamp)
       end
       it "should return a datetime format" do
-        @column.send(:type_cast, '2011-01-14 21:23:39').should == Time.local(2011, 01, 14, 21, 23,39)
+        @column.send(:type_cast, '2011-01-14 21:23:39').should == Time.utc(2011, 01, 14, 21, 23,39)
       end
       it "should return nil if input is nil" do
         @column.send(:type_cast, nil).should == nil
@@ -337,7 +337,7 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('created_at', :time)
       end
       it "should return a time format" do
-        @column.send(:type_cast, '21:23:39').should == Time.local(2000, 01, 01, 21, 23,39)
+        @column.send(:type_cast, '21:23:39').should == Time.utc(2000, 01, 01, 21, 23,39)
       end
       it "should return nil if input is nil" do
         @column.send(:type_cast, nil).should == nil
@@ -348,7 +348,7 @@ describe Mongify::Database::Column do
         @column = Mongify::Database::Column.new('created_at', :date)
       end
       it "should return a time format" do
-        @column.send(:type_cast, '2011-01-14').should == Time.local(2011, 01, 14)
+        @column.send(:type_cast, '2011-01-14').should == Time.utc(2011, 01, 14)
       end
       it "should return nil if input is nil" do
         @column.send(:type_cast, nil).should == nil
