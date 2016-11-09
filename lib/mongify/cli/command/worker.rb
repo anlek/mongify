@@ -10,11 +10,15 @@ module Mongify
         # A hash of available commands
         # Including description, additional shortcuts to run the commands and requirements to run the command
         AVAILABLE_COMMANDS = {
-                                  :check => {:commands => ['check', 'ck'], :description => "Checks connection for sql and no_sql databases", :required => [:configuration_file]},
-                                  :translation => {:commands => ['translation', 'tr'], :description => "Outputs a translation file from a sql connection", :required => [:configuration_file]},
-                                  :process => {:commands => ['process', 'pr'], :description => "Takes a translation and process it to mongodb", :required => [:configuration_file, :translation_file]},
-                                  :sync => {:commands => ['sync', 'sy'], :description => "Takes a translation and process it to mongodb, only syncs (insert/update) new or updated records based on the updated_at column", :required => [:configuration_file, :translation_file]}
-                                }
+          :check => {
+            :commands => ['check', 'ck'],
+            :description => "Checks connection for sql and no_sql databases",
+            :required => [:configuration_file]
+          },
+          :translation => {:commands => ['translation', 'tr'], :description => "Outputs a translation file from a sql connection", :required => [:configuration_file]},
+          :process => {:commands => ['process', 'pr'], :description => "Takes a translation and process it to mongodb", :required => [:configuration_file, :translation_file]},
+          :sync => {:commands => ['sync', 'sy'], :description => "Takes a translation and process it to mongodb, only syncs (insert/update) new or updated records based on the updated_at column", :required => [:configuration_file, :translation_file]}
+        }
 
         # Prints out a nice display of the list of commands
         def self.list_commands
