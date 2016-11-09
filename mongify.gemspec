@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.extra_rdoc_files = [
-    "CHANGELOG.rdoc",
+    "CHANGELOG.md",
     "README.rdoc"
   ]
   s.rdoc_options = ["--title", "Mongify -- SQL db to Mongo db converter", "--main", "README", "--line-numbers", "--inline-source"]
