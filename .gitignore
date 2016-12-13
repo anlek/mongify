@@ -29,3 +29,6 @@ spec/support/database.yml
 
 
 log/deprecations.log
+
+translation.rb
+database.config
