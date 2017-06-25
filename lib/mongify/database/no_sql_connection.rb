@@ -1,4 +1,5 @@
 require 'mongo'
+require 'byebug'
 module Mongify
   module Database
     #
@@ -19,6 +20,7 @@ module Mongify
     #   username
     #   password
     #   port
+    #   ssl
     #
     # Options:
     #   :force => true       # This will force a database drop before processing
@@ -61,15 +63,24 @@ module Mongify
         !!@options['force']
       end
 
+      def ssl?
+        !!ssl
+      end
+
       # Sets up a connection to the database
       def setup_connection_adapter
         # connection = Connection.new(host, port)
         # connection.add_auth(database, username, password) if username && password
         # connection
-        options = { database: database }
+        options = { database: database, ssl: ssl? }
         options = add_auth(options, username, password)
-        addresses = "#{host}:#{port}"
-        Mongo::Client.new([ addresses ], options)
+        if host.nil?
+          addresses = ["#{host}:#{port}"]
+        else
+          port ||= 27017
+          addresses = host.split(",").map { |h| "#{h}:#{port}" }
+        end
+        Mongo::Client.new(addresses, options)
       end
 
       def add_auth(options, username, password)

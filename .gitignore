@@ -29,3 +29,4 @@ spec/support/database.yml
 
 
 log/deprecations.log
+.byebug_history
