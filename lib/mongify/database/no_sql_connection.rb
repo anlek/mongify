@@ -1,4 +1,5 @@
 require 'mongo'
+require 'byebug'
 module Mongify
   module Database
     #
@@ -28,6 +29,7 @@ module Mongify
     #
     class NoSqlConnection < Mongify::Database::BaseConnection
       include Mongo
+      Mongo::Logger.logger.level = ::Logger::INFO
 
 
       #Required fields for a no sql connection
@@ -130,7 +132,8 @@ module Mongify
 
       # Inserts into the collection a given row
       def insert_into(colleciton_name, row)
-        db[colleciton_name].insert_many(row)
+        method_name = row.is_a?(Array) ? "insert_many" : "insert_one"
+        db[colleciton_name].send(method_name, row)
       end
 
       # Updates a collection item with a given ID with the given attributes
@@ -205,7 +208,7 @@ module Mongify
 
       # Drops the mongodb database
       def drop_database
-        connection.drop_database(database)
+        connection.database.drop
       end
 
 

@@ -80,7 +80,7 @@ describe Mongify::Database::NoSqlConnection do
 
     context "insert_into" do
       it "should insert into a table using the mongo driver" do
-        @collection.should_receive(:insert_many).with({'first_name' => 'bob'})
+        @collection.should_receive(:insert_one).with({'first_name' => 'bob'})
         @mongodb_connection.insert_into('users', {'first_name' => 'bob'})
       end
     end
@@ -181,6 +181,9 @@ describe Mongify::Database::NoSqlConnection do
   context "force" do
     before(:each) do
       @mock_connection = double(:connected? => true, :drop_database => true)
+      @database = double
+      @database.stub(:drop).and_return(true)
+      @mock_connection.stub(:database).and_return(@database)
       Mongo::Client.stub(:new).and_return(@mock_connection)
       @mongodb_connection = Mongify::Database::NoSqlConnection.new(:host => 'localhost', :database => 'blue', :force => true)
       Mongify::UI.stub(:ask).and_return(true)
@@ -193,7 +196,7 @@ describe Mongify::Database::NoSqlConnection do
     end
 
     it "should drop database" do
-      @mongodb_connection.connection.should_receive(:drop_database).with('blue').and_return(true)
+      @database.should_receive(:drop).and_return(true)
       @mongodb_connection.send(:drop_database)
     end
 
@@ -204,12 +207,12 @@ describe Mongify::Database::NoSqlConnection do
       end
       it "should not drop database if permission is declined" do
         Mongify::UI.should_receive(:ask).and_return(false)
-        @mongodb_connection.should_receive(:drop_database).never
+        @mongodb_connection.should_receive(:drop).never
         @mongodb_connection.send(:ask_to_drop_database)
       end
       it "should drop database if permission is granted" do
         Mongify::UI.should_receive(:ask).and_return(true)
-        @mongodb_connection.should_receive(:drop_database).once
+        @database.should_receive(:drop).once
         @mongodb_connection.send(:ask_to_drop_database)
       end
     end
