@@ -8,7 +8,7 @@ module Mongify
       # List of required fields to make a valid base connection
       REQUIRED_FIELDS = %w{host}
       # List of all the available fields to make up a connection
-      AVAILABLE_FIELDS = %w{adapter host username password database socket port encoding batch_size ssl}
+      AVAILABLE_FIELDS = %w{adapter host username password database socket port encoding batch_size ssl auth_source}
       # List of all fields that should be forced to a string
       STRING_FIELDS = %w{adapter}
 

@@ -65,22 +65,26 @@ Currently the only supported option is for the mongodb_connection.
     # connect to a single host:
     host        "localhost"
 
-    # connect to multiple hosts
+    # or: connect to multiple hosts (comma-separated)
     host        "host1.mongodb.net,host2.mongodb.net,host3.mongodb.net"
     
-    # define a port, defaults to 27017
+    # define a port (defaults to 27017)
     # if you pass in multiple hosts, this port is shared across all of them
     port        27017
 
     # connect using ssl (defaults to false)
     ssl         true
 
-    # authentication credentials
+    # authentication credentials (optional for localhost if you didn't secure it)
     username    "root"
     password    "passw0rd"
 
+    # the database in which your users are stored (defaults to admin)
+    auth_source "admin"
+
     # which database to connect to (will be created if does not yet exist)
     database    "my_database"
+
   end
 
 

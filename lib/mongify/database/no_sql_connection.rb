@@ -20,6 +20,7 @@ module Mongify
     #   password
     #   port
     #   ssl
+    #   auth_source
     #
     # Options:
     #   :force => true       # This will force a database drop before processing
@@ -68,24 +69,22 @@ module Mongify
 
       # Sets up a connection to the database
       def setup_connection_adapter
-        # connection = Connection.new(host, port)
-        # connection.add_auth(database, username, password) if username && password
-        # connection
         options = { database: database, ssl: ssl? }
-        options = add_auth(options, username, password)
+        options = add_auth(options, username, password, auth_source)
         if host.nil?
           addresses = ["#{host}:#{port}"]
         else
-          port ||= 27017
-          addresses = host.split(",").map { |h| "#{h}:#{port}" }
+          @port ||= 27017
+          addresses = host.split(",").map { |h| "#{h}:#{@port}" }
         end
         Mongo::Client.new(addresses, options)
       end
 
-      def add_auth(options, username, password)
+      def add_auth(options, username, password, auth_source)
         if username && password
           options[:user] = username
           options[:password] = password
+          options[:auth_source] = auth_source || 'admin'
         end
         options
       end
