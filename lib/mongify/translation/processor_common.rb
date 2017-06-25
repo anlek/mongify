@@ -48,7 +48,7 @@ module Mongify
               row.merge!(fetch_reference_ids(t, row))
               row.delete('pre_mongified_id')
               save_function_call = t.embedded_as_object? ? '$set' : '$addToSet'
-              no_sql_connection.update(t.embed_in, target_row['_id'], append_parent_object({save_function_call => {t.name => row}}, parent_row, unset_keys))
+              no_sql_connection.connection[t.embed_in].update_one( { "_id" => target_row['_id'] }, append_parent_object({save_function_call => {t.name => row}}, parent_row, unset_keys))
               Mongify::Status.publish('copy_embedded')
             end
             Mongify::Status.publish('copy_embedded', :action => 'finish')

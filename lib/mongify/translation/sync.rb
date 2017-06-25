@@ -10,7 +10,7 @@ module Mongify
       DRAFT_KEY = "__mongify_sync_draft__"
       SYNC_HELPER_TABLE = "__mongify_sync_helper__"
 
-      class SyncHelperMigrator < ActiveRecord::Migration
+      class SyncHelperMigrator < ActiveRecord::Migration[4.2]
         def up
           create_table SYNC_HELPER_TABLE, :id => false do |t|
             t.string :table_name
