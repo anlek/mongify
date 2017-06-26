@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('highline', '= 1.7.8')
 
 
-  s.add_development_dependency('byebug', '>= 9.0')
   s.add_development_dependency('rspec', '~> 2.0')
   s.add_development_dependency('rspec-collection_matchers', '~> 1.0')
   s.add_development_dependency('cucumber', '>= 0.10')

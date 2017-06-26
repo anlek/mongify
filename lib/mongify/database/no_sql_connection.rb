@@ -1,5 +1,4 @@
 require 'mongo'
-require 'byebug'
 module Mongify
   module Database
     #
