@@ -36,11 +36,15 @@ Building a config file is as simple as this:
     password    "passw0rd"
     database    "my_database"
     batch_size  10000           # This is defaulted to 10000 but in case you want to make that smaller (on lower RAM machines)
+    # Uncomment the following line if you get a "String not valid UTF-8" error.
+    # encoding "utf8"
   end
 
   mongodb_connection do
     host        "localhost"
     database    "my_database"
+    # Uncomment the following line if you get a "String not valid UTF-8" error.
+    # encoding "utf8"
   end
 
 You can check your configuration by running
