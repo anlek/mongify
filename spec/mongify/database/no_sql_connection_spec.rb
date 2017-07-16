@@ -49,17 +49,17 @@ describe Mongify::Database::NoSqlConnection do
   context "connection" do
     before(:each) do
       @mock_connection = double(:connected? => true)
-      Mongo::Connection.stub(:new).and_return(@mock_connection)
+      Mongo::Client.stub(:new).and_return(@mock_connection)
     end
 
     it "should only create a connection once" do
-      Mongo::Connection.should_receive(:new).once
+      Mongo::Client.should_receive(:new).once
       @mongodb_connection.connection
       @mongodb_connection.connection
     end
 
     it "should add_auth if username && password is present" do
-      @mock_connection.should_receive(:add_auth)
+      @mongodb_connection.should_receive(:add_auth)
       @mongodb_connection.username "bob"
       @mongodb_connection.password "secret"
       @mongodb_connection.connection
@@ -72,23 +72,26 @@ describe Mongify::Database::NoSqlConnection do
     before(:each) do
        @collection = double
        @db = double
+       @indexes = double
        @db.stub(:[]).with('users').and_return(@collection)
+       @collection.stub(:indexes).and_return(@indexes)
        @mongodb_connection.stub(:db).and_return(@db)
     end
+
     context "insert_into" do
       it "should insert into a table using the mongo driver" do
-        @collection.should_receive(:insert).with({'first_name' => 'bob'})
+        @collection.should_receive(:insert_one).with({'first_name' => 'bob'})
         @mongodb_connection.insert_into('users', {'first_name' => 'bob'})
       end
     end
 
     context "get_id_using_pre_mongified_id" do
       it "should return new id" do
-        @collection.should_receive(:find_one).with({"pre_mongified_id"=>1}).and_return({'_id' => '123'})
+        @collection.should_receive(:find).with({"pre_mongified_id"=>1}).and_return([{'_id' => '123'}])
         @mongodb_connection.get_id_using_pre_mongified_id('users', 1).should == '123'
       end
       it "should return nil if nothing is found" do
-        @collection.should_receive(:find_one).with({"pre_mongified_id"=>1}).and_return(nil)
+        @collection.should_receive(:find).with({"pre_mongified_id"=>1}).and_return(nil)
         @mongodb_connection.get_id_using_pre_mongified_id('users', 1).should == nil
       end
     end
@@ -111,7 +114,7 @@ describe Mongify::Database::NoSqlConnection do
     context "update" do
       it "should update the record" do
         attributes = {'post_id' => 123}
-        @collection.should_receive(:update).with({"_id" => 1}, attributes)
+        @collection.should_receive(:update_one).with({"_id" => 1}, attributes)
         @mongodb_connection.update('users', 1, attributes)
       end
     end
@@ -145,28 +148,31 @@ describe Mongify::Database::NoSqlConnection do
     context "find_one" do
       it "should call find_one on collection" do
         query= {'pre_mongified_id' => 1}
-        @collection.should_receive(:find_one).with(query)
+        @collection.should_receive(:find).with(query)
         @mongodb_connection.find_one('users', query)
       end
     end
 
     it "should create index for pre_mongified_id" do
-      @collection.should_receive(:create_index).with([["pre_mongified_id", Mongo::ASCENDING]]).and_return(true)
+      @collection.indexes
+      @collection.indexes.should_receive(:create_many).with([ { key: { pre_mongified_id: 1 } } ]).and_return(true)
       @mongodb_connection.create_pre_mongified_id_index('users')
     end
 
     context "remove_pre_mongified_ids" do
       before(:each) do
-        @collection.stub(:index_information).and_return('pre_mongified_id_1' => 'something')
+        @indexes = double
+        @indexes.stub(:drop_one)
+        @collection.stub(:indexes).and_return(@indexes)
+        @collection.stub(:update_many)
+        @indexes.stub(:get).and_return('pre_mongified_id_1' => 'something')
       end
       it "should call update with unset" do
-        @collection.should_receive(:update).with({},{'$unset' => {'pre_mongified_id' => 1}}, {:multi=>true})
-        @collection.stub(:drop_index)
+        @collection.should_receive(:update_many).with({},{'$unset' => {'pre_mongified_id' => 1}})
         @mongodb_connection.remove_pre_mongified_ids('users')
       end
       it "should drop the index" do
-        @collection.should_receive(:drop_index).with('pre_mongified_id_1')
-        @collection.stub(:update)
+        @indexes.should_receive(:drop_one).with('pre_mongified_id_1')
         @mongodb_connection.remove_pre_mongified_ids('users')
       end
     end
@@ -175,7 +181,10 @@ describe Mongify::Database::NoSqlConnection do
   context "force" do
     before(:each) do
       @mock_connection = double(:connected? => true, :drop_database => true)
-      Mongo::Connection.stub(:new).and_return(@mock_connection)
+      @database = double
+      @database.stub(:drop).and_return(true)
+      @mock_connection.stub(:database).and_return(@database)
+      Mongo::Client.stub(:new).and_return(@mock_connection)
       @mongodb_connection = Mongify::Database::NoSqlConnection.new(:host => 'localhost', :database => 'blue', :force => true)
       Mongify::UI.stub(:ask).and_return(true)
     end
@@ -187,7 +196,7 @@ describe Mongify::Database::NoSqlConnection do
     end
 
     it "should drop database" do
-      @mongodb_connection.connection.should_receive(:drop_database).with('blue').and_return(true)
+      @database.should_receive(:drop).and_return(true)
       @mongodb_connection.send(:drop_database)
     end
 
@@ -198,12 +207,12 @@ describe Mongify::Database::NoSqlConnection do
       end
       it "should not drop database if permission is declined" do
         Mongify::UI.should_receive(:ask).and_return(false)
-        @mongodb_connection.should_receive(:drop_database).never
+        @mongodb_connection.should_receive(:drop).never
         @mongodb_connection.send(:ask_to_drop_database)
       end
       it "should drop database if permission is granted" do
         Mongify::UI.should_receive(:ask).and_return(true)
-        @mongodb_connection.should_receive(:drop_database).once
+        @database.should_receive(:drop).once
         @mongodb_connection.send(:ask_to_drop_database)
       end
     end
@@ -221,7 +230,7 @@ describe Mongify::Database::NoSqlConnection do
     end
 
     it "should return a db" do
-      @mongodb_connection.db.should be_a Mongify::Database::NoSqlConnection::DB
+      @mongodb_connection.db.should be_a Mongify::Database::NoSqlConnection::Database
     end
   end
 

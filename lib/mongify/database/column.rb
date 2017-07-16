@@ -230,6 +230,8 @@ module Mongify
       # Casts the value to a given type
       def type_cast(value)
         return nil if value.nil?
+        # maintain rails 4 compatibility ('cast' is the new method in rails5)
+        cast_method = ActiveRecord::Type::DateTime.new.respond_to?('type_cast_from_database') ? 'type_cast_from_database' : 'cast'
         case type
           when :key       then options['as'] == :string ? value.to_s : value.to_i #If :as is provided, check if it's string, otherwise integer
           when :string    then value.to_s
@@ -237,18 +239,18 @@ module Mongify
           when :integer   then value.to_i
           when :float     then value.to_f
           when :decimal
-            value = ActiveRecord::Type::Decimal.new.type_cast_from_database(value)
+            value = ActiveRecord::Type::Decimal.new.send(cast_method, value)
             if as_integer?
               (value * (10 ** self.scale)).round.to_i
             else
               value.to_s
             end
-          when :datetime  then ActiveRecord::Type::DateTime.new.type_cast_from_database(value)
-          when :timestamp then ActiveRecord::Type::DateTime.new.type_cast_from_database(value)
-          when :time      then ActiveRecord::Type::Time.new.type_cast_from_database(value)
-          when :date      then ActiveRecord::Type::DateTime.new.type_cast_from_database(value)
-          when :binary    then ActiveRecord::Type::Binary.new.type_cast_from_database(value)
-          when :boolean   then ActiveRecord::Type::Boolean.new.type_cast_from_database(value)
+          when :datetime  then ActiveRecord::Type::DateTime.new.send(cast_method, value)
+          when :timestamp then ActiveRecord::Type::DateTime.new.send(cast_method, value)
+          when :time      then ActiveRecord::Type::Time.new.send(cast_method, value)
+          when :date      then ActiveRecord::Type::DateTime.new.send(cast_method, value)
+          when :binary    then ActiveRecord::Type::Binary.new.send(cast_method, value)
+          when :boolean   then ActiveRecord::Type::Boolean.new.send(cast_method, value)
           else value.to_s
         end
       end

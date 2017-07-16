@@ -47,7 +47,7 @@ module Mongify
           rows.each do |row|
             id = row["_id"]
             attributes = fetch_reference_ids(t, row)
-            no_sql_connection.update(t.name, id, {"$set" => attributes}) unless attributes.blank?
+            no_sql_connection.connection[t.name].update_one( { "_id" => id } , { "$set"  => attributes}) unless attributes.blank?
             Mongify::Status.publish('update_references')
           end
           Mongify::Status.publish('update_references', :action => 'finish')

@@ -162,7 +162,7 @@ class DatabaseGenerator
 
   # Drops the database in mongo
   def self.clear_mongodb
-    mongo_connection.connection.drop_database mongo_connection.database
+    mongo_connection.connection.database.drop
   end
 
   # Returns a mongo connection (based on the database.yml)

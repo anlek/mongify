@@ -19,6 +19,8 @@ module Mongify
     #   username
     #   password
     #   port
+    #   ssl
+    #   auth_source
     #
     # Options:
     #   :force => true       # This will force a database drop before processing
@@ -26,6 +28,7 @@ module Mongify
     #
     class NoSqlConnection < Mongify::Database::BaseConnection
       include Mongo
+      Mongo::Logger.logger.level = ::Logger::INFO
 
 
       #Required fields for a no sql connection
@@ -61,11 +64,30 @@ module Mongify
         !!@options['force']
       end
 
+      def ssl?
+        !!ssl
+      end
+
       # Sets up a connection to the database
       def setup_connection_adapter
-        connection = Connection.new(host, port)
-        connection.add_auth(database, username, password) if username && password
-        connection
+        options = { database: database, ssl: ssl? }
+        options = add_auth(options, username, password, auth_source)
+        if host.nil?
+          addresses = ["#{host}:#{port}"]
+        else
+          @port ||= 27017
+          addresses = host.split(",").map { |h| "#{h}:#{@port}" }
+        end
+        Mongo::Client.new(addresses, options)
+      end
+
+      def add_auth(options, username, password, auth_source)
+        if username && password
+          options[:user] = username
+          options[:password] = password
+          options[:auth_source] = auth_source || 'admin'
+        end
+        options
       end
 
       # Returns a mongo connection
@@ -79,12 +101,23 @@ module Mongify
 
       # Returns true or false depending if we have a connection to a mongo server
       def has_connection?
-        connection.connected?
+        # this is a hack - mongo v1 exposed a connected? method
+        # this is no longer true for mongo v2
+        # however, mongo.list_databases will throw an exception if not connected
+        # known issue with this -- if user has no permission to list databases,
+        # this will throw an error even if connected
+        begin
+          connection.list_databases
+        rescue
+          return false
+        end
+
+        return true
       end
 
       # Returns the database from the connection
       def db
-        @db ||= connection[database]
+        @db ||= connection.database
       end
 
       # Returns a hash of all the rows from the database of a given collection
@@ -98,12 +131,13 @@ module Mongify
 
       # Inserts into the collection a given row
       def insert_into(colleciton_name, row)
-        db[colleciton_name].insert(row)
+        method_name = row.is_a?(Array) ? "insert_many" : "insert_one"
+        db[colleciton_name].send(method_name, row)
       end
 
       # Updates a collection item with a given ID with the given attributes
       def update(colleciton_name, id, attributes)
-        db[colleciton_name].update({"_id" => id}, attributes)
+        db[colleciton_name].update_one({"_id" => id}, attributes)
       end
 
       # Upserts into the collection a given row
@@ -131,18 +165,18 @@ module Mongify
 
       # Finds one item from a collection with the given query
       def find_one(collection_name, query)
-        db[collection_name].find_one(query)
+        db[collection_name].find(query).try(:first)
       end
 
       # Returns a row of a item from a given collection with a given pre_mongified_id
       def get_id_using_pre_mongified_id(colleciton_name, pre_mongified_id)
-        db[colleciton_name].find_one('pre_mongified_id' => pre_mongified_id).try(:[], '_id')
+        db[colleciton_name].find('pre_mongified_id' => pre_mongified_id).try(:first).try(:[], '_id')
       end
 
       # Removes pre_mongified_id from all records in a given collection
       def remove_pre_mongified_ids(collection_name)
         drop_mongified_index(collection_name)
-        db[collection_name].update({}, { '$unset' => { 'pre_mongified_id' => 1} }, :multi => true)
+        db[collection_name].update_many({}, { '$unset' => { 'pre_mongified_id' => 1} })
       end
 
       # Removes pre_mongified_id from collection
@@ -150,13 +184,13 @@ module Mongify
       # @return True if successful
       # @raise MongoDBError if index isn't found
       def drop_mongified_index(collection_name)
-        db[collection_name].drop_index('pre_mongified_id_1') if db[collection_name].index_information.keys.include?("pre_mongified_id_1")
+        db[collection_name].indexes.drop_one('pre_mongified_id_1') unless db[collection_name].indexes.get('pre_mongified_id_1').nil?
       end
 
       # Creates a pre_mongified_id index to ensure
       # speedy lookup for collections via the pre_mongified_id
       def create_pre_mongified_id_index(collection_name)
-        db[collection_name].create_index([['pre_mongified_id', Mongo::ASCENDING]])
+        db[collection_name].indexes.create_many([ { key: { pre_mongified_id: 1 } } ])
       end
 
       # Asks user permission to drop the database
@@ -173,7 +207,7 @@ module Mongify
 
       # Drops the mongodb database
       def drop_database
-        connection.drop_database(database)
+        connection.database.drop
       end
 
 
