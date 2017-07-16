@@ -103,7 +103,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  byebug (>= 9.0)
   cucumber (>= 0.10)
   jazz_fingers
   mocha (>= 0.9.8)

@@ -170,7 +170,7 @@ module Mongify
 
       # Returns a row of a item from a given collection with a given pre_mongified_id
       def get_id_using_pre_mongified_id(colleciton_name, pre_mongified_id)
-        db[colleciton_name].find('pre_mongified_id' => pre_mongified_id).try(:[], '_id')
+        db[colleciton_name].find('pre_mongified_id' => pre_mongified_id).try(:first).try(:[], '_id')
       end
 
       # Removes pre_mongified_id from all records in a given collection

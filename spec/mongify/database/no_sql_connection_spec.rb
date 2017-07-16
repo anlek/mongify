@@ -87,7 +87,7 @@ describe Mongify::Database::NoSqlConnection do
 
     context "get_id_using_pre_mongified_id" do
       it "should return new id" do
-        @collection.should_receive(:find).with({"pre_mongified_id"=>1}).and_return({'_id' => '123'})
+        @collection.should_receive(:find).with({"pre_mongified_id"=>1}).and_return([{'_id' => '123'}])
         @mongodb_connection.get_id_using_pre_mongified_id('users', 1).should == '123'
       end
       it "should return nil if nothing is found" do
