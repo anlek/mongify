@@ -29,9 +29,6 @@ module Mongify
         rescue MongifyError => error
           $stderr.puts "Error: #{error}"
           report_error
-        rescue Exception => error
-          report_error
-          raise error
         end
       end
 
