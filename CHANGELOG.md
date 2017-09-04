@@ -1,5 +1,9 @@
 # Mongify ChangeLog
 
+## 1.3.2 / 04 Sep 2017
+* Minor code refactoring
+* Removed exception handling around ALL exceptions (this should improve finding issues outside of Mongify)
+
 ## 1.3.1 / 09 Nov 2016
 * Updated gem requirements to exlucde ActiveRecord/ActiveSupport 5.0
 * Locked down gem versions to prevent issues on newer gems (Like ActiveRecord 5 and Mongo)
