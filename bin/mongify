@@ -6,7 +6,9 @@
 # Author: Andrew Kalek
 #
 
-$:.unshift  File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'lib')
+$LOAD_PATH.unshift File.join(
+  File.dirname(File.dirname(File.expand_path(__FILE__))), 'lib'
+)
 require 'mongify/cli'
 
 Mongify.root = Dir.pwd

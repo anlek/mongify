@@ -6,11 +6,21 @@ module Mongify
     #
     class BaseConnection
       # List of required fields to make a valid base connection
-      REQUIRED_FIELDS = %w{host}
+      REQUIRED_FIELDS = %w[host].freeze
       # List of all the available fields to make up a connection
-      AVAILABLE_FIELDS = %w{adapter host username password database socket port encoding batch_size}
+      AVAILABLE_FIELDS = %w[
+        adapter
+        host
+        username
+        password
+        database
+        socket
+        port
+        encoding
+        batch_size
+      ].freeze
       # List of all fields that should be forced to a string
-      STRING_FIELDS = %w{adapter}
+      STRING_FIELDS = %w[adapter].freeze
 
       def initialize(options=nil)
         if options
@@ -21,19 +31,21 @@ module Mongify
         end
       end
 
-      # Returns all settings as a hash, this is used mainly in building ActiveRecord::Base.establish_connection
+      # Returns all settings as a hash, this is used mainly in building
+      # ActiveRecord::Base.establish_connection
       def to_hash
         hash = {}
         instance_variables.each do |variable|
-          value = self.instance_variable_get variable
-          hash[variable.to_s.gsub('@','').to_sym] = value unless value.nil?
+          value = instance_variable_get variable
+          hash[variable.to_s.delete('@').to_sym] = value unless value.nil?
         end
         hash
       end
 
       # Ensures the required fields are filled
       def valid?
-        #TODO: Improve this to create an errors array with detailed errors (or maybe just use activemodel)
+        # TODO: Improve this to create an errors array with detailed errors
+        # (or maybe just use activemodel)
         REQUIRED_FIELDS.each do |require_field|
           return false unless instance_variables.map(&:to_s).include?("@#{require_field}") and
                               !instance_variable_get("@#{require_field}").to_s.empty?
@@ -41,12 +53,14 @@ module Mongify
         true
       end
 
-      # Used to setup connection, Raises NotImplementedError because it needs to be setup in BaseConnection's children
+      # Used to setup connection, Raises NotImplementedError because it
+      # needs to be setup in BaseConnection's children
       def setup_connection_adapter
         raise NotImplementedMongifyError
       end
 
-      # Used to test connection, Raises NotImplementedError because it needs to be setup in BaseConnection's children
+      # Used to test connection, Raises NotImplementedError because it needs to
+      # be setup in BaseConnection's children
       def has_connection?
         raise NotImplementedMongifyError
       end
