@@ -100,7 +100,7 @@ GEM
       thread_safe (~> 0.1)
     unicode_utils (1.4.0)
     watchr (0.7)
-    yard (0.9.12)
+    yard (0.9.24)
 
 PLATFORMS
   ruby
