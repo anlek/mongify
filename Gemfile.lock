@@ -68,7 +68,7 @@ GEM
       bson (= 1.12.5)
     multi_json (1.12.1)
     multi_test (0.1.2)
-    mysql2 (0.4.5)
+    mysql2 (0.5.2)
     pg (0.19.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -110,7 +110,7 @@ DEPENDENCIES
   jazz_fingers
   mocha (>= 0.9.8)
   mongify!
-  mysql2 (>= 0.4)
+  mysql2 (>= 0.4.10)
   pg (>= 0.17)
   rake
   rspec (~> 2.0)
@@ -120,4 +120,4 @@ DEPENDENCIES
   yard (~> 0.9.11)
 
 BUNDLED WITH
-   1.16.0
+   1.16.2
