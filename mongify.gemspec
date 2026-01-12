@@ -14,9 +14,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency('activerecord', ">= 6.1.7.1", "< 7.0")
   s.add_runtime_dependency('activesupport', ">= 6.1.7.5", "< 7.0")
-  s.add_runtime_dependency('mongo', "= 1.12.5")
-  s.add_runtime_dependency('bson', "= 1.12.5")
-  s.add_runtime_dependency('bson_ext', "= 1.12.5") unless RUBY_PLATFORM == 'java'
+  s.add_runtime_dependency('mongo', "~> 2.19")
   s.add_runtime_dependency('highline', '>= 1.7.8')
 
 
