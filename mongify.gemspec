@@ -10,10 +10,10 @@ Gem::Specification.new do |s|
   s.homepage    = "http://mongify.com"
   s.summary     = %q{Translate your SQL data to MongoDB with ease}
   s.description = %q{Mongify allows you to map your sql data into a mongodb document database with a simple DSL.}
-  s.required_ruby_version = ">= 2.5"
+  s.required_ruby_version = ">= 3.0"
 
-  s.add_runtime_dependency('activerecord', ">= 6.1.7.1", "< 7.0")
-  s.add_runtime_dependency('activesupport', ">= 6.1.7.5", "< 7.0")
+  s.add_runtime_dependency('activerecord', ">= 7.1.5.2", "< 8.0")
+  s.add_runtime_dependency('activesupport', ">= 7.1.5.2", "< 8.0")
   s.add_runtime_dependency('mongo', "~> 2.19")
   s.add_runtime_dependency('highline', '>= 1.7.8')
 

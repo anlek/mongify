@@ -8,7 +8,7 @@ describe Mongify::CLI::Command::Version do
   end
 
   it 'displays the text on the view' do
-    @view.expects(:output).with(/#{@text}/)
+    @view.should_receive(:output).with(/#{@text}/)
     @cmd.execute(@view)
   end
 
