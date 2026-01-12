@@ -91,6 +91,7 @@ The DSL uses `instance_eval` to parse translation files. Tables can be:
 ## Important Rules
 
 - **NEVER remove or delete `Gemfile.lock`** - Always use `bundle update <gem>` to update specific gems instead of regenerating the entire lockfile.
+- **NEVER use `git push --force`** - Avoid force pushing. Keep commit history intact.
 
 ## Dependencies
 
