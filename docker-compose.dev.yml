@@ -1,0 +1,38 @@
+services:
+  mongodb:
+    image: mongo:4.4
+    container_name: mongify_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: mongify_test
+
+  mysql:
+    image: mysql:8.0
+    container_name: mongify_mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: passw0rd
+      MYSQL_DATABASE: mongify_test
+
+  postgresql:
+    image: postgres:14
+    container_name: mongify_postgresql
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: passw0rd
+      POSTGRES_DB: mongify_test
+
+volumes:
+  mongodb_data:
+  mysql_data:
+  postgresql_data:

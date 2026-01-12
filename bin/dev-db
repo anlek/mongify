@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Start development databases (MongoDB, MySQL, PostgreSQL) using Docker
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+case "${1:-up}" in
+  up|start)
+    echo "Starting development databases..."
+    docker compose -f docker-compose.dev.yml up -d
+    echo "Waiting for databases to be ready..."
+    sleep 5
+    echo "Databases are running:"
+    docker compose -f docker-compose.dev.yml ps
+    ;;
+  down|stop)
+    echo "Stopping development databases..."
+    docker compose -f docker-compose.dev.yml down
+    ;;
+  status|ps)
+    docker compose -f docker-compose.dev.yml ps
+    ;;
+  logs)
+    docker compose -f docker-compose.dev.yml logs -f
+    ;;
+  *)
+    echo "Usage: $0 {up|down|status|logs}"
+    echo "  up|start  - Start all databases"
+    echo "  down|stop - Stop all databases"
+    echo "  status|ps - Show database status"
+    echo "  logs      - Follow database logs"
+    exit 1
+    ;;
+esac

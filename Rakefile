@@ -1,6 +1,16 @@
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
+# Compatibility shim for rake 12+ with rspec-core 2.x
+# last_comment was removed in rake 12, but rspec-core 2.x still uses it
+module Rake
+  class Application
+    def last_comment
+      last_description
+    end
+  end
+end
+
 require 'cucumber/rake/task'
 require 'rspec/core/rake_task'
 
@@ -117,7 +127,8 @@ namespace :test do
     end
 
     def create_mysql_database(config)
-      client = Mysql2::Client.new(host: config.mysql["host"] || "localhost",
+      client = Mysql2::Client.new(host: config.mysql["host"] || "127.0.0.1",
+                                  port: config.mysql["port"] || 3306,
                                   username: config.mysql["username"] || "root",
                                   password: config.mysql["password"])
 
