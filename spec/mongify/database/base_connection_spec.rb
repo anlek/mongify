@@ -35,7 +35,7 @@ describe Mongify::Database::BaseConnection do
   end
 
   it "should raise error on setting unknown variable setting" do
-    lambda{@base_connection.connection = "localhost"}.should raise_error
+    lambda{@base_connection.connection = "localhost"}.should raise_error(NoMethodError)
   end
 
   it "should respond to available settings" do
