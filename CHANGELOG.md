@@ -1,5 +1,20 @@
 # Mongify ChangeLog
 
+## 1.4.0 / 12 Jan 2026
+* **BREAKING**: Ruby 3.0+ now required (was 2.5+)
+* Upgraded to ActiveRecord/ActiveSupport 7.x (7.2.3)
+* Upgraded to MongoDB Ruby Driver 2.x (2.22.0) - major API update from legacy 1.x driver
+* Fixed all 11 Dependabot security vulnerabilities:
+  - CVE-2015-4411: BSON DoS vulnerability (upgraded bson to 5.2.0)
+  - CVE-2022-44566: ActiveRecord PostgreSQL adapter DoS
+  - CVE-2023-38037: ActiveSupport local file disclosure
+  - CVE-2025-55193: ActiveRecord ANSI escape injection
+  - Plus 7 other moderate/low severity issues
+* Upgraded RSpec from 2.x to 3.x
+* Fixed Ruby 3.x compatibility in DataRow#respond_to?
+* Fixed Rails 7.0+ deprecation: Time#to_s(:db) -> Time#to_fs(:db)
+* Removed explicit bson/bson_ext dependencies (now bundled with mongo gem)
+
 ## 1.3.3 / 12 Jan 2026
 * Updated ActiveRecord/ActiveSupport compatibility to support versions 4.2 through 6.0
 * Updated minimum Ruby version to 2.5+
