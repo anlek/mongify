@@ -266,7 +266,7 @@ More documentation can be found at {Mongify::Database::Column}
 
 == Notes
 
-Mongify has been tested on Ruby 1.8.7-p330, 1.9.2-p136, 1.9.3-p327, 2.0.0-p353, 2.1.1
+Mongify requires Ruby 2.5 or higher.
 
 If you have any issues, please feel free to report them here: {issue tracker}[https://github.com/anlek/mongify/issues]
 
@@ -291,14 +291,18 @@ Check out the gem at: {http://rubygems.org/gems/mongify-mongoid}[http://rubygems
 
 === Requirements
 
-You just need bundler >= 1.0.8
+You need bundler and Docker installed.
 
   gem install bundler
   bundle install
-  copy over spec/support/database.example to spec/support/database.yml and fill in required info
-  rake test:setup:mysql
-  rake test:setup:postgresql
-  rake test
+  cp spec/support/database.example spec/support/database.yml
+  bin/dev-db up
+  bin/test-setup
+  bundle exec rspec
+
+To stop the development databases:
+
+  bin/dev-db down
 
 == Special Thanks
 
@@ -325,7 +329,7 @@ Reach me at:
 
 == License
 
-Copyright (c) 2011 - 2013 Andrew Kalek, Anlek Consulting
+Copyright (c) 2011 - 2026 Andrew Kalek, Anlek Consulting
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

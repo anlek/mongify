@@ -1,5 +1,15 @@
 # Mongify ChangeLog
 
+## 1.3.3 / 12 Jan 2026
+* Updated ActiveRecord/ActiveSupport compatibility to support versions 4.2 through 6.0
+* Updated minimum Ruby version to 2.5+
+* Fixed ActiveRecord type casting API changes (`type_cast_from_database` -> `deserialize`)
+* Fixed ActiveRecord::Migration version specification for Rails 5+
+* Added Docker Compose setup for development databases (MongoDB, MySQL, PostgreSQL)
+* Added `bin/dev-db` script to manage development databases
+* Added `bin/test-setup` script to setup test database schema
+* Fixed Rake compatibility with rake 12+ and rspec-core 2.x
+
 ## 1.3.2 / 04 Sep 2017
 * Minor code refactoring
 * Removed exception handling around ALL exceptions (this should improve finding issues outside of Mongify)

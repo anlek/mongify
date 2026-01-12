@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Setup test databases (creates tables and schema)
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "Setting up MySQL test database..."
+bundle exec rake test:setup:mysql
+
+echo "Test database setup complete!"

@@ -237,18 +237,18 @@ module Mongify
           when :integer   then value.to_i
           when :float     then value.to_f
           when :decimal
-            value = ActiveRecord::Type::Decimal.new.type_cast_from_database(value)
+            value = ActiveModel::Type::Decimal.new.deserialize(value)
             if as_integer?
               (value * (10 ** self.scale)).round.to_i
             else
               value.to_s
             end
-          when :datetime  then ActiveRecord::Type::DateTime.new.type_cast_from_database(value)
-          when :timestamp then ActiveRecord::Type::DateTime.new.type_cast_from_database(value)
-          when :time      then ActiveRecord::Type::Time.new.type_cast_from_database(value)
-          when :date      then ActiveRecord::Type::DateTime.new.type_cast_from_database(value)
-          when :binary    then ActiveRecord::Type::Binary.new.type_cast_from_database(value)
-          when :boolean   then ActiveRecord::Type::Boolean.new.type_cast_from_database(value)
+          when :datetime  then ActiveRecord::Type::DateTime.new.deserialize(value)
+          when :timestamp then ActiveRecord::Type::DateTime.new.deserialize(value)
+          when :time      then ActiveRecord::Type::Time.new.deserialize(value)
+          when :date      then ActiveRecord::Type::DateTime.new.deserialize(value)
+          when :binary    then ActiveModel::Type::Binary.new.deserialize(value)
+          when :boolean   then ActiveModel::Type::Boolean.new.deserialize(value)
           else value.to_s
         end
       end

@@ -7,7 +7,7 @@ mysql:
   database: mongify_test
   username: root
   password: passw0rd
-  host: localhost
+  host: 127.0.0.1
   port: 3306
 
 postgresql:
