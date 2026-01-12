@@ -48,47 +48,63 @@ describe Mongify::Database::NoSqlConnection do
 
   context "connection" do
     before(:each) do
-      @mock_connection = double(:connected? => true)
-      Mongo::Connection.stub(:new).and_return(@mock_connection)
+      @mock_client = double('Mongo::Client')
+      @mock_database = double('Mongo::Database')
+      @mock_client.stub(:database).and_return(@mock_database)
+      @mock_database.stub(:command).and_return(double)
+      Mongo::Client.stub(:new).and_return(@mock_client)
     end
 
     it "should only create a connection once" do
-      Mongo::Connection.should_receive(:new).once
+      Mongo::Client.should_receive(:new).once
+      @mongodb_connection.host 'localhost'
+      @mongodb_connection.database 'test'
       @mongodb_connection.connection
       @mongodb_connection.connection
     end
 
-    it "should add_auth if username && password is present" do
-      @mock_connection.should_receive(:add_auth)
+    it "should include credentials in client options if username && password is present" do
+      @mongodb_connection.host 'localhost'
+      @mongodb_connection.database 'test'
       @mongodb_connection.username "bob"
       @mongodb_connection.password "secret"
+      Mongo::Client.should_receive(:new).with(
+        ["localhost:27017"],
+        hash_including(user: "bob", password: "secret", database: "test")
+      ).and_return(@mock_client)
       @mongodb_connection.connection
     end
-
   end
 
 
   context "database action:" do
     before(:each) do
-       @collection = double
-       @db = double
-       @db.stub(:[]).with('users').and_return(@collection)
-       @mongodb_connection.stub(:db).and_return(@db)
+      @mongodb_connection.host 'localhost'
+      @mongodb_connection.database 'test'
+      @collection = double('collection')
+      @mock_client = double('Mongo::Client')
+      @mock_client.stub(:[]).with('users').and_return(@collection)
+      @mongodb_connection.stub(:client).and_return(@mock_client)
     end
+
     context "insert_into" do
       it "should insert into a table using the mongo driver" do
-        @collection.should_receive(:insert).with({'first_name' => 'bob'})
+        @collection.should_receive(:insert_one).with({'first_name' => 'bob'})
         @mongodb_connection.insert_into('users', {'first_name' => 'bob'})
       end
     end
 
     context "get_id_using_pre_mongified_id" do
       it "should return new id" do
-        @collection.should_receive(:find_one).with({"pre_mongified_id"=>1}).and_return({'_id' => '123'})
+        cursor = double('cursor')
+        cursor.stub(:first).and_return({'_id' => '123'})
+        @collection.should_receive(:find).with({"pre_mongified_id"=>1}).and_return(cursor)
         @mongodb_connection.get_id_using_pre_mongified_id('users', 1).should == '123'
       end
       it "should return nil if nothing is found" do
-        @collection.should_receive(:find_one).with({"pre_mongified_id"=>1}).and_return(nil)
+        cursor = double('cursor')
+        cursor.stub(:first).and_return(nil)
+        @collection.should_receive(:find).with({"pre_mongified_id"=>1}).and_return(cursor)
         @mongodb_connection.get_id_using_pre_mongified_id('users', 1).should == nil
       end
     end
@@ -111,7 +127,7 @@ describe Mongify::Database::NoSqlConnection do
     context "update" do
       it "should update the record" do
         attributes = {'post_id' => 123}
-        @collection.should_receive(:update).with({"_id" => 1}, attributes)
+        @collection.should_receive(:replace_one).with({"_id" => 1}, attributes)
         @mongodb_connection.update('users', 1, attributes)
       end
     end
@@ -135,38 +151,50 @@ describe Mongify::Database::NoSqlConnection do
         @mongodb_connection.upsert('users', attributes)
       end
 
-      it "should delegate the upsert to the save method of Mongo if no pre_mongified_id to match with the _id" do
+      it "should use replace_one with upsert if _id is present but no pre_mongified_id" do
+        attributes = {'_id' => 'abc123', 'post_id' => 123}
+        @collection.should_receive(:replace_one).with({"_id" => 'abc123'}, attributes, upsert: true)
+        @mongodb_connection.upsert('users', attributes)
+      end
+
+      it "should insert if no _id and no pre_mongified_id" do
         attributes = {'post_id' => 123}
-        @collection.should_receive(:save).with(attributes)
+        @mongodb_connection.should_receive(:insert_into).with('users', attributes)
         @mongodb_connection.upsert('users', attributes)
       end
     end
 
     context "find_one" do
-      it "should call find_one on collection" do
-        query= {'pre_mongified_id' => 1}
-        @collection.should_receive(:find_one).with(query)
+      it "should call find and return first result" do
+        query = {'pre_mongified_id' => 1}
+        cursor = double('cursor')
+        cursor.stub(:first).and_return({'_id' => '123'})
+        @collection.should_receive(:find).with(query).and_return(cursor)
         @mongodb_connection.find_one('users', query)
       end
     end
 
     it "should create index for pre_mongified_id" do
-      @collection.should_receive(:create_index).with([["pre_mongified_id", Mongo::ASCENDING]]).and_return(true)
+      indexes = double('indexes')
+      @collection.stub(:indexes).and_return(indexes)
+      indexes.should_receive(:create_one).with({ 'pre_mongified_id' => 1 }).and_return(true)
       @mongodb_connection.create_pre_mongified_id_index('users')
     end
 
     context "remove_pre_mongified_ids" do
       before(:each) do
-        @collection.stub(:index_information).and_return('pre_mongified_id_1' => 'something')
+        @indexes = double('indexes')
+        @indexes.stub(:collect).and_return(['pre_mongified_id_1'])
+        @collection.stub(:indexes).and_return(@indexes)
       end
-      it "should call update with unset" do
-        @collection.should_receive(:update).with({},{'$unset' => {'pre_mongified_id' => 1}}, {:multi=>true})
-        @collection.stub(:drop_index)
+      it "should call update_many with unset" do
+        @collection.should_receive(:update_many).with({},{'$unset' => {'pre_mongified_id' => 1}})
+        @indexes.stub(:drop_one)
         @mongodb_connection.remove_pre_mongified_ids('users')
       end
       it "should drop the index" do
-        @collection.should_receive(:drop_index).with('pre_mongified_id_1')
-        @collection.stub(:update)
+        @indexes.should_receive(:drop_one).with('pre_mongified_id_1')
+        @collection.stub(:update_many)
         @mongodb_connection.remove_pre_mongified_ids('users')
       end
     end
@@ -174,8 +202,12 @@ describe Mongify::Database::NoSqlConnection do
 
   context "force" do
     before(:each) do
-      @mock_connection = double(:connected? => true, :drop_database => true)
-      Mongo::Connection.stub(:new).and_return(@mock_connection)
+      @mock_client = double('Mongo::Client')
+      @mock_database = double('Mongo::Database')
+      @mock_client.stub(:database).and_return(@mock_database)
+      @mock_database.stub(:command).and_return(double)
+      @mock_database.stub(:drop).and_return(true)
+      Mongo::Client.stub(:new).and_return(@mock_client)
       @mongodb_connection = Mongify::Database::NoSqlConnection.new(:host => 'localhost', :database => 'blue', :force => true)
       Mongify::UI.stub(:ask).and_return(true)
     end
@@ -187,7 +219,7 @@ describe Mongify::Database::NoSqlConnection do
     end
 
     it "should drop database" do
-      @mongodb_connection.connection.should_receive(:drop_database).with('blue').and_return(true)
+      @mock_database.should_receive(:drop).and_return(true)
       @mongodb_connection.send(:drop_database)
     end
 
@@ -221,9 +253,8 @@ describe Mongify::Database::NoSqlConnection do
     end
 
     it "should return a db" do
-      @mongodb_connection.db.should be_a Mongify::Database::NoSqlConnection::DB
+      @mongodb_connection.db.should be_a Mongo::Database
     end
   end
 
 end
-
