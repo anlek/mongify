@@ -22,9 +22,14 @@ Mongify.root = File.dirname(File.dirname(__FILE__))
 
 ::DATABASE_PRINT = File.read(File.dirname(File.expand_path(__FILE__)) + '/support/database_output.txt')
 
-# redirect deprecation warnings of rspec to a file
-RSpec.configure do |rspec|
-  rspec.deprecation_stream = 'log/deprecations.log'
+# Enable legacy :should syntax for backwards compatibility
+RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
+  config.mock_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
 end
 # mute the deprecation message from I18n
 I18n.enforce_available_locales = false

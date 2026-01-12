@@ -43,9 +43,9 @@ module Mongify
       end
 
       # Updated respond_to to return true if it's a key the hash
-      def respond_to?(method)
-        return true if @hash.has_key?(method.gsub('=', ''))
-        super(method)
+      def respond_to?(method, include_private = false)
+        return true if @hash.has_key?(method.to_s.gsub('=', ''))
+        super
       end
 
       # Added the ability to read and write attributes in the hash
