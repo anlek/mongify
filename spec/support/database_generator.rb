@@ -91,17 +91,17 @@ class DatabaseGenerator
         {:first_name => 'Bob', :last_name => 'Smith'},
         {:first_name => 'Joe', :last_name => 'Franklin'}
       ].each do |values|
-        conn.insert("INSERT INTO users (first_name, last_name, created_at, updated_at) VALUES ('#{values[:first_name]}', '#{values[:last_name]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+        conn.insert("INSERT INTO users (first_name, last_name, created_at, updated_at) VALUES ('#{values[:first_name]}', '#{values[:last_name]}', '#{Time.now.to_fs(:db)}', '#{Time.now.to_fs(:db)}')")
       end
 
       #Posts
       [
-        {:title => 'First Post', :owner_id => 1, :body => 'First Post Body', :published_at => (Time.now - 2).to_s(:db)},
-        {:title => 'Second Post', :owner_id => 1, :body => 'Second Post Body', :published_at => (Time.now - 1).to_s(:db)},
-        {:title => 'Third Post', :owner_id => 2, :body => 'Third Post Body', :published_at => (Time.now).to_s(:db)},
+        {:title => 'First Post', :owner_id => 1, :body => 'First Post Body', :published_at => (Time.now - 2).to_fs(:db)},
+        {:title => 'Second Post', :owner_id => 1, :body => 'Second Post Body', :published_at => (Time.now - 1).to_fs(:db)},
+        {:title => 'Third Post', :owner_id => 2, :body => 'Third Post Body', :published_at => (Time.now).to_fs(:db)},
       ].each do |v|
         conn.insert("INSERT INTO posts (title, owner_id, body, published_at, created_at, updated_at)
-                    VALUES ('#{v[:title]}', #{v[:owner_id]}, '#{v[:body]}', '#{v[:published_at]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+                    VALUES ('#{v[:title]}', #{v[:owner_id]}, '#{v[:body]}', '#{v[:published_at]}', '#{Time.now.to_fs(:db)}', '#{Time.now.to_fs(:db)}')")
       end
 
       #Comments
@@ -111,7 +111,7 @@ class DatabaseGenerator
         {:post_id => 2, :user_id => 2, :body => 'Third Comment Body'},
       ].each do |v|
         conn.insert("INSERT INTO comments (body, post_id, user_id, created_at, updated_at)
-                    VALUES ('#{v[:body]}', #{v[:post_id]}, #{v[:user_id]}, '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+                    VALUES ('#{v[:body]}', #{v[:post_id]}, #{v[:user_id]}, '#{Time.now.to_fs(:db)}', '#{Time.now.to_fs(:db)}')")
       end
 
       #Preferences
@@ -121,7 +121,7 @@ class DatabaseGenerator
         {:user_id => 3, :notify_by_email => false},
       ].each_with_index do |v, idx|
           conn.insert("INSERT INTO preferences (id, user_id, notify_by_email, created_at, updated_at)
-                      VALUES ('p#{idx+1}',#{v[:user_id]}, '#{v[:notify_by_email]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+                      VALUES ('p#{idx+1}',#{v[:user_id]}, '#{v[:notify_by_email]}', '#{Time.now.to_fs(:db)}', '#{Time.now.to_fs(:db)}')")
       end
 
       #Notes
@@ -132,7 +132,7 @@ class DatabaseGenerator
         {:user_id => 3, :body => 'note 4', :notable_id => 2, :notable_type => 'User'},
       ].each do |v|
           conn.insert("INSERT INTO notes (user_id, body, notable_id, notable_type, created_at, updated_at)
-                      VALUES (#{v[:user_id]}, '#{v[:body]}', #{v[:notable_id]}, '#{v[:notable_type]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+                      VALUES (#{v[:user_id]}, '#{v[:body]}', #{v[:notable_id]}, '#{v[:notable_type]}', '#{Time.now.to_fs(:db)}', '#{Time.now.to_fs(:db)}')")
       end
 
       #Teams
@@ -142,7 +142,7 @@ class DatabaseGenerator
         {:name => 'Copenhagen Crushers', :phone => '+1112223334'}
       ].each do |v|
         conn.insert("INSERT INTO teams (name, phone, created_at, updated_at)
-                    VALUES ('#{v[:name]}', '#{v[:phone]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+                    VALUES ('#{v[:name]}', '#{v[:phone]}', '#{Time.now.to_fs(:db)}', '#{Time.now.to_fs(:db)}')")
       end
 
       #Coaches
@@ -152,7 +152,7 @@ class DatabaseGenerator
         {:team_id => 3, :first_name => 'Carl', :last_name => 'Cooper'}
       ].each do |v|
         conn.insert("INSERT INTO coaches (team_id, first_name, last_name, created_at, updated_at)
-                    VALUES (#{v[:team_id]}, '#{v[:first_name]}', '#{v[:last_name]}', '#{Time.now.to_s(:db)}', '#{Time.now.to_s(:db)}')")
+                    VALUES (#{v[:team_id]}, '#{v[:first_name]}', '#{v[:last_name]}', '#{Time.now.to_fs(:db)}', '#{Time.now.to_fs(:db)}')")
       end
 
     end
