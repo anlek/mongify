@@ -10,7 +10,10 @@ A data translator from sql database to mongoDB.
 Supports MySQL, PostgreSQL, SQLite, Oracle, SQLServer, and DB2 (Basically anything ActiveRecord has built-in).
 However, I've only tested it with MySql and SQLite
 
-Supports any version of MongoDB
+=== Tested MongoDB Versions
+
+* MongoDB 4.4
+* MongoDB 8.0
 
 Learn more about MongoDB at: http://www.mongodb.org
 

@@ -1,6 +1,6 @@
 services:
   mongodb:
-    image: mongo:4.4
+    image: mongo:8.0
     container_name: mongify_mongodb
     ports:
       - "27017:27017"

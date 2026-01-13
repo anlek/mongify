@@ -26,7 +26,7 @@ module MongifyWorld
 
   # Executes mongify command with arguments
   def mongify(args)
-    run("ruby -Ilib -rubygems bin/mongify #{args}")
+    run("bundle exec ruby -Ilib bin/mongify #{args}")
   end
 end
 

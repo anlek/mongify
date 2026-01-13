@@ -16,11 +16,12 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('activesupport', ">= 7.1.5.2", "< 8.0")
   s.add_runtime_dependency('mongo', "~> 2.19")
   s.add_runtime_dependency('highline', '>= 1.7.8')
+  s.add_runtime_dependency('abbrev')  # Required for Ruby 3.4+ (removed from stdlib)
 
 
   s.add_development_dependency('rspec', '~> 3.0')
   s.add_development_dependency('rspec-collection_matchers', '~> 1.0')
-  s.add_development_dependency('cucumber', '>= 0.10')
+  s.add_development_dependency('cucumber', '>= 9.0')
   s.add_development_dependency('mocha', '>= 0.9.8')
   s.add_development_dependency('yard', '~> 0.9.11')
   s.add_development_dependency('sqlite3', '>= 1.3')

@@ -1,5 +1,15 @@
 # Mongify ChangeLog
 
+## Unreleased
+* Added MongoDB 8.0 support and compatibility testing
+* Fixed Ruby 3.4 compatibility:
+  - Added `abbrev` gem dependency (removed from Ruby 3.4 stdlib)
+  - Replaced deprecated `File.exists?` with `File.exist?`
+  - Updated cucumber dependency to >= 9.0
+* Fixed batch insert compatibility with mongo driver 2.22+ (`insert_many` for arrays)
+* Updated docker-compose.dev.yml to use MongoDB 8.0
+* Documented tested MongoDB versions (4.4, 8.0) in README
+
 ## 1.4.0 / 12 Jan 2026
 * **BREAKING**: Ruby 3.0+ now required (was 2.5+)
 * Upgraded to ActiveRecord/ActiveSupport 7.x (7.2.3)
@@ -14,8 +24,6 @@
 * Fixed Ruby 3.x compatibility in DataRow#respond_to?
 * Fixed Rails 7.0+ deprecation: Time#to_s(:db) -> Time#to_fs(:db)
 * Removed explicit bson/bson_ext dependencies (now bundled with mongo gem)
-
-## 1.3.3 / 12 Jan 2026
 * Updated ActiveRecord/ActiveSupport compatibility to support versions 4.2 through 6.0
 * Updated minimum Ruby version to 2.5+
 * Fixed ActiveRecord type casting API changes (`type_cast_from_database` -> `deserialize`)
