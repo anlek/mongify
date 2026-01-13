@@ -1,6 +1,6 @@
 # Mongify ChangeLog
 
-## Unreleased
+## 1.4.1 / 13 Jan 2026
 * Added MongoDB 8.0 support and compatibility testing
 * Fixed Ruby 3.4 compatibility:
   - Added `abbrev` gem dependency (removed from Ruby 3.4 stdlib)
