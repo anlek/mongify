@@ -24,8 +24,6 @@
 * Fixed Ruby 3.x compatibility in DataRow#respond_to?
 * Fixed Rails 7.0+ deprecation: Time#to_s(:db) -> Time#to_fs(:db)
 * Removed explicit bson/bson_ext dependencies (now bundled with mongo gem)
-
-## 1.3.3 / 12 Jan 2026
 * Updated ActiveRecord/ActiveSupport compatibility to support versions 4.2 through 6.0
 * Updated minimum Ruby version to 2.5+
 * Fixed ActiveRecord type casting API changes (`type_cast_from_database` -> `deserialize`)
