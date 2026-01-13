@@ -55,7 +55,7 @@ module Mongify
             raise ConfigurationFileNotFound, "Database Configuration file is missing or cannot be found" if command_options[:required] && command_options[:required].include?(:configuration_file) && @config.nil?
             if command_options[:required] && command_options[:required].include?(:translation_file)
               raise TranslationFileNotFound, "Translation file is required for command '#{current_command}'" unless @translation_file
-              raise TranslationFileNotFound, "Unable to find Translation File at #{@translation_file}" unless File.exists?(@translation_file)
+              raise TranslationFileNotFound, "Unable to find Translation File at #{@translation_file}" unless File.exist?(@translation_file)
               @translation = Translation.parse(@translation_file)
             end
           end

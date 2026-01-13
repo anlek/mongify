@@ -1,7 +1,7 @@
 # Used during testing to read in a config file
 class ConfigReader
   def initialize(filepath)
-    if File.exists?(filepath)
+    if File.exist?(filepath)
       config = YAML.load_file(filepath)
       config.each { |key, value| instance_variable_set("@#{key}", value) }
     else

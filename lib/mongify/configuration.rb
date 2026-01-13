@@ -9,7 +9,7 @@ module Mongify
 
       # Parses a external configuration file and evaluates it and returns a instence of a configuration class
       def parse(file_name)
-        raise Mongify::ConfigurationFileNotFound, "File #{file_name} is missing" unless File.exists?(file_name)
+        raise Mongify::ConfigurationFileNotFound, "File #{file_name} is missing" unless File.exist?(file_name)
         config = self.new
         config.instance_eval(File.read(file_name))
         config

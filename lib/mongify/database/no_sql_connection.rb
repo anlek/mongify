@@ -109,9 +109,13 @@ module Mongify
         client[collection].find(query)
       end
 
-      # Inserts into the collection a given row
+      # Inserts into the collection a given row or array of rows
       def insert_into(collection_name, row)
-        client[collection_name].insert_one(row)
+        if row.is_a?(Array)
+          client[collection_name].insert_many(row)
+        else
+          client[collection_name].insert_one(row)
+        end
       end
 
       # Updates a collection item with a given ID with the given attributes

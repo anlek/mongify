@@ -31,7 +31,7 @@ class DatabaseGenerator
 
   # Creates a new mysql database (and deletes the old one)
   def self.sqlite(include_data=true)
-    File.delete(sqlite_connection.database) if File.exists?(sqlite_connection.database)
+    File.delete(sqlite_connection.database) if File.exist?(sqlite_connection.database)
 
     conn = sqlite_connection.connection
 
