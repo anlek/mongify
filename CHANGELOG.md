@@ -1,5 +1,10 @@
 # Mongify ChangeLog
 
+## 1.4.2 / 18 Aug 2026
+* Fixed dependency security vulnerabilities:
+  - Require ActiveRecord and ActiveSupport 7.2.3.2 or newer
+  - Require concurrent-ruby 1.3.7 or newer
+
 ## 1.4.1 / 13 Jan 2026
 * Added MongoDB 8.0 support and compatibility testing
 * Fixed Ruby 3.4 compatibility:
